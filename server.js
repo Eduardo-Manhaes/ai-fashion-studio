@@ -1332,35 +1332,44 @@ app.get('/landing', (req, res) => {
 // Inicializa queues de forma assíncrona
 initQueues().catch(err => console.error('[INIT] Erro ao inicializar queues:', err));
 
-// Exporta app para Vercel
+// Exporta app para Vercel (serverless)
 module.exports = app;
 
-// Inicia servidor apenas em desenvolvimento local (não no Vercel)
-if (process.env.NODE_ENV !== 'production') {
+// Inicia servidor (Railway, local, produção tradicional)
+// Detecta se está rodando no Vercel (serverless) através da variável VERCEL
+if (!process.env.VERCEL) {
   const server = app.listen(PORT, async () => {
-    console.log('');
-    console.log('╔══════════════════════════════════════════════════════╗');
-    console.log('║          ✨ AI Fashion Studio — Server V2 ✨          ║');
-    console.log('╠══════════════════════════════════════════════════════╣');
-    console.log(`║  Local:  http://localhost:${PORT}                      ║`);
-    console.log('╠══════════════════════════════════════════════════════╣');
-    console.log('║  APIs:                                               ║');
-    console.log(`║  📸 Fotos (Fal.ai) → ${FAL_API_KEY !== 'COLE_SUA_FAL_API_KEY_AQUI' ? '✅ Configurada' : '⚠️  Pendente'}         ║`);
-    console.log(`║  🎬 Vídeos (Kling)  → ${FAL_API_KEY !== 'COLE_SUA_FAL_API_KEY_AQUI' ? '✅ Configurada' : '⚠️  Pendente'}         ║`);
-    console.log(`║  🗣️  Vídeos (Veo 3) → ${FAL_API_KEY !== 'COLE_SUA_FAL_API_KEY_AQUI' ? '✅ Configurada' : '⚠️  Pendente'}         ║`);
-    console.log('╚══════════════════════════════════════════════════════╝');
-    console.log('');
+    if (process.env.NODE_ENV === 'production') {
+      // Logs simplificados para produção (Railway, etc)
+      console.log(`✅ Server running on port ${PORT}`);
+      console.log(`🌐 Environment: ${process.env.NODE_ENV}`);
+      console.log(`📦 MockQueue: ${!process.env.REDIS_URL ? 'Active' : 'Disabled'}`);
+    } else {
+      // Logs decorativos para desenvolvimento local
+      console.log('');
+      console.log('╔══════════════════════════════════════════════════════╗');
+      console.log('║          ✨ AI Fashion Studio — Server V2 ✨          ║');
+      console.log('╠══════════════════════════════════════════════════════╣');
+      console.log(`║  Local:  http://localhost:${PORT}                      ║`);
+      console.log('╠══════════════════════════════════════════════════════╣');
+      console.log('║  APIs:                                               ║');
+      console.log(`║  📸 Fotos (Fal.ai) → ${FAL_API_KEY !== 'COLE_SUA_FAL_API_KEY_AQUI' ? '✅ Configurada' : '⚠️  Pendente'}         ║`);
+      console.log(`║  🎬 Vídeos (Kling)  → ${FAL_API_KEY !== 'COLE_SUA_FAL_API_KEY_AQUI' ? '✅ Configurada' : '⚠️  Pendente'}         ║`);
+      console.log(`║  🗣️  Vídeos (Veo 3) → ${FAL_API_KEY !== 'COLE_SUA_FAL_API_KEY_AQUI' ? '✅ Configurada' : '⚠️  Pendente'}         ║`);
+      console.log('╚══════════════════════════════════════════════════════╝');
+      console.log('');
 
-    // Tentar ngrok
-    try {
-      const ngrok = require('ngrok');
-      const url = await ngrok.connect(PORT);
-      console.log(`🌐 Ngrok: ${url}`);
-    } catch (err) {
-      console.log('⚠️  Ngrok não conectou. Use http://localhost:3000');
+      // Tentar ngrok apenas em desenvolvimento
+      try {
+        const ngrok = require('ngrok');
+        const url = await ngrok.connect(PORT);
+        console.log(`🌐 Ngrok: ${url}`);
+      } catch (err) {
+        console.log('⚠️  Ngrok não conectou. Use http://localhost:3000');
+      }
+
+      console.log('');
     }
-
-    console.log('');
   });
 
   // Aumenta timeout para suportar polling longo (GPT Image 2 + Clarity = até 350s)
