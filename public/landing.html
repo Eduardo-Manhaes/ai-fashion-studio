@@ -752,8 +752,8 @@
   <section>
     <h2 class="section-title">Qualidade Profissional</h2>
     <div class="slider-container" id="slider">
-      <img src="https://placehold.co/800x1200/2db896/0c0c0c?text=Antes" class="slider-img slider-before" alt="Antes">
-      <img src="https://placehold.co/800x1200/f0ede8/0c0c0c?text=Depois" class="slider-img slider-after" alt="Depois">
+      <img src="https://v3b.fal.media/files/b/0a99c8aa/eHMR4an3NETG3LttYqWhK_017a1ac703d2420dbf5" class="slider-img slider-before" alt="Antes - Modelo Original" loading="lazy">
+      <img src="https://v3b.fal.media/files/b/0a99ca1a/ceAU-OxMIQj-1Kg6OQOJ0_8e29b9cd6f1644988b8" class="slider-img slider-after" alt="Depois - Com IA" loading="lazy">
       <div class="slider-handle" id="slider-handle"></div>
       <div class="slider-label before">Foto Original</div>
       <div class="slider-label after">Com IA</div>
@@ -784,37 +784,37 @@
     <h2 class="section-title">Galeria de Resultados</h2>
     <div class="gallery" id="gallery">
       <div class="gallery-item">
-        <div class="gallery-placeholder">📸</div>
+        <img src="https://v3b.fal.media/files/b/0a99c8aa/eHMR4an3NETG3LttYqWhK_017a1ac703d2420dbf5" alt="Modelo IA 1" loading="lazy">
         <div class="gallery-overlay">
           <span>Gerado por IA</span>
         </div>
       </div>
       <div class="gallery-item">
-        <div class="gallery-placeholder">📸</div>
+        <img src="https://v3b.fal.media/files/b/0a99c918/6JZD1vybvsnD286Uqw7Qx_716a936a0fb6495dba0" alt="Modelo IA 2" loading="lazy">
         <div class="gallery-overlay">
           <span>Gerado por IA</span>
         </div>
       </div>
       <div class="gallery-item">
-        <div class="gallery-placeholder">📸</div>
+        <img src="https://v3b.fal.media/files/b/0a99c91a/twYrlHxygUqHN46SASBI6_633833b03c234a88bcc" alt="Modelo IA 3" loading="lazy">
         <div class="gallery-overlay">
           <span>Gerado por IA</span>
         </div>
       </div>
       <div class="gallery-item">
-        <div class="gallery-placeholder">📸</div>
+        <img src="https://v3b.fal.media/files/b/0a99c91d/63ne-7grBppqM7fJbzFNx_e075d646aa734c3f8c6" alt="Modelo IA 4" loading="lazy">
         <div class="gallery-overlay">
           <span>Gerado por IA</span>
         </div>
       </div>
       <div class="gallery-item">
-        <div class="gallery-placeholder">📸</div>
+        <img src="https://v3b.fal.media/files/b/0a99ca1a/ceAU-OxMIQj-1Kg6OQOJ0_8e29b9cd6f1644988b8" alt="Modelo IA 5" loading="lazy">
         <div class="gallery-overlay">
           <span>Gerado por IA</span>
         </div>
       </div>
       <div class="gallery-item">
-        <div class="gallery-placeholder">📸</div>
+        <img src="https://v3b.fal.media/files/b/0a99ca01/7ccPIrd5X5uIS8wBC7vCs_51c74daa52a64783bd2" alt="Modelo IA 6" loading="lazy">
         <div class="gallery-overlay">
           <span>Gerado por IA</span>
         </div>
@@ -1026,17 +1026,19 @@
       .then(r => r.json())
       .then(({ models, photos, videos }) => {
 
-        // GALERIA - Fotos reais
+        // GALERIA - Substitui apenas se houver fotos geradas reais
         const galleryItems = document.querySelectorAll('.gallery-item');
-        photos.slice(0, galleryItems.length).forEach((photo, i) => {
-          if (photo.result_url) {
-            const img = document.createElement('img');
-            img.src = photo.result_url;
-            img.alt = 'Foto gerada por IA';
-            img.loading = 'lazy';
-            galleryItems[i].insertBefore(img, galleryItems[i].firstChild);
-          }
-        });
+        if (photos && photos.length > 0) {
+          photos.slice(0, galleryItems.length).forEach((photo, i) => {
+            if (photo.result_url && galleryItems[i]) {
+              const existingImg = galleryItems[i].querySelector('img');
+              if (existingImg) {
+                existingImg.src = photo.result_url;
+                existingImg.alt = 'Foto gerada por IA (real)';
+              }
+            }
+          });
+        }
 
         // MODELOS - Cards reais
         const modelsContainer = document.getElementById('models');
@@ -1070,29 +1072,40 @@
           modelsContainer.appendChild(card);
         });
 
-        // VÍDEOS - Vídeos reais
+        // VÍDEOS - Adiciona vídeos reais se disponíveis
         const videoCards = document.querySelectorAll('.video-card');
-        videos.slice(0, videoCards.length).forEach((video, i) => {
-          if (video.result_url) {
-            const vid = document.createElement('video');
-            vid.src = video.result_url;
-            vid.autoplay = true;
-            vid.muted = true;
-            vid.loop = true;
-            vid.playsInline = true;
-            videoCards[i].insertBefore(vid, videoCards[i].firstChild);
+        if (videos && videos.length > 0) {
+          videos.slice(0, videoCards.length).forEach((video, i) => {
+            if (video.result_url && videoCards[i]) {
+              const placeholder = videoCards[i].querySelector('.video-placeholder');
+              if (placeholder) {
+                const vid = document.createElement('video');
+                vid.src = video.result_url;
+                vid.autoplay = true;
+                vid.muted = true;
+                vid.loop = true;
+                vid.playsInline = true;
+                vid.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0';
+                videoCards[i].style.position = 'relative';
+                placeholder.style.opacity = '0';
+                videoCards[i].insertBefore(vid, videoCards[i].firstChild);
 
-            const label = videoCards[i].querySelector('.video-label');
-            if (label) {
-              label.textContent = video.generation_type === 'video_movement'
-                ? 'Movimento'
-                : 'Falando';
+                const label = videoCards[i].querySelector('.video-label');
+                if (label) {
+                  label.textContent = video.generation_type === 'video_movement'
+                    ? 'Movimento'
+                    : 'Falando';
+                }
+              }
             }
-          }
-        });
+          });
+        }
 
       })
-      .catch(err => console.log('Assets carregarão quando a API estiver disponível'));
+      .catch(err => {
+        console.log('API não disponível - usando imagens de exemplo');
+        // Mantém as imagens de exemplo que já estão no HTML
+      });
   </script>
 
 </body>
