@@ -1,0 +1,40 @@
+{
+  "updatedAt": "2026-04-30T17:38:22.935Z",
+  "createdAt": "2026-04-29T19:32:25.090Z",
+  "id": "RmoRGnnHLQKezEaw",
+  "name": "Untitled-1777491144122",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {},
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "03d12dd5-6a06-4594-8f96-51c4e5868f65",
+  "activeVersionId": null,
+  "versionCounter": 2,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-04-29T19:32:25.106Z",
+      "createdAt": "2026-04-29T19:32:25.106Z",
+      "role": "workflow:owner",
+      "workflowId": "RmoRGnnHLQKezEaw",
+      "projectId": "mWD1cZVqnqwEqs0H",
+      "project": {
+        "updatedAt": "2026-04-29T19:14:57.569Z",
+        "createdAt": "2026-04-29T19:14:15.573Z",
+        "id": "mWD1cZVqnqwEqs0H",
+        "name": "Eduardo Maciel <eduardomanhaesmaciel@gmail.com>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "7e60847f-9c9a-49f4-954c-c34c3b9f180a"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

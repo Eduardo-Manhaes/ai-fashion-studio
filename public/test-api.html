@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Teste de API - Modelo Fácil</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #0a1a18;
+      color: #00bfa5;
+    }
+    button {
+      background: #00bfa5;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    pre {
+      background: #0f2421;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+    .error { color: #FF6B6B; }
+    .success { color: #1de9b6; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Teste de API - Modelo Fácil</h1>
+
+  <button onclick="testPublicConfig()">1. Testar /api/public-config</button><br>
+  <button onclick="testMe()">2. Testar /api/me (requer login)</button><br>
+  <button onclick="checkAuth()">3. Verificar Autenticação</button>
+
+  <h2>Resultado:</h2>
+  <pre id="output">Clique em um botão acima para testar...</pre>
+
+  <script src="/lib/auth.js"></script>
+  <script>
+    const output = document.getElementById('output');
+
+    async function log(msg, type = 'info') {
+      const color = type === 'error' ? 'error' : type === 'success' ? 'success' : '';
+      output.innerHTML += `<div class="${color}">${msg}</div>`;
+    }
+
+    async function testPublicConfig() {
+      output.textContent = '';
+      log('🔄 Testando /api/public-config...');
+
+      try {
+        const res = await fetch('/api/public-config');
+        const data = await res.json();
+        log(`✅ Status: ${res.status}`, 'success');
+        log(JSON.stringify(data, null, 2), 'success');
+      } catch (err) {
+        log(`❌ Erro: ${err.message}`, 'error');
+      }
+    }
+
+    async function checkAuth() {
+      output.textContent = '';
+      log('🔄 Verificando autenticação...');
+
+      try {
+        const session = await window.AuthLib.getSession();
+        if (session) {
+          log(`✅ Usuário logado: ${session.user.email}`, 'success');
+          log(`Token válido até: ${new Date(session.expires_at * 1000).toLocaleString()}`, 'success');
+        } else {
+          log('❌ Nenhuma sessão ativa. Faça login primeiro.', 'error');
+        }
+      } catch (err) {
+        log(`❌ Erro: ${err.message}`, 'error');
+      }
+    }
+
+    async function testMe() {
+      output.textContent = '';
+      log('🔄 Testando /api/me...');
+
+      try {
+        const res = await window.AuthLib.authFetch('/api/me');
+        const data = await res.json();
+
+        if (!res.ok) {
+          log(`❌ Status: ${res.status}`, 'error');
+          log(JSON.stringify(data, null, 2), 'error');
+        } else {
+          log(`✅ Status: ${res.status}`, 'success');
+          log(`Email: ${data.user.email}`, 'success');
+          log(`Créditos: ${data.quota?.remaining || data.pack_credits_total || 0}`, 'success');
+          log(JSON.stringify(data, null, 2), 'success');
+        }
+      } catch (err) {
+        log(`❌ Erro: ${err.message}`, 'error');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "name": "ai-fashion-studio",
+  "version": "1.0.0",
+  "description": "Plataforma SaaS de geração de fotos e vídeos de moda com IA",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "workers": "node start-workers.js",
+    "dev": "node server.js",
+    "dev:workers": "node start-workers.js",
+    "dev:full": "echo \"⚠️  Inicie em 2 terminais separados:\" && echo \"   Terminal 1: npm start\" && echo \"   Terminal 2: npm run workers\" && echo \"\" && echo \"Ou configure REDIS_URL para usar MockQueue automaticamente (modo dev)\" && exit 0",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.1",
+    "bullmq": "^5.76.8",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.2",
+    "form-data": "^4.0.5",
+    "helmet": "^8.1.0",
+    "ioredis": "^5.10.1",
+    "ngrok": "^5.0.0-beta.2",
+    "stripe": "^22.1.0",
+    "win-ca": "^3.5.1"
+  }
+}

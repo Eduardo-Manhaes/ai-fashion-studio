@@ -1,0 +1,117 @@
+═══════════════════════════════════════════════════════════
+🚀 COMANDOS RÁPIDOS - DEPLOY VERCEL
+═══════════════════════════════════════════════════════════
+
+📋 PASSO 1: PUSH PARA GITHUB
+───────────────────────────────────────────────────────────
+
+Execute no terminal do VS Code:
+
+git push origin master
+
+(Ou se o branch for 'main':)
+git push origin main
+
+
+⚠️ SE NÃO TIVER REPOSITÓRIO NO GITHUB AINDA:
+───────────────────────────────────────────────────────────
+
+1. Acesse: https://github.com/new
+
+2. Crie um repositório:
+   - Nome: ai-fashion-studio
+   - Público ou Privado (escolha)
+   - NÃO marque "Initialize with README"
+   - Clique em "Create repository"
+
+3. Copie e execute os comandos:
+
+git remote add origin https://github.com/Eduardo-Manhaes/ai-fashion-studio.git
+git branch -M main
+git push -u origin main
+
+
+═══════════════════════════════════════════════════════════
+🤖 PASSO 2: PROMPT PARA CLAUDE NO CHROME
+═══════════════════════════════════════════════════════════
+
+1. Abra o arquivo: PROMPT-CLAUDE-CHROME.md
+
+2. Copie TODO o conteúdo
+
+3. Abra Claude no Chrome
+
+4. Cole o prompt completo
+
+5. Aguarde o Claude fazer o deploy!
+
+
+═══════════════════════════════════════════════════════════
+✅ VERIFICAÇÃO RÁPIDA
+═══════════════════════════════════════════════════════════
+
+Antes de fazer o deploy, confirme:
+
+✓ git status está limpo (sem mudanças pendentes)
+✓ Fez commit das alterações
+✓ Fez push para o GitHub
+✓ Tem conta no Vercel (ou pode criar com GitHub)
+✓ Copiou o prompt do arquivo PROMPT-CLAUDE-CHROME.md
+
+
+═══════════════════════════════════════════════════════════
+📊 APÓS O DEPLOY
+═══════════════════════════════════════════════════════════
+
+O Claude vai te retornar:
+
+→ URL do site (https://seu-projeto.vercel.app)
+→ Status do deploy (sucesso/erro)
+→ Logs se houver problema
+
+Teste:
+→ Abrir a URL no navegador
+→ Verificar se página carrega
+→ Testar login/registro
+→ Testar geração de foto/vídeo
+
+
+═══════════════════════════════════════════════════════════
+🔧 CONFIGURAÇÃO PÓS-DEPLOY
+═══════════════════════════════════════════════════════════
+
+Adicione a URL do Vercel no ALLOWED_ORIGINS:
+
+1. Vercel Dashboard → Settings → Environment Variables
+2. Edite ALLOWED_ORIGINS para:
+   https://SEU-PROJETO.vercel.app,http://localhost:3000
+3. Salve e faça Redeploy
+
+
+═══════════════════════════════════════════════════════════
+📁 ARQUIVOS CRIADOS
+═══════════════════════════════════════════════════════════
+
+✓ vercel.json                → Configuração Vercel
+✓ .vercelignore             → Arquivos ignorados
+✓ server.js (modificado)    → Exporta app para Vercel
+✓ DEPLOY-VERCEL.md          → Guia completo
+✓ PROMPT-CLAUDE-CHROME.md   → Prompt para Claude
+✓ RESUMO-DEPLOY.md          → Resumo detalhado
+✓ COMANDOS-RAPIDOS.txt      → Este arquivo
+
+
+═══════════════════════════════════════════════════════════
+💡 DICAS
+═══════════════════════════════════════════════════════════
+
+→ Processo todo leva 5-10 minutos
+→ Claude vai fazer tudo automaticamente
+→ Se der erro, verifique variáveis de ambiente
+→ Logs estão em: Vercel Dashboard → Deployments
+→ Redeploy a qualquer momento: git push origin main
+
+
+═══════════════════════════════════════════════════════════
+
+Boa sorte com o deploy! 🎉

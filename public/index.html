@@ -1,0 +1,775 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Modelo Fácil — Crie fotos e vídeos profissionais com modelos usando IA. Ideal para lojistas de moda, catálogos e Instagram.">
+  <title>Modelo Fácil — Fotos de Moda com IA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300bfa5' stroke-width='2'><path d='M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z'/><circle cx='12' cy='13' r='4'/></svg>">
+</head>
+<body>
+
+<!-- APP WRAPPER -->
+<div class="app-wrapper">
+
+  <!-- SIDEBAR ESQUERDA -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-mark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00bfa5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+      </div>
+      <div class="sidebar-logo-text">Modelo Fácil</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="sidebar-item active" id="navGerar" data-view="gerar">
+        <span class="sidebar-item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span>
+        <span class="sidebar-item-label">Gerar conteúdo</span>
+      </button>
+      <button class="sidebar-item" id="navFotos" data-view="fotos">
+        <span class="sidebar-item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></span>
+        <span class="sidebar-item-label">Minhas fotos</span>
+      </button>
+      <button class="sidebar-item" id="navVideos" data-view="videos">
+        <span class="sidebar-item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></span>
+        <span class="sidebar-item-label">Meus vídeos</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <!-- Info de plano e créditos (migrado do header) -->
+      <div class="sidebar-credits" id="sidebarCredits" style="display: none;">
+        <!-- IDs mantidos para compatibilidade com bootAuth() -->
+        <div class="credits-plan" id="sidebarPlan">—</div>
+        <div class="credits-count" id="sidebarCreditsCount">— créditos</div>
+        <div class="credits-period" id="sidebarPeriod"></div>
+        <!-- IDs antigos ocultos mas preservados para não quebrar JS -->
+        <div style="display:none;" id="profileEmail"></div>
+        <div style="display:none;" id="profilePlan"></div>
+        <div style="display:none;" id="profileCredits"></div>
+        <div style="display:none;" id="profilePeriod"></div>
+      </div>
+      <button class="sidebar-item" id="navConfig" data-view="config">
+        <span class="sidebar-item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        <span class="sidebar-item-label">Configurações</span>
+      </button>
+      <button class="sidebar-item" id="logoutBtn">
+        <span class="sidebar-item-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+        <span class="sidebar-item-label">Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="main-content" id="mainContent">
+
+    <!-- VIEW: GERAR CONTEÚDO -->
+    <div class="view-panel active" id="viewGerar">
+
+      <!-- Abas Foto / Vídeo (migradas do main-menu) -->
+      <div class="content-tabs">
+        <button class="menu-tab active" id="tabPhoto" onclick="switchMenu('photo')">
+          <span class="menu-tab-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
+          <span>Criação de Foto</span>
+        </button>
+        <button class="menu-tab" id="tabVideo" onclick="switchMenu('video')">
+          <span class="menu-tab-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></span>
+          <span>Criação de Vídeo</span>
+        </button>
+      </div>
+
+      <!-- ===== MENU: CRIAÇÃO DE FOTO ===== -->
+      <div class="menu-content active" id="menuPhoto">
+
+        <!-- Progress bar foto -->
+        <div class="steps-progress" id="photoProgress">
+          <div class="step-item active" id="photoStep1Dot" onclick="goToPhotoStep(1)">
+            <div class="step-dot"><span>1</span></div>
+            <div class="step-label">Produto</div>
+          </div>
+          <div class="step-line" id="photoLine1"></div>
+          <div class="step-item" id="photoStep2Dot" onclick="goToPhotoStep(2)">
+            <div class="step-dot"><span>2</span></div>
+            <div class="step-label">Modelo</div>
+          </div>
+          <div class="step-line" id="photoLine2"></div>
+          <div class="step-item" id="photoStep3Dot" onclick="goToPhotoStep(3)">
+            <div class="step-dot"><span>3</span></div>
+            <div class="step-label">Cenário</div>
+          </div>
+          <div class="step-line" id="photoLine3"></div>
+          <div class="step-item" id="photoStep4Dot" onclick="goToPhotoStep(4)">
+            <div class="step-dot"><span>4</span></div>
+            <div class="step-label">Pose</div>
+          </div>
+          <div class="step-line" id="photoLine4"></div>
+          <div class="step-item" id="photoStep5Dot" onclick="goToPhotoStep(5)">
+            <div class="step-dot"><span>5</span></div>
+            <div class="step-label">Config.</div>
+          </div>
+          <div class="step-line" id="photoLine5"></div>
+          <div class="step-item" id="photoStep6Dot">
+            <div class="step-dot"><span>6</span></div>
+            <div class="step-label">Resultado</div>
+          </div>
+        </div>
+
+        <!-- Etapa 1: Produto -->
+        <section class="step-section active" id="photoSection1">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">📦</div>
+              <div>
+                <div class="card-title">Foto do Produto</div>
+                <div class="card-desc">Envie a foto da peça que deseja mostrar em uma modelo</div>
+              </div>
+            </div>
+
+            <div class="upload-zone" id="productUploadZone" onclick="document.getElementById('productFileInput').click()">
+              <input type="file" id="productFileInput" accept="image/*" hidden>
+              <div class="upload-placeholder" id="productPlaceholder">
+                <div class="upload-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+                <div class="upload-text">Arraste ou clique para enviar</div>
+                <div class="upload-subtext">PNG, JPG ou WEBP · Máx. 10MB</div>
+              </div>
+              <img class="upload-preview" id="productPreview" alt="Preview do produto">
+              <button class="upload-change-btn" onclick="event.stopPropagation(); document.getElementById('productFileInput').click()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Trocar imagem</button>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-primary btn-full" id="btnNextStep1" onclick="goToPhotoStep(2)" disabled>
+                Escolher Modelo →
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etapa 2: Modelo -->
+        <section class="step-section" id="photoSection2">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">👤</div>
+              <div>
+                <div class="card-title">Escolha a Modelo</div>
+                <div class="card-desc">Selecione qual modelo vai usar sua peça</div>
+              </div>
+            </div>
+
+            <div id="presetModelsGrid" class="preset-models-grid"></div>
+
+            <div class="btn-group">
+              <button class="btn btn-secondary" onclick="goToPhotoStep(1)">← Voltar</button>
+              <button class="btn btn-primary" onclick="goToPhotoStep(3)">
+                Escolher Cenário →
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etapa 3: Cenário -->
+        <section class="step-section" id="photoSection3">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+              <div>
+                <div class="card-title">Cenário da Foto</div>
+                <div class="card-desc">Escolha o ambiente onde sua modelo vai aparecer</div>
+              </div>
+            </div>
+
+            <div class="selection-grid" id="scenarioGrid">
+              <!-- Cards gerados pelo JS -->
+            </div>
+
+            <!-- Upload de cenário próprio (opcional) -->
+            <div class="optional-section">
+              <div class="optional-label">
+                <span>📁</span>
+                <span>Ou importe sua própria imagem de cenário (opcional)</span>
+              </div>
+              <div class="upload-zone upload-zone-sm" id="bgUploadZone" onclick="document.getElementById('bgFileInput').click()">
+                <input type="file" id="bgFileInput" accept="image/*" hidden>
+                <div class="upload-placeholder" id="bgPlaceholder">
+                  <div class="upload-icon" style="font-size:1.5rem"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+                  <div class="upload-subtext">Clique para enviar seu cenário</div>
+                </div>
+                <img class="upload-preview" id="bgPreview" alt="Preview do cenário">
+                <button class="upload-change-btn" onclick="event.stopPropagation(); document.getElementById('bgFileInput').click()">Trocar</button>
+              </div>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-secondary" onclick="goToPhotoStep(2)">← Voltar</button>
+              <button class="btn btn-primary" id="btnNextStep3" onclick="goToPhotoStep(4)" disabled>
+                Escolher Pose →
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etapa 4: Pose e Ângulo -->
+        <section class="step-section" id="photoSection4">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">🤸</div>
+              <div>
+                <div class="card-title">Pose e Ângulo</div>
+                <div class="card-desc">Escolha como a modelo vai aparecer na foto</div>
+              </div>
+            </div>
+
+            <div class="selection-grid" id="poseGrid">
+              <!-- Cards gerados pelo JS -->
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-secondary" onclick="goToPhotoStep(3)">← Voltar</button>
+              <button class="btn btn-primary" id="btnNextStep4" onclick="goToPhotoStep(5)" disabled>
+                Configurações →
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etapa 5: Configurações -->
+        <section class="step-section" id="photoSection5">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+              <div>
+                <div class="card-title">Configurações Finais</div>
+                <div class="card-desc">Ajuste a qualidade e o formato da imagem</div>
+              </div>
+            </div>
+
+            <div class="options-grid">
+              <div class="option-group">
+                <label class="option-label" for="resolutionSelect">Resolução</label>
+                <select class="option-select" id="resolutionSelect">
+                  <option value="1k">1K — Rápido · 1 crédito</option>
+                  <option value="2k" selected>2K — Recomendado · 2 créditos</option>
+                  <option value="4k">4K — Máxima · 3 créditos</option>
+                </select>
+              </div>
+              <div class="option-group">
+                <label class="option-label" for="aspectSelect">Proporção</label>
+                <select class="option-select" id="aspectSelect">
+                  <option value="3:4">3:4 — Retrato</option>
+                  <option value="4:5" selected>4:5 — Instagram</option>
+                  <option value="9:16">9:16 — Stories / Reels</option>
+                  <option value="1:1">1:1 — Quadrado</option>
+                  <option value="16:9">16:9 — Widescreen</option>
+                </select>
+              </div>
+              <div class="option-group">
+                <label class="option-label" for="modeSelect">Qualidade</label>
+                <select class="option-select" id="modeSelect">
+                  <option value="fast">Rápido — Menor custo</option>
+                  <option value="balanced" selected>Balanceado — Recomendado</option>
+                  <option value="quality">Máxima — Melhor resultado</option>
+                </select>
+              </div>
+              <div class="option-group">
+                <label class="option-label" for="formatSelect">Formato</label>
+                <select class="option-select" id="formatSelect">
+                  <option value="jpeg">JPEG — Menor tamanho</option>
+                  <option value="png">PNG — Alta qualidade</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="cost-box" id="photoCostBox">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Custo estimado: <strong id="costCredits">2 créditos</strong>
+              <span class="cost-usd">(~US$ <span id="costDollars">0.15</span>)</span>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-secondary" onclick="goToPhotoStep(4)">← Voltar</button>
+              <button class="btn btn-primary btn-generate" id="btnGenerate" onclick="generatePhoto()">
+                🤖 Gerar Foto com IA
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etapa 6: Resultado da Foto -->
+        <section class="step-section" id="photoSection6">
+          <div class="card">
+
+            <!-- Loading state -->
+            <div class="loading-area" id="photoLoading">
+              <div class="spinner-ring"></div>
+              <div class="loading-title" id="photoLoadingTitle">Gerando sua modelo...</div>
+              <div class="loading-sub" id="photoLoadingSub">Enviando para o servidor...</div>
+              <div class="progress-track"><div class="progress-fill" id="photoProgressFill"></div></div>
+            </div>
+
+            <!-- Resultado -->
+            <div class="result-area" id="photoResult" style="display:none">
+              <div class="card-header" style="justify-content:center">
+                <div class="card-icon success-icon">✅</div>
+                <div>
+                  <div class="card-title">Foto Gerada!</div>
+                  <div class="card-desc">Sua modelo virtual está pronta</div>
+                </div>
+              </div>
+
+              <div class="result-img-wrap">
+                <img class="result-image" id="resultImage" alt="Foto gerada">
+                <div class="result-badge"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg> IA</div>
+              </div>
+
+              <!-- Ações principais -->
+              <div class="btn-group center">
+                <button class="btn btn-success" onclick="downloadResult('image')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Download</button>
+                <button class="btn btn-secondary" onclick="goToPhotoStep(1)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Nova Foto</button>
+              </div>
+
+              <!-- Variações -->
+              <div class="variations-section" id="variationsSection">
+                <div class="variations-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Criar Variações de Pose</div>
+                <p class="variations-desc">Gera 3 variações com a mesma modelo, roupa e cenário — apenas mudando a pose e o ângulo.</p>
+                <button class="btn btn-outline btn-full" id="btnVariations" onclick="generateVariations()">
+                  🎭 Criar Variações e Poses
+                </button>
+                <div class="variations-grid" id="variationsGrid" style="display:none"></div>
+              </div>
+
+              <!-- Ir para vídeo -->
+              <div class="to-video-section">
+                <div class="to-video-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg> Quer animar essa foto?</div>
+                <p class="to-video-desc">Use essa imagem para criar um vídeo profissional da modelo usando sua peça.</p>
+                <button class="btn btn-primary btn-full" onclick="goToVideoWithImage()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg> Criar Vídeo com essa Foto
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ===== MENU: CRIAÇÃO DE VÍDEO ===== -->
+      <div class="menu-content" id="menuVideo">
+
+        <!-- Progress bar vídeo -->
+        <div class="steps-progress" id="videoProgress">
+          <div class="step-item active" id="videoStep1Dot">
+            <div class="step-dot"><span>1</span></div>
+            <div class="step-label">Foto</div>
+          </div>
+          <div class="step-line" id="videoLine1"></div>
+          <div class="step-item" id="videoStep2Dot">
+            <div class="step-dot"><span>2</span></div>
+            <div class="step-label">Estilo</div>
+          </div>
+          <div class="step-line" id="videoLine2"></div>
+          <div class="step-item" id="videoStep3Dot">
+            <div class="step-dot"><span>3</span></div>
+            <div class="step-label">Config.</div>
+          </div>
+          <div class="step-line" id="videoLine3"></div>
+          <div class="step-item" id="videoStep4Dot">
+            <div class="step-dot"><span>4</span></div>
+            <div class="step-label">Resultado</div>
+          </div>
+        </div>
+
+        <!-- Etapa 1: Selecionar Foto -->
+        <section class="step-section active" id="videoSection1">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+              <div>
+                <div class="card-title">Selecione a Foto</div>
+                <div class="card-desc">Escolha qual imagem gerada você quer animar</div>
+              </div>
+            </div>
+
+            <div class="session-gallery" id="sessionGallery">
+              <div class="empty-gallery">
+                <div style="font-size:3rem"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+                <p>Nenhuma foto gerada ainda nesta sessão.</p>
+                <button class="btn btn-outline" onclick="switchMenu('photo')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Gerar Foto Primeiro</button>
+              </div>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-primary" id="btnNextVideoStep1" onclick="goToVideoStep(2)" disabled>
+                Escolher Estilo de Vídeo →
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etapa 2: Tipo de Vídeo -->
+        <section class="step-section" id="videoSection2">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg></div>
+              <div>
+                <div class="card-title">Tipo de Vídeo</div>
+                <div class="card-desc">Escolha o estilo do vídeo que deseja criar</div>
+              </div>
+            </div>
+
+            <!-- Tipo A: Movimento (Kling) -->
+            <div class="video-type-section">
+              <div class="video-type-header">
+                <span class="video-type-badge kling">Kling AI</span>
+                <span class="video-type-title">🎭 Modelo em Movimento</span>
+              </div>
+              <p class="video-type-desc">A modelo se move naturalmente usando sua peça. Ideal para catálogo, feed e stories.</p>
+              <div class="selection-grid" id="movementStyleGrid">
+                <!-- Cards gerados pelo JS -->
+              </div>
+            </div>
+
+            <!-- Divisor -->
+            <div class="type-divider"><span>ou</span></div>
+
+            <!-- Tipo B: Falando (Veo) -->
+            <div class="video-type-section">
+              <div class="video-type-header">
+                <span class="video-type-badge veo">Veo 3.1</span>
+                <span class="video-type-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Modelo Falando</span>
+              </div>
+              <p class="video-type-desc">A modelo apresenta o produto falando. Ideal para Reels, TikTok e campanhas.</p>
+              <div class="talking-form" id="talkingForm" style="display:none">
+                <div class="option-group">
+                  <label class="option-label" for="modelScript">O que a modelo vai dizer</label>
+                  <textarea class="prompt-input" id="modelScript" placeholder="Ex: Olha que vestido lindo! Disponível na loja agora, aproveita!" rows="3"></textarea>
+                  <div class="input-hint">💡 Frases curtas (até 8s) têm melhor resultado</div>
+                </div>
+                <div class="option-group">
+                  <label class="option-label" for="talkingTone">Tom da apresentação</label>
+                  <select class="option-select" id="talkingTone">
+                    <option value="presentation">Apresentação do produto</option>
+                    <option value="promotion">Promoção / oferta</option>
+                    <option value="description">Descrição do look</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-outline btn-full" id="btnSelectTalking" onclick="selectVideoType('talking')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Quero a modelo falando
+              </button>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-secondary" onclick="goToVideoStep(1)">← Voltar</button>
+              <button class="btn btn-primary" id="btnNextVideoStep2" onclick="goToVideoStep(3)" disabled>
+                Configurações →
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etapa 3: Configurações de Vídeo -->
+        <section class="step-section" id="videoSection3">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+              <div>
+                <div class="card-title">Configurações do Vídeo</div>
+                <div class="card-desc">Defina a duração e a qualidade</div>
+              </div>
+            </div>
+
+            <div class="options-grid">
+              <div class="option-group">
+                <label class="option-label" for="videoDuration">Duração</label>
+                <select class="option-select" id="videoDuration">
+                  <option value="5">5 segundos</option>
+                  <option value="10">10 segundos</option>
+                </select>
+              </div>
+              <div class="option-group">
+                <label class="option-label" for="videoResolution">Resolução</label>
+                <select class="option-select" id="videoResolution">
+                  <option value="720p">720p</option>
+                  <option value="1080p" selected>1080p Full HD</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="cost-box" id="videoCostBox">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Custo estimado: <strong id="videoCostCredits">3 créditos</strong>
+              <span class="cost-usd">(~US$ <span id="videoCostDollars">0.23</span>)</span>
+            </div>
+
+            <div class="btn-group">
+              <button class="btn btn-secondary" onclick="goToVideoStep(2)">← Voltar</button>
+              <button class="btn btn-primary btn-generate" id="btnGenerateVideo" onclick="generateVideo()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg> Gerar Vídeo com IA
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Etapa 4: Resultado do Vídeo -->
+        <section class="step-section" id="videoSection4">
+          <div class="card">
+
+            <!-- Loading -->
+            <div class="loading-area" id="videoLoading">
+              <div class="spinner-ring"></div>
+              <div class="loading-title" id="videoLoadingTitle">Gerando seu vídeo...</div>
+              <div class="loading-sub" id="videoLoadingSub">Isso pode levar até 2 minutos</div>
+              <div class="progress-track"><div class="progress-fill" id="videoProgressFill"></div></div>
+            </div>
+
+            <!-- Resultado -->
+            <div class="result-area" id="videoResult" style="display:none">
+              <div class="card-header" style="justify-content:center">
+                <div class="card-icon success-icon">🎬</div>
+                <div>
+                  <div class="card-title">Vídeo Pronto!</div>
+                  <div class="card-desc">Seu vídeo fashion foi gerado com sucesso</div>
+                </div>
+              </div>
+
+              <div class="result-video-wrap">
+                <video class="result-video" id="resultVideo" controls autoplay loop playsinline></video>
+              </div>
+
+              <div class="btn-group center">
+                <button class="btn btn-success" onclick="downloadResult('video')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Download</button>
+                <button class="btn btn-primary" onclick="goToMyVideos()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg> Ver Todos os Vídeos</button>
+                <button class="btn btn-secondary" onclick="goToVideoStep(2)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg> Novo Vídeo</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Footer (dentro do viewGerar) -->
+      <footer class="app-footer">
+        <p>© 2026 Modelo Fácil · Powered by <a href="https://fashn.ai" target="_blank" rel="noopener">FASHN.ai</a> · <a href="https://kling.ai" target="_blank" rel="noopener">Kling AI</a> · <a href="https://deepmind.google/veo" target="_blank" rel="noopener">Veo 3.1</a></p>
+      </footer>
+
+    </div><!-- fim viewGerar -->
+
+    <!-- VIEW: MINHAS FOTOS -->
+    <div class="view-panel" id="viewFotos">
+      <div class="gallery-header">
+        <h1 class="gallery-title">Minhas fotos</h1>
+        <div class="gallery-stats" id="fotosStats">
+          <div class="stat-item">
+            <span class="stat-value" id="fotosTotal">0</span>
+            <span class="stat-label">Total</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="fotosCompleted">0</span>
+            <span class="stat-label">Concluídas</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="fotosProcessing">0</span>
+            <span class="stat-label">Processando</span>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="document.getElementById('navGerar').click()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg> Gerar nova foto
+        </button>
+      </div>
+      <div class="gallery-filters">
+        <button class="filter-btn active" data-filter="all" onclick="filterGallery('fotos', 'all')">Todas</button>
+        <button class="filter-btn" data-filter="completed" onclick="filterGallery('fotos', 'completed')">Concluídas</button>
+        <button class="filter-btn" data-filter="processing" onclick="filterGallery('fotos', 'processing')">Processando</button>
+      </div>
+      <div class="gallery-grid" id="fotosGrid">
+        <!-- Loader -->
+        <div class="gallery-loading" id="fotosLoading" style="display: none;">
+          <div class="spinner"></div>
+          <p>Carregando suas fotos...</p>
+        </div>
+        <!-- Empty state -->
+        <div class="gallery-empty" id="fotosEmpty" style="display: none;">
+          <div class="gallery-empty-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg></div>
+          <p>Suas fotos geradas aparecerão aqui</p>
+          <button class="btn-primary" onclick="document.getElementById('navGerar').click()">
+            Gerar primeira foto
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: MEUS VÍDEOS -->
+    <div class="view-panel" id="viewVideos">
+      <div class="gallery-header">
+        <h1 class="gallery-title">Meus vídeos</h1>
+        <div class="gallery-stats" id="videosStats">
+          <div class="stat-item">
+            <span class="stat-value" id="videosTotal">0</span>
+            <span class="stat-label">Total</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="videosCompleted">0</span>
+            <span class="stat-label">Concluídos</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="videosProcessing">0</span>
+            <span class="stat-label">Processando</span>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="document.getElementById('navGerar').click()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg> Gerar novo vídeo
+        </button>
+      </div>
+      <div class="gallery-filters">
+        <button class="filter-btn active" data-filter="all" onclick="filterGallery('videos', 'all')">Todos</button>
+        <button class="filter-btn" data-filter="movement" onclick="filterGallery('videos', 'movement')">Movimento</button>
+        <button class="filter-btn" data-filter="talking" onclick="filterGallery('videos', 'talking')">Falando</button>
+      </div>
+      <div class="gallery-grid" id="videosGrid">
+        <!-- Loader -->
+        <div class="gallery-loading" id="videosLoading" style="display: none;">
+          <div class="spinner"></div>
+          <p>Carregando seus vídeos...</p>
+        </div>
+        <!-- Empty state -->
+        <div class="gallery-empty" id="videosEmpty" style="display: none;">
+          <div class="gallery-empty-icon">🎬</div>
+          <p>Seus vídeos gerados aparecerão aqui</p>
+          <button class="btn-primary" onclick="document.getElementById('navGerar').click()">
+            Gerar primeiro vídeo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: CONFIGURAÇÕES -->
+    <div class="view-panel" id="viewConfig">
+      <div class="settings-header">
+        <h1 class="settings-title">Configurações</h1>
+      </div>
+
+      <div class="settings-content">
+        <!-- Informações da Conta -->
+        <section class="settings-section">
+          <h2 class="settings-section-title">Informações da Conta</h2>
+          <div class="settings-card">
+            <div class="settings-row">
+              <span class="settings-label">Email:</span>
+              <span class="settings-value" id="settingsEmail">—</span>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label">Membro desde:</span>
+              <span class="settings-value" id="settingsMemberSince">—</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Assinatura -->
+        <section class="settings-section">
+          <h2 class="settings-section-title">Assinatura</h2>
+          <div class="settings-card">
+            <div class="settings-row">
+              <span class="settings-label">Plano atual:</span>
+              <span class="settings-value" id="settingsPlan">—</span>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label">Créditos:</span>
+              <span class="settings-value" id="settingsCredits">—</span>
+            </div>
+            <div class="settings-row">
+              <span class="settings-label">Renova em:</span>
+              <span class="settings-value" id="settingsPeriodEnd">—</span>
+            </div>
+            <div class="settings-actions">
+              <button class="btn-secondary" id="manageSubscriptionBtn" style="display: none;">
+                Gerenciar Assinatura
+              </button>
+              <button class="btn-primary" onclick="window.location.href='/pricing.html'" style="display: none;" id="upgradeBtn">
+                Fazer upgrade
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- PAINEL DIREITO — só visível na view Gerar -->
+  <aside class="right-panel" id="rightPanel">
+    <div class="right-panel-header">Recentes</div>
+    <div class="recent-grid" id="recentGrid">
+      <!-- Preenchido pelo JS com as últimas 4 gerações -->
+      <div class="recent-empty">Nenhuma geração ainda</div>
+    </div>
+    <button class="right-panel-link" onclick="document.getElementById('navFotos').click()">
+      Ver todas as fotos →
+    </button>
+  </aside>
+
+</div><!-- fim .app-wrapper -->
+
+<!-- MODAIS (ficam fora do app-wrapper para z-index correto) -->
+<div id="noCreditsModal" class="modal-overlay" style="display: none;">
+  <div class="modal-card">
+    <h2>Sem créditos disponíveis</h2>
+    <p id="noCreditsMessage">Você usou toda sua cota deste período.</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="noCreditsClose">Fechar</button>
+      <button class="btn-primary" id="noCreditsUpgrade">Ver planos</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de visualização de geração -->
+<div id="generationModal" class="modal-overlay" style="display: none;">
+  <div class="modal-card modal-large">
+    <div class="modal-header">
+      <h2 id="modalTitle">Detalhes da Geração</h2>
+      <button class="modal-close" onclick="closeGenerationModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-preview">
+        <img id="modalImage" style="display: none;" alt="Geração">
+        <video id="modalVideo" controls style="display: none;"></video>
+      </div>
+      <div class="modal-info">
+        <div class="info-row">
+          <span class="info-label">Tipo:</span>
+          <span id="modalType">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Status:</span>
+          <span id="modalStatus">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Criado em:</span>
+          <span id="modalCreated">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Concluído em:</span>
+          <span id="modalCompleted">—</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Créditos usados:</span>
+          <span id="modalCredits">—</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeGenerationModal()">Fechar</button>
+      <button class="btn-primary" id="modalDownload"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>
+      <button class="btn-outline" id="modalVariations" style="display: none;">🎭 Criar Variações</button>
+      <button class="btn-danger" id="modalDelete"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Deletar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- Scripts — mantidos na mesma ordem -->
+<script src="/lib/auth.js?v=4"></script>
+<script src="app.js?v=4"></script>
+</body>
+</html>

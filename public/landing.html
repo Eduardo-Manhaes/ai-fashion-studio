@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modelo Fácil — IA que Revoluciona a Moda</title>
+  <meta name="description" content="Crie fotos e vídeos profissionais de moda com IA em minutos. 27 modelos brasileiras, qualidade 4K, a partir de R$0,98.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0c0c0c;
+      --text: #f0ede8;
+      --green: #2db896;
+      --border: rgba(240,237,232,0.08);
+      --hover: rgba(45,184,150,0.1);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(12,12,12,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 0;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--green);
+    }
+
+    .btn {
+      background: var(--green);
+      color: var(--bg);
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      display: inline-block;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(45,184,150,0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      background: var(--hover);
+      border-color: var(--green);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+
+    .hero .highlight {
+      color: var(--green);
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      opacity: 0.8;
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* SECTION */
+    section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    /* COUNTERS */
+    .counters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      padding: 4rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .counter {
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .counter.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .counter-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--green);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .counter-label {
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+
+    /* SLIDER ANTES/DEPOIS */
+    .slider-container {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto 4rem;
+      aspect-ratio: 3/4;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .slider-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .slider-after {
+      clip-path: inset(0 0 0 50%);
+    }
+
+    .slider-handle {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--green);
+      cursor: ew-resize;
+      transform: translateX(-50%);
+    }
+
+    .slider-handle::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(45,184,150,0.4);
+    }
+
+    .slider-label {
+      position: absolute;
+      top: 1rem;
+      padding: 0.5rem 1rem;
+      background: rgba(12,12,12,0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .slider-label.before { left: 1rem; }
+    .slider-label.after { right: 1rem; }
+
+    /* STEPS */
+    .steps {
+      list-style: none;
+      counter-reset: step;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .step {
+      position: relative;
+      padding: 2rem 2rem 2rem 5rem;
+      border-left: 2px solid var(--border);
+      margin-bottom: 2rem;
+      transition: all 0.3s;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .step.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .step:hover {
+      padding-left: 5.5rem;
+      border-color: var(--green);
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: -1.5rem;
+      top: 2rem;
+      width: 3rem;
+      height: 3rem;
+      background: var(--green);
+      color: var(--bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .step h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .step p {
+      opacity: 0.7;
+    }
+
+    /* GALLERY */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .gallery-item {
+      position: relative;
+      aspect-ratio: 3/4;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .gallery-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .gallery-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(45,184,150,0.1) 0%, rgba(240,237,232,0.05) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      opacity: 0.3;
+    }
+
+    .gallery-item img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(12,12,12,0.9) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: flex-end;
+      padding: 1.5rem;
+    }
+
+    .gallery-item:hover .gallery-overlay {
+      opacity: 1;
+    }
+
+    /* VIDEOS */
+    .videos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
+    }
+
+    .video-card {
+      position: relative;
+      aspect-ratio: 9/16;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .video-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .video-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(45,184,150,0.1) 0%, rgba(240,237,232,0.05) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .video-placeholder svg {
+      width: 60px;
+      height: 60px;
+      opacity: 0.3;
+    }
+
+    .video-card video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-label {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(12,12,12,0.9);
+      backdrop-filter: blur(10px);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+    }
+
+    /* MODELS */
+    .models-scroll {
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto;
+      padding: 2rem 0;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--green) var(--border);
+    }
+
+    .models-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .models-scroll::-webkit-scrollbar-track {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    .models-scroll::-webkit-scrollbar-thumb {
+      background: var(--green);
+      border-radius: 4px;
+    }
+
+    .model-card {
+      flex: 0 0 280px;
+      scroll-snap-align: start;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .model-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--green);
+      box-shadow: 0 8px 24px rgba(45,184,150,0.2);
+    }
+
+    .model-img {
+      position: relative;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(45,184,150,0.1) 0%, rgba(240,237,232,0.05) 100%);
+    }
+
+    .model-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.3;
+    }
+
+    .model-placeholder svg {
+      width: 60px;
+      height: 60px;
+    }
+
+    .model-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .model-info {
+      padding: 1.25rem;
+    }
+
+    .model-name {
+      font-weight: 700;
+      font-size: 1.125rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .model-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .model-tag {
+      padding: 0.25rem 0.75rem;
+      background: rgba(45,184,150,0.1);
+      border: 1px solid rgba(45,184,150,0.2);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    /* PRICING */
+    .pricing {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .plan {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      text-align: center;
+      transition: all 0.3s;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .plan.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .plan:hover {
+      border-color: var(--green);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(45,184,150,0.2);
+    }
+
+    .plan.featured {
+      border-color: var(--green);
+      border-width: 2px;
+      position: relative;
+    }
+
+    .plan.featured::before {
+      content: 'POPULAR';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--green);
+      color: var(--bg);
+      padding: 0.25rem 1rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .plan-name {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .plan-price {
+      font-family: 'Syne', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+
+    .plan-price span {
+      font-size: 1.25rem;
+      opacity: 0.7;
+    }
+
+    .plan-period {
+      opacity: 0.6;
+      margin-bottom: 2rem;
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+
+    .plan-features li {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .plan-features li:last-child {
+      border-bottom: none;
+    }
+
+    .plan-features li::before {
+      content: '✓';
+      color: var(--green);
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+      opacity: 0.6;
+    }
+
+    footer p {
+      max-width: 600px;
+      margin: 0 auto 1rem;
+    }
+
+    footer a {
+      color: var(--green);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 6rem;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .counters {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .videos {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 4rem 1.5rem;
+      }
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-in {
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo">Modelo Fácil</a>
+      <ul class="nav-links">
+        <li><a href="#como-funciona">Como Funciona</a></li>
+        <li><a href="#modelos">Modelos</a></li>
+        <li><a href="#planos">Planos</a></li>
+      </ul>
+      <a href="/index.html" class="btn">Começar Grátis</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <h1 class="animate-in">
+        IA que Revoluciona<br>
+        a <span class="highlight">Moda</span>
+      </h1>
+      <p class="animate-in" style="animation-delay: 0.1s">
+        Crie fotos e vídeos profissionais de moda com inteligência artificial em minutos. Qualidade 4K, 27 modelos brasileiras, a partir de R$0,98.
+      </p>
+      <div class="hero-buttons animate-in" style="animation-delay: 0.2s">
+        <a href="/index.html" class="btn">Começar Agora</a>
+        <a href="#como-funciona" class="btn btn-outline">Ver Como Funciona</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- COUNTERS -->
+  <div class="counters" id="counters">
+    <div class="counter" data-target="27" data-suffix="">
+      <span class="counter-value">0</span>
+      <span class="counter-label">Modelos Brasileiras</span>
+    </div>
+    <div class="counter" data-target="0.98" data-prefix="R$" data-decimals="2">
+      <span class="counter-value">R$0</span>
+      <span class="counter-label">Por Geração</span>
+    </div>
+    <div class="counter" data-target="2" data-suffix=" min">
+      <span class="counter-value">0</span>
+      <span class="counter-label">Tempo Médio</span>
+    </div>
+    <div class="counter" data-target="4" data-suffix="K">
+      <span class="counter-value">0</span>
+      <span class="counter-label">Qualidade</span>
+    </div>
+  </div>
+
+  <!-- ANTES/DEPOIS -->
+  <section>
+    <h2 class="section-title">Qualidade Profissional</h2>
+    <div class="slider-container" id="slider">
+      <img src="https://placehold.co/800x1200/2db896/0c0c0c?text=Antes" class="slider-img slider-before" alt="Antes">
+      <img src="https://placehold.co/800x1200/f0ede8/0c0c0c?text=Depois" class="slider-img slider-after" alt="Depois">
+      <div class="slider-handle" id="slider-handle"></div>
+      <div class="slider-label before">Foto Original</div>
+      <div class="slider-label after">Com IA</div>
+    </div>
+  </section>
+
+  <!-- COMO FUNCIONA -->
+  <section id="como-funciona">
+    <h2 class="section-title">Como Funciona</h2>
+    <ol class="steps">
+      <li class="step">
+        <h3>Escolha a Modelo</h3>
+        <p>Selecione entre 27 modelos brasileiras com diferentes perfis: jovens, maduras, slim, plus size, diversas etnias.</p>
+      </li>
+      <li class="step">
+        <h3>Envie sua Peça</h3>
+        <p>Faça upload da foto da roupa ou acessório que deseja promover. Nossa IA cuida do resto.</p>
+      </li>
+      <li class="step">
+        <h3>Receba o Resultado</h3>
+        <p>Em 2 minutos, receba fotos e vídeos profissionais em 4K prontos para usar em suas redes sociais e e-commerce.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- GALERIA -->
+  <section>
+    <h2 class="section-title">Galeria de Resultados</h2>
+    <div class="gallery" id="gallery">
+      <div class="gallery-item">
+        <div class="gallery-placeholder">📸</div>
+        <div class="gallery-overlay">
+          <span>Gerado por IA</span>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-placeholder">📸</div>
+        <div class="gallery-overlay">
+          <span>Gerado por IA</span>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-placeholder">📸</div>
+        <div class="gallery-overlay">
+          <span>Gerado por IA</span>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-placeholder">📸</div>
+        <div class="gallery-overlay">
+          <span>Gerado por IA</span>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-placeholder">📸</div>
+        <div class="gallery-overlay">
+          <span>Gerado por IA</span>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-placeholder">📸</div>
+        <div class="gallery-overlay">
+          <span>Gerado por IA</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VÍDEOS -->
+  <section>
+    <h2 class="section-title">Vídeos Profissionais</h2>
+    <div class="videos" id="videos">
+      <div class="video-card">
+        <div class="video-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          <span>Vídeo Movimento</span>
+        </div>
+        <div class="video-label">Movimento</div>
+      </div>
+      <div class="video-card">
+        <div class="video-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          <span>Vídeo Falando</span>
+        </div>
+        <div class="video-label">Falando</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODELOS -->
+  <section id="modelos">
+    <h2 class="section-title">Nossas Modelos</h2>
+    <div class="models-scroll" id="models">
+      <!-- Modelos carregadas dinamicamente -->
+      <div class="model-card">
+        <div class="model-img">
+          <div class="model-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+        </div>
+        <div class="model-info">
+          <div class="model-name">Carregando...</div>
+          <div class="model-tags"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANOS -->
+  <section id="planos">
+    <h2 class="section-title">Planos</h2>
+    <div class="pricing">
+      <div class="plan">
+        <h3 class="plan-name">Starter</h3>
+        <div class="plan-price">R$49<span>/mês</span></div>
+        <div class="plan-period">50 créditos mensais</div>
+        <ul class="plan-features">
+          <li>50 gerações/mês</li>
+          <li>Fotos em 4K</li>
+          <li>Vídeos de movimento</li>
+          <li>27 modelos</li>
+          <li>Suporte por email</li>
+        </ul>
+        <a href="/index.html" class="btn btn-outline">Começar</a>
+      </div>
+
+      <div class="plan featured">
+        <h3 class="plan-name">Pro</h3>
+        <div class="plan-price">R$149<span>/mês</span></div>
+        <div class="plan-period">200 créditos mensais</div>
+        <ul class="plan-features">
+          <li>200 gerações/mês</li>
+          <li>Fotos em 4K</li>
+          <li>Vídeos de movimento</li>
+          <li>Vídeos falando</li>
+          <li>27 modelos</li>
+          <li>Suporte prioritário</li>
+        </ul>
+        <a href="/index.html" class="btn">Começar</a>
+      </div>
+
+      <div class="plan">
+        <h3 class="plan-name">Premium</h3>
+        <div class="plan-price">R$349<span>/mês</span></div>
+        <div class="plan-period">500 créditos mensais</div>
+        <ul class="plan-features">
+          <li>500 gerações/mês</li>
+          <li>Fotos em 4K</li>
+          <li>Vídeos de movimento</li>
+          <li>Vídeos falando</li>
+          <li>27 modelos</li>
+          <li>API access</li>
+          <li>Suporte 24/7</li>
+        </ul>
+        <a href="/index.html" class="btn btn-outline">Começar</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      <strong>Modelo Fácil</strong> — Inteligência artificial para moda brasileira.<br>
+      Transforme suas vendas com fotos e vídeos profissionais gerados por IA.
+    </p>
+    <p>
+      <a href="/index.html">Começar Grátis</a> ·
+      <a href="mailto:contato@modelofacil.com.br">Contato</a>
+    </p>
+  </footer>
+
+  <script>
+    // INTERSECTION OBSERVER - Animações ao scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, idx) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, idx * 80); // delay escalonado
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.counter, .step, .gallery-item, .video-card, .plan').forEach(el => {
+      observer.observe(el);
+    });
+
+    // COUNTERS ANIMADOS
+    function animateCounter(el) {
+      const target = parseFloat(el.dataset.target);
+      const decimals = parseInt(el.dataset.decimals) || 0;
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '';
+      const duration = 2000;
+      const start = performance.now();
+
+      function update(time) {
+        const elapsed = time - start;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Easing cúbico
+        const eased = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+        const current = eased * target;
+        el.querySelector('.counter-value').textContent =
+          prefix + current.toFixed(decimals) + suffix;
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    const countersObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          document.querySelectorAll('.counter').forEach(animateCounter);
+          countersObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+
+    countersObserver.observe(document.getElementById('counters'));
+
+    // SLIDER ANTES/DEPOIS
+    const slider = document.getElementById('slider');
+    const handle = document.getElementById('slider-handle');
+    const after = document.querySelector('.slider-after');
+    let isDragging = false;
+
+    function updateSlider(clientX) {
+      const rect = slider.getBoundingClientRect();
+      let x = clientX - rect.left;
+      x = Math.max(0, Math.min(x, rect.width));
+      const percent = (x / rect.width) * 100;
+
+      handle.style.left = percent + '%';
+      after.style.clipPath = `inset(0 0 0 ${percent}%)`;
+    }
+
+    handle.addEventListener('mousedown', () => isDragging = true);
+    document.addEventListener('mouseup', () => isDragging = false);
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) updateSlider(e.clientX);
+    });
+
+    handle.addEventListener('touchstart', () => isDragging = true);
+    document.addEventListener('touchend', () => isDragging = false);
+    document.addEventListener('touchmove', (e) => {
+      if (isDragging) updateSlider(e.touches[0].clientX);
+    });
+
+    slider.addEventListener('click', (e) => {
+      if (e.target !== handle) updateSlider(e.clientX);
+    });
+
+    // CARREGAR ASSETS REAIS DO BANCO
+    fetch('/api/landing-data')
+      .then(r => r.json())
+      .then(({ models, photos, videos }) => {
+
+        // GALERIA - Fotos reais
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        photos.slice(0, galleryItems.length).forEach((photo, i) => {
+          if (photo.result_url) {
+            const img = document.createElement('img');
+            img.src = photo.result_url;
+            img.alt = 'Foto gerada por IA';
+            img.loading = 'lazy';
+            galleryItems[i].insertBefore(img, galleryItems[i].firstChild);
+          }
+        });
+
+        // MODELOS - Cards reais
+        const modelsContainer = document.getElementById('models');
+        modelsContainer.innerHTML = ''; // Limpa placeholder
+
+        const labels = {
+          white: 'Branca', black: 'Negra', morena: 'Morena',
+          slim: 'Slim', plus: 'Plus', curvy: 'Curvilínea',
+          young: '20-35', mature: '45-65'
+        };
+
+        models.forEach(model => {
+          const card = document.createElement('div');
+          card.className = 'model-card';
+
+          const tags = [model.ethnicity, model.body_type, model.age_group]
+            .filter(Boolean)
+            .map(tag => `<span class="model-tag">${labels[tag] || tag}</span>`)
+            .join('');
+
+          card.innerHTML = `
+            <div class="model-img">
+              <img src="${model.reference_url}" alt="${model.name}" loading="lazy">
+            </div>
+            <div class="model-info">
+              <div class="model-name">${model.name}</div>
+              <div class="model-tags">${tags}</div>
+            </div>
+          `;
+
+          modelsContainer.appendChild(card);
+        });
+
+        // VÍDEOS - Vídeos reais
+        const videoCards = document.querySelectorAll('.video-card');
+        videos.slice(0, videoCards.length).forEach((video, i) => {
+          if (video.result_url) {
+            const vid = document.createElement('video');
+            vid.src = video.result_url;
+            vid.autoplay = true;
+            vid.muted = true;
+            vid.loop = true;
+            vid.playsInline = true;
+            videoCards[i].insertBefore(vid, videoCards[i].firstChild);
+
+            const label = videoCards[i].querySelector('.video-label');
+            if (label) {
+              label.textContent = video.generation_type === 'video_movement'
+                ? 'Movimento'
+                : 'Falando';
+            }
+          }
+        });
+
+      })
+      .catch(err => console.log('Assets carregarão quando a API estiver disponível'));
+  </script>
+
+</body>
+</html>

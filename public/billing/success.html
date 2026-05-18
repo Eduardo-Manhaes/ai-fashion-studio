@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagamento Confirmado — Modelo Fácil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 24px;
+      padding: 60px 40px;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: #48bb78;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+      animation: scaleIn 0.5s ease-out;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    .success-icon svg {
+      width: 40px;
+      height: 40px;
+      stroke: white;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: #2d3748;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 18px;
+      color: #718096;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 16px 32px;
+      background: #667eea;
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #5568d3;
+    }
+
+    .details {
+      margin: 30px 0;
+      padding: 20px;
+      background: #f7fafc;
+      border-radius: 12px;
+      display: none;
+    }
+
+    .details.visible {
+      display: block;
+    }
+
+    .details p {
+      margin: 8px 0;
+      font-size: 14px;
+      color: #4a5568;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+
+    <h1>Pagamento Confirmado! 🎉</h1>
+    <p id="message">Seu pagamento foi processado com sucesso. Você já pode começar a gerar suas fotos e vídeos profissionais!</p>
+
+    <div class="details" id="details"></div>
+
+    <a href="/" class="btn">Começar a Criar →</a>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const configRes = await fetch('/api/public-config');
+    const config = await configRes.json();
+    const supabase = createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+
+    if (sessionId) {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (session) {
+        try {
+          const res = await fetch(`/api/stripe/session/${sessionId}`, {
+            headers: {
+              'Authorization': `Bearer ${session.access_token}`
+            }
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            const detailsDiv = document.getElementById('details');
+
+            if (data.mode === 'subscription') {
+              detailsDiv.innerHTML = `
+                <p><strong>Plano:</strong> ${data.plan_name || 'Assinatura'}</p>
+                <p><strong>Créditos mensais:</strong> ${data.credits || '—'}</p>
+                <p><strong>Próxima cobrança:</strong> ${data.next_billing_date || '—'}</p>
+              `;
+            } else {
+              detailsDiv.innerHTML = `
+                <p><strong>Pacote:</strong> ${data.pack_name || 'Créditos avulsos'}</p>
+                <p><strong>Créditos adicionados:</strong> ${data.credits || '—'}</p>
+              `;
+            }
+
+            detailsDiv.classList.add('visible');
+          }
+        } catch (err) {
+          console.error('Erro buscando detalhes:', err);
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,716 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar Conta — Modelo Fácil</title>
+
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300bfa5' stroke-width='2'><path d='M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z'/><circle cx='12' cy='13' r='4'/></svg>">
+
+  <style>
+    /* Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Variáveis */
+    :root {
+      --verde-primario: #00bfa5;
+      --verde-escuro:   #007a6e;
+      --verde-claro:    #1de9b6;
+      --verde-menta:    #b2dfdb;
+      --bg-principal:   #0a1a18;
+      --bg-card:        #0f2421;
+      --bg-elevado:     #163330;
+      --bg-hover:       #1a3d39;
+      --texto-principal:  #ffffff;
+      --texto-secundario: #a8c5c1;
+      --texto-muted:      #5a8a84;
+      --acento-coral:   #FF6B6B;
+      --acento-dourado: #FFD700;
+      --borda:       rgba(0, 191, 165, 0.15);
+      --borda-hover: rgba(0, 191, 165, 0.45);
+      --gradiente-hero: linear-gradient(135deg, #007a6e 0%, #0a1a18 50%, #00bfa5 100%);
+      --gradiente-btn:  linear-gradient(135deg, #00bfa5 0%, #007a6e 100%);
+      --shadow-verde: 0 4px 24px rgba(0, 191, 165, 0.08);
+    }
+
+    body {
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      background: var(--bg-principal);
+      color: var(--texto-principal);
+      min-height: 100vh;
+      display: flex;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    /* Background animado */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0, 191, 165, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0, 122, 110, 0.12) 0%, transparent 50%),
+        var(--bg-principal);
+      z-index: -1;
+      animation: bgPulse 8s ease-in-out infinite;
+    }
+
+    @keyframes bgPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
+    }
+
+    /* Container principal */
+    .auth-wrapper {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    /* === PAINEL ESQUERDO (40%) === */
+    .welcome-panel {
+      flex: 0 0 40%;
+      background: var(--gradiente-hero);
+      padding: 60px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      animation: slideInLeft 0.6s ease;
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Padrão geométrico sutil */
+    .welcome-panel::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    .welcome-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-large {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: fadeSlideUp 0.8s ease 0.2s both;
+    }
+
+    .logo-large::before {
+      content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 24 24' fill='none' stroke='%2300bfa5' stroke-width='2'><path d='M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z'/><circle cx='12' cy='13' r='4'/></svg>");
+      font-size: 2.8rem;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+
+    .tagline {
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--verde-menta);
+      margin-bottom: 32px;
+      line-height: 1.5;
+      animation: fadeSlideUp 0.8s ease 0.3s both;
+    }
+
+    /* Contador de usuários */
+    .stats-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 191, 165, 0.3);
+      border-radius: 16px;
+      padding: 28px 24px;
+      backdrop-filter: blur(10px);
+      animation: fadeSlideUp 0.8s ease 0.4s both;
+    }
+
+    .stats-number {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--verde-claro);
+      margin-bottom: 8px;
+      animation: countUp 2s ease-out;
+    }
+
+    @keyframes countUp {
+      from { opacity: 0; transform: scale(0.5); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .stats-label {
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+    }
+
+    .stats-sublabel {
+      font-size: 0.9rem;
+      color: var(--texto-secundario);
+      margin-top: 4px;
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* === PAINEL DIREITO (60%) === */
+    .form-panel {
+      flex: 0 0 60%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      animation: slideInRight 0.6s ease;
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 460px;
+      background: rgba(15, 36, 33, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--borda);
+      border-radius: 24px;
+      padding: 48px 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      animation: cardSlideUp 0.8s ease 0.2s both;
+    }
+
+    @keyframes cardSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .auth-card h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--verde-claro), var(--verde-primario));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .auth-card .subtitle {
+      font-size: 0.95rem;
+      color: var(--texto-secundario);
+      margin-bottom: 36px;
+    }
+
+    /* Campos com label flutuante */
+    .input-group {
+      position: relative;
+      margin-bottom: 24px;
+      animation: fadeSlideUp 0.6s ease both;
+    }
+
+    .input-group:nth-of-type(1) { animation-delay: 0.3s; }
+    .input-group:nth-of-type(2) { animation-delay: 0.4s; }
+    .input-group:nth-of-type(3) { animation-delay: 0.5s; }
+
+    .input-group label {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      font-size: 0.9rem;
+      color: var(--texto-muted);
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 500;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: 2px solid var(--borda);
+      background: var(--bg-elevado);
+      color: var(--texto-principal);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--verde-primario);
+      background: var(--bg-card);
+      box-shadow: 0 0 0 4px rgba(0, 191, 165, 0.1);
+    }
+
+    /* Validação visual */
+    .input-group input.valid {
+      border-color: var(--verde-claro);
+      background: rgba(0, 191, 165, 0.05);
+    }
+
+    .input-group input.invalid {
+      border-color: var(--acento-coral);
+      background: rgba(255, 107, 107, 0.05);
+    }
+
+    .input-group input:focus + label,
+    .input-group input:not(:placeholder-shown) + label {
+      top: -10px;
+      left: 12px;
+      font-size: 0.75rem;
+      color: var(--verde-claro);
+      background: var(--bg-card);
+      padding: 0 6px;
+      font-weight: 700;
+    }
+
+    .input-group input::placeholder {
+      opacity: 0;
+    }
+
+    /* Barra de força da senha */
+    .password-strength {
+      margin-top: 8px;
+      height: 4px;
+      background: var(--bg-elevado);
+      border-radius: 2px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .password-strength.show {
+      display: block;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .password-strength-bar.weak {
+      width: 33%;
+      background: var(--acento-coral);
+    }
+
+    .password-strength-bar.medium {
+      width: 66%;
+      background: var(--acento-dourado);
+    }
+
+    .password-strength-bar.strong {
+      width: 100%;
+      background: var(--verde-claro);
+    }
+
+    /* Botão com shimmer */
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 50px;
+      background: var(--gradiente-btn);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 12px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      animation: fadeSlideUp 0.6s ease 0.6s both;
+    }
+
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -75%;
+      width: 50%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: skewX(-20deg);
+      transition: left 0.5s ease;
+    }
+
+    .btn-submit:hover::after {
+      left: 125%;
+    }
+
+    .btn-submit:hover {
+      box-shadow: 0 8px 24px rgba(0, 191, 165, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: wait;
+      pointer-events: none;
+    }
+
+    /* Mensagem de erro */
+    .error {
+      background: rgba(255, 107, 107, 0.15);
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      color: var(--acento-coral);
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin-top: 20px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      display: none;
+      animation: shake 0.4s ease;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+
+    /* Footer */
+    .auth-footer {
+      margin-top: 32px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--texto-secundario);
+      animation: fadeSlideUp 0.6s ease 0.7s both;
+    }
+
+    .auth-footer a {
+      color: var(--verde-claro);
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.3s ease;
+    }
+
+    .auth-footer a:hover {
+      color: var(--verde-primario);
+      text-decoration: underline;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .auth-wrapper {
+        flex-direction: column;
+      }
+
+      .welcome-panel {
+        flex: 0 0 auto;
+        padding: 40px 28px;
+        min-height: 280px;
+      }
+
+      .logo-large {
+        font-size: 2rem;
+      }
+
+      .tagline {
+        font-size: 1rem;
+        margin-bottom: 24px;
+      }
+
+      .stats-box {
+        padding: 20px 18px;
+      }
+
+      .stats-number {
+        font-size: 2.5rem;
+      }
+
+      .form-panel {
+        flex: 1;
+        padding: 32px 20px;
+      }
+
+      .auth-card {
+        padding: 36px 28px;
+      }
+
+      .auth-card h1 {
+        font-size: 1.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <!-- Painel de Boas-vindas (Esquerda) -->
+    <aside class="welcome-panel">
+      <div class="welcome-content">
+        <h1 class="logo-large">Modelo Fácil</h1>
+        <p class="tagline">Junte-se a milhares de lojistas que já estão economizando tempo e dinheiro com IA.</p>
+
+        <div class="stats-box">
+          <div class="stats-number" id="userCount">2.500+</div>
+          <div class="stats-label">Lojistas usando a plataforma</div>
+          <div class="stats-sublabel">Fotos geradas diariamente</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Painel do Formulário (Direita) -->
+    <main class="form-panel">
+      <div class="auth-card">
+        <h1>Criar Conta</h1>
+        <p class="subtitle">Comece a criar fotos profissionais agora.</p>
+
+        <form id="signupForm">
+          <div class="input-group">
+            <input
+              type="email"
+              id="email"
+              required
+              autocomplete="email"
+              placeholder="seu@email.com"
+            >
+            <label for="email">E-mail</label>
+          </div>
+
+          <div class="input-group">
+            <input
+              type="password"
+              id="password"
+              required
+              autocomplete="new-password"
+              minlength="8"
+              placeholder="••••••••"
+            >
+            <label for="password">Senha (mínimo 8 caracteres)</label>
+            <div class="password-strength" id="passwordStrength">
+              <div class="password-strength-bar" id="strengthBar"></div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <input
+              type="password"
+              id="passwordConfirm"
+              required
+              autocomplete="new-password"
+              minlength="8"
+              placeholder="••••••••"
+            >
+            <label for="passwordConfirm">Confirmar Senha</label>
+          </div>
+
+          <button type="submit" id="submitBtn" class="btn-submit">
+            Criar Conta
+          </button>
+
+          <div class="error" id="errorBox"></div>
+        </form>
+
+        <div class="auth-footer">
+          Já tem conta? <a href="/login.html">Entrar</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/lib/auth.js"></script>
+  <script>
+    (async function() {
+      // Se já está logado, redireciona pra app
+      const session = await window.AuthLib.getSession();
+      if (session) {
+        window.location.href = '/';
+        return;
+      }
+
+      const form = document.getElementById('signupForm');
+      const btn = document.getElementById('submitBtn');
+      const errorBox = document.getElementById('errorBox');
+      const passwordInput = document.getElementById('password');
+      const passwordConfirmInput = document.getElementById('passwordConfirm');
+      const strengthBar = document.getElementById('strengthBar');
+      const passwordStrength = document.getElementById('passwordStrength');
+
+      // Validação de força da senha
+      passwordInput.addEventListener('input', () => {
+        const pwd = passwordInput.value;
+        if (pwd.length === 0) {
+          passwordStrength.classList.remove('show');
+          return;
+        }
+
+        passwordStrength.classList.add('show');
+        strengthBar.className = 'password-strength-bar';
+
+        let strength = 0;
+        if (pwd.length >= 8) strength++;
+        if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) strength++;
+        if (/\d/.test(pwd)) strength++;
+        if (/[^a-zA-Z0-9]/.test(pwd)) strength++;
+
+        if (strength <= 1) {
+          strengthBar.classList.add('weak');
+        } else if (strength <= 3) {
+          strengthBar.classList.add('medium');
+        } else {
+          strengthBar.classList.add('strong');
+        }
+
+        // Validação visual
+        if (pwd.length >= 8) {
+          passwordInput.classList.add('valid');
+          passwordInput.classList.remove('invalid');
+        } else {
+          passwordInput.classList.add('invalid');
+          passwordInput.classList.remove('valid');
+        }
+      });
+
+      // Validação de senha correspondente
+      passwordConfirmInput.addEventListener('input', () => {
+        const pwd = passwordInput.value;
+        const confirm = passwordConfirmInput.value;
+
+        if (confirm.length === 0) {
+          passwordConfirmInput.classList.remove('valid', 'invalid');
+          return;
+        }
+
+        if (pwd === confirm) {
+          passwordConfirmInput.classList.add('valid');
+          passwordConfirmInput.classList.remove('invalid');
+        } else {
+          passwordConfirmInput.classList.add('invalid');
+          passwordConfirmInput.classList.remove('valid');
+        }
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorBox.classList.remove('show');
+
+        const email = document.getElementById('email').value;
+        const password = passwordInput.value;
+        const passwordConfirm = passwordConfirmInput.value;
+
+        if (password !== passwordConfirm) {
+          errorBox.textContent = 'As senhas não coincidem.';
+          errorBox.classList.add('show');
+          return;
+        }
+
+        if (password.length < 8) {
+          errorBox.textContent = 'A senha deve ter pelo menos 8 caracteres.';
+          errorBox.classList.add('show');
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Criando conta...';
+
+        try {
+          const sb = await window.AuthLib.loadSupabase();
+          const { data, error } = await sb.auth.signUp({
+            email: email,
+            password: password,
+          });
+
+          if (error) {
+            errorBox.textContent = error.message || 'Erro ao criar conta.';
+            errorBox.classList.add('show');
+            btn.disabled = false;
+            btn.textContent = 'Criar Conta';
+            return;
+          }
+
+          window.location.href = '/login.html?signupSuccess=1';
+        } catch (err) {
+          errorBox.textContent = 'Erro inesperado: ' + err.message;
+          errorBox.classList.add('show');
+          btn.disabled = false;
+          btn.textContent = 'Criar Conta';
+        }
+      });
+
+      // Contador animado de usuários
+      const userCountEl = document.getElementById('userCount');
+      let count = 0;
+      const target = 2500;
+      const duration = 2000;
+      const increment = target / (duration / 16);
+
+      const counter = setInterval(() => {
+        count += increment;
+        if (count >= target) {
+          count = target;
+          clearInterval(counter);
+          userCountEl.textContent = '2.500+';
+        } else {
+          userCountEl.textContent = Math.floor(count).toLocaleString('pt-BR') + '+';
+        }
+      }, 16);
+    })();
+  </script>
+</body>
+</html>

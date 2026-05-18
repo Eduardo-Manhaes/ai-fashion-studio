@@ -1,0 +1,584 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar — Modelo Fácil</title>
+
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300bfa5' stroke-width='2'><path d='M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z'/><circle cx='12' cy='13' r='4'/></svg>">
+
+  <style>
+    /* Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Variáveis */
+    :root {
+      --verde-primario: #00bfa5;
+      --verde-escuro:   #007a6e;
+      --verde-claro:    #1de9b6;
+      --verde-menta:    #b2dfdb;
+      --bg-principal:   #0a1a18;
+      --bg-card:        #0f2421;
+      --bg-elevado:     #163330;
+      --bg-hover:       #1a3d39;
+      --texto-principal:  #ffffff;
+      --texto-secundario: #a8c5c1;
+      --texto-muted:      #5a8a84;
+      --acento-coral:   #FF6B6B;
+      --borda:       rgba(0, 191, 165, 0.15);
+      --borda-hover: rgba(0, 191, 165, 0.45);
+      --gradiente-hero: linear-gradient(135deg, #007a6e 0%, #0a1a18 50%, #00bfa5 100%);
+      --gradiente-btn:  linear-gradient(135deg, #00bfa5 0%, #007a6e 100%);
+      --shadow-verde: 0 4px 24px rgba(0, 191, 165, 0.08);
+    }
+
+    body {
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      background: var(--bg-principal);
+      color: var(--texto-principal);
+      min-height: 100vh;
+      display: flex;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+    }
+
+    /* Background animado */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 10%, rgba(0, 191, 165, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0, 122, 110, 0.12) 0%, transparent 50%),
+        var(--bg-principal);
+      z-index: -1;
+      animation: bgPulse 8s ease-in-out infinite;
+    }
+
+    @keyframes bgPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
+    }
+
+    /* Container principal */
+    .auth-wrapper {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    /* === PAINEL ESQUERDO (40%) === */
+    .welcome-panel {
+      flex: 0 0 40%;
+      background: var(--gradiente-hero);
+      padding: 60px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      animation: slideInLeft 0.6s ease;
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Padrão geométrico sutil */
+    .welcome-panel::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    .welcome-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-large {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: fadeSlideUp 0.8s ease 0.2s both;
+    }
+
+    .logo-large::before {
+      content: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 24 24' fill='none' stroke='%2300bfa5' stroke-width='2'><path d='M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z'/><circle cx='12' cy='13' r='4'/></svg>");
+      font-size: 2.8rem;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    }
+
+    .tagline {
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--verde-menta);
+      margin-bottom: 48px;
+      line-height: 1.5;
+      animation: fadeSlideUp 0.8s ease 0.3s both;
+    }
+
+    .benefits-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.95);
+      animation: fadeSlideUp 0.8s ease both;
+    }
+
+    .benefit-item:nth-child(1) { animation-delay: 0.4s; }
+    .benefit-item:nth-child(2) { animation-delay: 0.5s; }
+    .benefit-item:nth-child(3) { animation-delay: 0.6s; }
+
+    .benefit-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(0, 191, 165, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      border: 1px solid rgba(0, 191, 165, 0.3);
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* === PAINEL DIREITO (60%) === */
+    .form-panel {
+      flex: 0 0 60%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      animation: slideInRight 0.6s ease;
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 460px;
+      background: rgba(15, 36, 33, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--borda);
+      border-radius: 24px;
+      padding: 48px 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      animation: cardSlideUp 0.8s ease 0.2s both;
+    }
+
+    @keyframes cardSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .auth-card h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--verde-claro), var(--verde-primario));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .auth-card .subtitle {
+      font-size: 0.95rem;
+      color: var(--texto-secundario);
+      margin-bottom: 36px;
+    }
+
+    /* Campos com label flutuante */
+    .input-group {
+      position: relative;
+      margin-bottom: 24px;
+      animation: fadeSlideUp 0.6s ease both;
+    }
+
+    .input-group:nth-of-type(1) { animation-delay: 0.3s; }
+    .input-group:nth-of-type(2) { animation-delay: 0.4s; }
+
+    .input-group label {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      font-size: 0.9rem;
+      color: var(--texto-muted);
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 500;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      border: 2px solid var(--borda);
+      background: var(--bg-elevado);
+      color: var(--texto-principal);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--verde-primario);
+      background: var(--bg-card);
+      box-shadow: 0 0 0 4px rgba(0, 191, 165, 0.1);
+    }
+
+    .input-group input:focus + label,
+    .input-group input:not(:placeholder-shown) + label {
+      top: -10px;
+      left: 12px;
+      font-size: 0.75rem;
+      color: var(--verde-claro);
+      background: var(--bg-card);
+      padding: 0 6px;
+      font-weight: 700;
+    }
+
+    .input-group input::placeholder {
+      opacity: 0;
+    }
+
+    /* Botão com shimmer */
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 50px;
+      background: var(--gradiente-btn);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 12px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      animation: fadeSlideUp 0.6s ease 0.5s both;
+    }
+
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -75%;
+      width: 50%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: skewX(-20deg);
+      transition: left 0.5s ease;
+    }
+
+    .btn-submit:hover::after {
+      left: 125%;
+    }
+
+    .btn-submit:hover {
+      box-shadow: 0 8px 24px rgba(0, 191, 165, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: wait;
+      pointer-events: none;
+    }
+
+    /* Mensagem de erro */
+    .error {
+      background: rgba(255, 107, 107, 0.15);
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      color: var(--acento-coral);
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin-top: 20px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      display: none;
+      animation: shake 0.4s ease;
+    }
+
+    .error.success {
+      background: rgba(0, 191, 165, 0.15);
+      border-color: rgba(0, 191, 165, 0.3);
+      color: var(--verde-claro);
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+
+    /* Footer */
+    .auth-footer {
+      margin-top: 32px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--texto-secundario);
+      animation: fadeSlideUp 0.6s ease 0.6s both;
+    }
+
+    .auth-footer a {
+      color: var(--verde-claro);
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.3s ease;
+    }
+
+    .auth-footer a:hover {
+      color: var(--verde-primario);
+      text-decoration: underline;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .auth-wrapper {
+        flex-direction: column;
+      }
+
+      .welcome-panel {
+        flex: 0 0 auto;
+        padding: 40px 28px;
+        min-height: 300px;
+      }
+
+      .logo-large {
+        font-size: 2rem;
+      }
+
+      .tagline {
+        font-size: 1.1rem;
+        margin-bottom: 32px;
+      }
+
+      .benefits-list {
+        gap: 16px;
+      }
+
+      .benefit-item {
+        font-size: 0.95rem;
+      }
+
+      .benefit-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+      }
+
+      .form-panel {
+        flex: 1;
+        padding: 32px 20px;
+      }
+
+      .auth-card {
+        padding: 36px 28px;
+      }
+
+      .auth-card h1 {
+        font-size: 1.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <!-- Painel de Boas-vindas (Esquerda) -->
+    <aside class="welcome-panel">
+      <div class="welcome-content">
+        <h1 class="logo-large">Modelo Fácil</h1>
+        <p class="tagline">Fotos profissionais de moda com IA. Em segundos.</p>
+
+        <ul class="benefits-list">
+          <li class="benefit-item">
+            <div class="benefit-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+            <span>Geração instantânea de fotos profissionais</span>
+          </li>
+          <li class="benefit-item">
+            <div class="benefit-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <span>Economize até 90% em custos de produção</span>
+          </li>
+          <li class="benefit-item">
+            <div class="benefit-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
+            <span>Modelos, cenários e poses personalizáveis</span>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Painel do Formulário (Direita) -->
+    <main class="form-panel">
+      <div class="auth-card">
+        <h1>Entrar</h1>
+        <p class="subtitle">Bem-vindo de volta! Acesse sua conta.</p>
+
+        <form id="loginForm">
+          <div class="input-group">
+            <input
+              type="email"
+              id="email"
+              required
+              autocomplete="email"
+              placeholder="seu@email.com"
+            >
+            <label for="email">E-mail</label>
+          </div>
+
+          <div class="input-group">
+            <input
+              type="password"
+              id="password"
+              required
+              autocomplete="current-password"
+              placeholder="••••••••"
+            >
+            <label for="password">Senha</label>
+          </div>
+
+          <button type="submit" id="submitBtn" class="btn-submit">
+            Entrar
+          </button>
+
+          <div class="error" id="errorBox"></div>
+        </form>
+
+        <div class="auth-footer">
+          Não tem conta? <a href="/signup.html">Criar conta</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/lib/auth.js"></script>
+  <script>
+    (async function() {
+      // Se já está logado, redireciona pra app
+      const session = await window.AuthLib.getSession();
+      if (session) {
+        window.location.href = '/';
+        return;
+      }
+
+      const form = document.getElementById('loginForm');
+      const btn = document.getElementById('submitBtn');
+      const errorBox = document.getElementById('errorBox');
+
+      // Trata redirecionamento do signup
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('signupSuccess') === '1') {
+        errorBox.textContent = '✓ Conta criada com sucesso! Faça login.';
+        errorBox.classList.add('success', 'show');
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorBox.classList.remove('show', 'success');
+        btn.disabled = true;
+        btn.textContent = 'Entrando...';
+
+        try {
+          const sb = await window.AuthLib.loadSupabase();
+          const { data, error } = await sb.auth.signInWithPassword({
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value,
+          });
+
+          if (error) {
+            errorBox.textContent = error.message || 'E-mail ou senha incorretos.';
+            errorBox.classList.add('show');
+            btn.disabled = false;
+            btn.textContent = 'Entrar';
+            return;
+          }
+
+          window.location.href = '/';
+        } catch (err) {
+          errorBox.textContent = 'Erro inesperado: ' + err.message;
+          errorBox.classList.add('show');
+          btn.disabled = false;
+          btn.textContent = 'Entrar';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

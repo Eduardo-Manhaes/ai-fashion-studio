@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planos e Preços — Modelo Fácil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 60px;
+    }
+
+    .header h1 {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .header p {
+      font-size: 20px;
+      opacity: 0.9;
+    }
+
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .plan-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+
+    .plan-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    .plan-card.featured {
+      border: 3px solid #667eea;
+      transform: scale(1.05);
+    }
+
+    .plan-badge {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #667eea;
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .plan-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 10px;
+    }
+
+    .plan-price {
+      font-size: 48px;
+      font-weight: 800;
+      color: #667eea;
+      margin-bottom: 5px;
+    }
+
+    .plan-price span {
+      font-size: 18px;
+      color: #718096;
+      font-weight: 400;
+    }
+
+    .plan-credits {
+      font-size: 16px;
+      color: #718096;
+      margin-bottom: 30px;
+    }
+
+    .plan-features {
+      list-style: none;
+      margin-bottom: 30px;
+    }
+
+    .plan-features li {
+      padding: 12px 0;
+      color: #4a5568;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .plan-features li:before {
+      content: "✓";
+      color: #48bb78;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .plan-button {
+      width: 100%;
+      padding: 16px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .plan-button:hover {
+      background: #5568d3;
+    }
+
+    .plan-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .back-link a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 600;
+      opacity: 0.9;
+      transition: opacity 0.3s;
+    }
+
+    .back-link a:hover {
+      opacity: 1;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      color: white;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Escolha Seu Plano</h1>
+      <p>Gere fotos e vídeos profissionais para seu e-commerce</p>
+    </div>
+
+    <div class="plans">
+      <!-- Plano Starter -->
+      <div class="plan-card">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">R$ 49<span>/mês</span></div>
+        <div class="plan-credits">50 créditos/mês</div>
+        <ul class="plan-features">
+          <li>50 fotos ou 10 vídeos</li>
+          <li>Todos os modelos preset</li>
+          <li>Variações de pose</li>
+          <li>Suporte por e-mail</li>
+        </ul>
+        <button class="plan-button" onclick="selectPlan('starter')">Escolher Starter</button>
+      </div>
+
+      <!-- Plano Pro -->
+      <div class="plan-card featured">
+        <div class="plan-badge">Mais Popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">R$ 149<span>/mês</span></div>
+        <div class="plan-credits">200 créditos/mês</div>
+        <ul class="plan-features">
+          <li>200 fotos ou 40 vídeos</li>
+          <li>Todos os modelos preset</li>
+          <li>Variações de pose</li>
+          <li>Vídeos com fala (áudio)</li>
+          <li>Suporte prioritário</li>
+          <li>Sem marca d'água</li>
+        </ul>
+        <button class="plan-button" onclick="selectPlan('pro')">Escolher Pro</button>
+      </div>
+
+      <!-- Plano Premium -->
+      <div class="plan-card">
+        <div class="plan-name">Premium</div>
+        <div class="plan-price">R$ 349<span>/mês</span></div>
+        <div class="plan-credits">500 créditos/mês</div>
+        <ul class="plan-features">
+          <li>500 fotos ou 100 vídeos</li>
+          <li>Todos os modelos preset</li>
+          <li>Variações ilimitadas</li>
+          <li>Vídeos com fala (áudio)</li>
+          <li>Suporte via WhatsApp</li>
+          <li>API access (beta)</li>
+          <li>Revisão dedicada</li>
+        </ul>
+        <button class="plan-button" onclick="selectPlan('premium')">Escolher Premium</button>
+      </div>
+    </div>
+
+    <div class="loading" id="loading">
+      Redirecionando para pagamento...
+    </div>
+
+    <div class="back-link">
+      <a href="/">← Voltar para o app</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    // Carrega config do backend
+    const configRes = await fetch('/api/public-config');
+    const config = await configRes.json();
+
+    const supabase = createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+    window.selectPlan = async function(planId) {
+      const button = event.target;
+      button.disabled = true;
+      button.textContent = 'Processando...';
+
+      try {
+        // Verifica se está autenticado
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session) {
+          alert('Você precisa fazer login primeiro!');
+          window.location.href = '/login.html';
+          return;
+        }
+
+        // Cria checkout session
+        const res = await fetch('/api/stripe/create-checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify({ plan: planId })
+        });
+
+        const data = await res.json();
+
+        if (data.url) {
+          document.getElementById('loading').style.display = 'block';
+          window.location.href = data.url;
+        } else {
+          throw new Error(data.error || 'Erro ao criar sessão de pagamento');
+        }
+
+      } catch (err) {
+        alert('Erro: ' + err.message);
+        button.disabled = false;
+        button.textContent = 'Tentar novamente';
+      }
+    }
+  </script>
+</body>
+</html>
