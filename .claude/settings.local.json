@@ -166,7 +166,10 @@
       "Bash(git branch *)",
       "Bash(git push *)",
       "Bash(rm -rf .git)",
-      "Bash(git init *)"
+      "Bash(git init *)",
+      "PowerShell(Get-Content .env | Where-Object { $_ -match \"^[A-Z_]\" -and $_ -notmatch \"^#\" } | ForEach-Object { $_.Split\\('='\\)[0] } | Sort-Object -Unique)",
+      "Bash(git pull *)",
+      "Bash(git stash *)"
     ]
   }
 }
