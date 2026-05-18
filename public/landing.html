@@ -1031,19 +1031,8 @@
       .then(r => r.json())
       .then(({ models, photos, videos }) => {
 
-        // GALERIA - Substitui apenas se houver fotos geradas reais
-        const galleryItems = document.querySelectorAll('.gallery-item');
-        if (photos && photos.length > 0) {
-          photos.slice(0, galleryItems.length).forEach((photo, i) => {
-            if (photo.result_url && galleryItems[i]) {
-              const existingImg = galleryItems[i].querySelector('img');
-              if (existingImg) {
-                existingImg.src = photo.result_url;
-                existingImg.alt = 'Foto gerada por IA (real)';
-              }
-            }
-          });
-        }
+        // GALERIA - Desabilitado: URLs estáticas no HTML são válidas por 1 ano
+        // (result_url do banco expira rápido - não substituir)
 
         // MODELOS - Cards reais
         const modelsContainer = document.getElementById('models');
