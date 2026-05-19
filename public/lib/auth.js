@@ -90,19 +90,28 @@ async function authFetch(url, options = {}, _isRetry = false) {
 
   const res = await fetch(url, { ...options, headers });
 
+  console.log('[AUTH] Response:', res.status, res.statusText, 'URL:', url);
+
   if (res.status === 401 && !_isRetry) {
     console.warn('[AUTH] 401 recebido, tentando refresh do token...');
     const sb = await loadSupabase();
-    const { data, error } = await sb.auth.refreshSession();
 
-    if (!error && data.session) {
-      console.log('[AUTH] Token refreshed com sucesso, retentando...');
-      return authFetch(url, options, true);
+    try {
+      const { data, error } = await sb.auth.refreshSession();
+
+      if (!error && data.session) {
+        console.log('[AUTH] Token refreshed com sucesso, retentando...');
+        return authFetch(url, options, true);
+      }
+
+      console.error('[AUTH] Refresh falhou:', error?.message || 'Unknown error');
+      await logout();
+      throw new Error('Unauthorized after refresh attempt');
+    } catch (refreshErr) {
+      console.error('[AUTH] Erro ao tentar refresh:', refreshErr);
+      await logout();
+      throw refreshErr;
     }
-
-    console.error('[AUTH] Refresh falhou, fazendo logout:', error?.message);
-    await logout();
-    throw new Error('Unauthorized after refresh attempt');
   }
 
   if (res.status === 401 && _isRetry) {

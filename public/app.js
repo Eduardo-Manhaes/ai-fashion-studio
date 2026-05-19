@@ -1608,8 +1608,11 @@ async function generateVideo() {
       }),
     });
 
+    console.log('[VIDEO] Status da resposta:', res.status, res.statusText);
+
     if (res.status === 402) {
       const data = await res.json();
+      console.log('[VIDEO] 402 - Sem créditos:', data);
       document.getElementById('noCreditsMessage').textContent = data.message || 'Você não tem créditos suficientes para esta geração.';
       document.getElementById('noCreditsModal').style.display = 'flex';
       document.getElementById('noCreditsClose').onclick = () => { document.getElementById('noCreditsModal').style.display = 'none'; };
@@ -1617,9 +1620,16 @@ async function generateVideo() {
       return;
     }
 
+    if (res.status === 401) {
+      console.error('[VIDEO] 401 Unauthorized - Token expirado, authFetch deveria ter tratado isso');
+      showToast('Sessão expirada. Redirecionando para login...', 'error');
+      setTimeout(() => window.AuthLib.logout(), 2000);
+      return;
+    }
+
     if (res.status === 403) {
-      console.error('[VIDEO] 403 Forbidden - Token pode estar expirado ou inválido');
-      showToast('Sessão expirada. Faça logout e login novamente.', 'error');
+      console.error('[VIDEO] 403 Forbidden - Acesso negado');
+      showToast('Acesso negado. Faça logout e login novamente.', 'error');
       setTimeout(() => window.AuthLib.logout(), 2000);
       return;
     }
