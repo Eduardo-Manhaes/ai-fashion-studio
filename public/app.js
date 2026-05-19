@@ -138,9 +138,18 @@ function loadSettings() {
         if (upgradeBtn) upgradeBtn.style.display = 'inline-flex';
       }
 
+      // Calcula total de créditos disponíveis (quota + pacotes)
+      const quotaRemaining = data.quota ? data.quota.remaining : 0;
+      const packTotal = data.pack_credits_total || 0;
+      const totalCredits = quotaRemaining + packTotal;
+
       if (data.quota) {
         if (settingsCredits) {
-          settingsCredits.textContent = `${data.quota.remaining}/${data.quota.limit} créditos mensais`;
+          if (packTotal > 0) {
+            settingsCredits.textContent = `${totalCredits} créditos (${quotaRemaining} mensais + ${packTotal} avulsos)`;
+          } else {
+            settingsCredits.textContent = `${quotaRemaining}/${data.quota.limit} créditos mensais`;
+          }
         }
         if (settingsPeriodEnd) {
           const endDate = new Date(data.quota.period_end);
@@ -150,9 +159,9 @@ function loadSettings() {
             year: 'numeric'
           });
         }
-      } else if (data.pack_credits_total > 0) {
+      } else if (packTotal > 0) {
         if (settingsCredits) {
-          settingsCredits.textContent = `${data.pack_credits_total} créditos avulsos`;
+          settingsCredits.textContent = `${packTotal} créditos avulsos`;
         }
         if (settingsPeriodEnd) {
           settingsPeriodEnd.textContent = 'Não expira';
@@ -644,12 +653,22 @@ async function bootAuth() {
       if (profilePlan) profilePlan.textContent = 'Sem assinatura';
     }
 
+    const quotaRemaining = data.quota ? data.quota.remaining : 0;
+    const packTotal = data.pack_credits_total || 0;
+    const totalCredits = quotaRemaining + packTotal;
+
     if (data.quota) {
-      if (profileCredits) profileCredits.textContent = `${data.quota.remaining}/${data.quota.limit} créditos`;
+      if (profileCredits) {
+        if (packTotal > 0) {
+          profileCredits.textContent = `${totalCredits} créditos`;
+        } else {
+          profileCredits.textContent = `${quotaRemaining}/${data.quota.limit} créditos`;
+        }
+      }
       const endDate = new Date(data.quota.period_end).toLocaleDateString('pt-BR');
       if (profilePeriod) profilePeriod.textContent = `Renova em ${endDate}`;
-    } else {
-      if (profileCredits) profileCredits.textContent = `${data.pack_credits_total} créditos avulsos`;
+    } else if (packTotal > 0) {
+      if (profileCredits) profileCredits.textContent = `${packTotal} créditos avulsos`;
     }
 
     // === FASE DESIGN 2: Preenche sidebar de créditos ===
@@ -669,11 +688,17 @@ async function bootAuth() {
       }
 
       if (data.quota) {
-        if (sidebarCreditsCount) sidebarCreditsCount.textContent = `${data.quota.remaining}/${data.quota.limit} créditos`;
+        if (sidebarCreditsCount) {
+          if (packTotal > 0) {
+            sidebarCreditsCount.textContent = `${totalCredits} créditos`;
+          } else {
+            sidebarCreditsCount.textContent = `${quotaRemaining}/${data.quota.limit} créditos`;
+          }
+        }
         const endDate = new Date(data.quota.period_end).toLocaleDateString('pt-BR');
         if (sidebarPeriod) sidebarPeriod.textContent = `Renova em ${endDate}`;
-      } else {
-        if (sidebarCreditsCount) sidebarCreditsCount.textContent = `${data.pack_credits_total} créditos`;
+      } else if (packTotal > 0) {
+        if (sidebarCreditsCount) sidebarCreditsCount.textContent = `${packTotal} créditos`;
       }
     }
 
@@ -717,14 +742,20 @@ async function refreshProfile() {
     const data = await res.json();
 
     // Atualiza IDs antigos (compatibilidade)
+    const quotaRemaining = data.quota ? data.quota.remaining : 0;
+    const packTotal = data.pack_credits_total || 0;
+    const totalCredits = quotaRemaining + packTotal;
+
     const profileCredits = document.getElementById('profileCredits');
     if (profileCredits) {
       if (data.quota) {
-        profileCredits.textContent =
-          `${data.quota.remaining}/${data.quota.limit} créditos`;
-      } else {
-        profileCredits.textContent =
-          `${data.pack_credits_total} créditos avulsos`;
+        if (packTotal > 0) {
+          profileCredits.textContent = `${totalCredits} créditos`;
+        } else {
+          profileCredits.textContent = `${quotaRemaining}/${data.quota.limit} créditos`;
+        }
+      } else if (packTotal > 0) {
+        profileCredits.textContent = `${packTotal} créditos avulsos`;
       }
     }
 
@@ -732,11 +763,13 @@ async function refreshProfile() {
     const sidebarCreditsCount = document.getElementById('sidebarCreditsCount');
     if (sidebarCreditsCount) {
       if (data.quota) {
-        sidebarCreditsCount.textContent =
-          `${data.quota.remaining}/${data.quota.limit} créditos`;
-      } else {
-        sidebarCreditsCount.textContent =
-          `${data.pack_credits_total} créditos`;
+        if (packTotal > 0) {
+          sidebarCreditsCount.textContent = `${totalCredits} créditos`;
+        } else {
+          sidebarCreditsCount.textContent = `${quotaRemaining}/${data.quota.limit} créditos`;
+        }
+      } else if (packTotal > 0) {
+        sidebarCreditsCount.textContent = `${packTotal} créditos`;
       }
     }
   } catch (err) {
