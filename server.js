@@ -765,10 +765,15 @@ async function runKlingVideo(inputs, res, job) {
   // Documentação: https://fal.ai/models/fal-ai/kling-video/v2.5/standard/image-to-video
   const falBody = {
     image_url: inputs.image_url,
-    prompt: inputs.prompt || '',
-    duration: 5, // Fal.ai expects integer: 5 or 10 (seconds)
+    prompt: inputs.prompt || 'Fashion model standing naturally, subtle breathing movement, soft studio lighting, cinematic 4K, elegant and confident posture',
+    negative_prompt: 'blurry, low quality, distorted face, unnatural movement, robotic motion, jerky, artifacts, watermark, text overlay',
+    duration: '5',
     aspect_ratio: inputs.aspect_ratio || '9:16',
+    cfg_scale: 0.5,
   };
+
+  console.log('[KLING] Prompt (primeiros 100 chars):', falBody.prompt.substring(0, 100));
+  console.log('[KLING] Negative prompt:', falBody.negative_prompt);
 
   // Start/End Frames para "frente → costas"
   if (inputs.end_image_url) {
@@ -936,31 +941,34 @@ async function runVeoVideo(inputs, res, job) {
   //   - Mesma infraestrutura do Kling (polling unificado)
   //   - Custo: ~$0.35 por vídeo de 8 segundos
   //
-  const { prompt, script, duration, aspect_ratio } = inputs;
+  const { prompt, script, duration, aspect_ratio, image_url } = inputs;
 
-  // ===== CÓDIGO ANTIGO (Google AI Studio) — COMENTADO =====
-  // const { image_url, prompt, duration, aspect_ratio } = inputs;
-  // let imageBase64 = null;
-  // let imageMimeType = 'image/jpeg';
-  // if (image_url) {
-  //   ... conversão de imagem para base64 ...
-  // }
-  // const veoBody = { instances: [{ prompt: enrichedPrompt, image: { bytesBase64Encoded, mimeType } }] };
-  // fetch(`${GOOGLE_AI_BASE}/models/veo-3.1-generate-preview:predictLongRunning?key=${GOOGLE_AI_KEY}`)
-  // =========================================================
-
-  // Veo 3.1 via Fal.ai — image-to-video com áudio (usa foto de referência)
-  const finalPrompt = script
-    ? `Fale em português brasileiro. ${script}. Speak only in Brazilian Portuguese.`
-    : prompt || 'Uma modelo de moda apresentando uma roupa em uma loja elegante, falando em português brasileiro.';
+  // Prompt cinematográfico inteiramente em português para garantir PT-BR
+  let finalPrompt;
+  if (script || prompt) {
+    const content = script || prompt;
+    // Verifica se já veio formatado do frontend (começa com "Modelo de moda")
+    finalPrompt = content.startsWith('Modelo de moda')
+      ? content  // Já veio formatado do frontend
+      : `Modelo de moda brasileira em close médio, olhando diretamente para a câmera, iluminação de estúdio profissional quente e suave, fundo desfocado de loja elegante. A modelo fala com tom natural e confiante: "${content}". Lábios sincronizados perfeitamente com a fala em português brasileiro. Expressão natural e confiante. Câmera estática, profundidade de campo rasa, qualidade cinematográfica 4K.`;
+  } else {
+    finalPrompt = 'Modelo de moda brasileira em estúdio fotográfico profissional, apresentando roupa elegante, movimentos naturais e fluidos, iluminação suave e quente, câmera em close médio, qualidade cinematográfica 4K, expressão confiante e acessível.';
+  }
 
   const veoBody = {
     prompt: finalPrompt,
-    image_url: inputs.image_url || undefined,  // foto de referência
     aspect_ratio: aspect_ratio || '9:16',
-    duration: 8, // Fal.ai expects integer seconds
-    audio_enabled: true  // FASE 1: Áudio habilitado - vídeos "falando" agora têm som
+    duration: '8s',
+    audio_enabled: true,
   };
+
+  // Adiciona imagem de referência apenas se disponível e válida
+  if (image_url && image_url.startsWith('http')) {
+    veoBody.image_url = image_url;
+  }
+
+  console.log('[VEO-FAL] Prompt (primeiros 150 chars):', finalPrompt.substring(0, 150));
+  console.log('[VEO-FAL] Audio enabled:', veoBody.audio_enabled);
 
   try {
     const submitRes = await fetch(

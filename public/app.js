@@ -766,10 +766,49 @@ const POSES = [
 ];
 
 const MOVEMENT_STYLES = [
-  { id: 'm1', icon: '✨', label: 'Natural', sub: 'Recomendado', prompt: '', badge: 'Melhor resultado' },
-  { id: 'm2', icon: '💨', label: 'Vento no look', sub: 'Tecido em movimento', prompt: 'hair and fabric moving in the wind' },
-  { id: 'm3', icon: '🚶', label: 'Modelo andando', sub: 'Deslocamento suave', prompt: 'model walking forward slowly' },
-  { id: 'm4', icon: '🙆', label: 'Gesto suave', sub: 'Movimento de braço', prompt: 'raising hand to touch face gently' },
+  {
+    id: 'm1',
+    icon: '✨',
+    label: 'Natural',
+    sub: 'Recomendado',
+    prompt: 'Fashion model standing naturally, subtle breathing movement, hair slightly swaying, soft studio lighting, cinematic 4K, shallow depth of field, professional fashion photography motion, elegant and confident posture, camera slowly pulling back',
+    badge: 'Melhor resultado'
+  },
+  {
+    id: 'm2',
+    icon: '💨',
+    label: 'Vento no look',
+    sub: 'Tecido em movimento',
+    prompt: 'Fashion model posing outdoors, fabric and hair flowing gracefully in a gentle breeze, golden hour lighting, cinematic slow motion, fabric texture clearly visible, model maintaining elegant composure, soft bokeh background, camera slowly orbiting'
+  },
+  {
+    id: 'm3',
+    icon: '🚶',
+    label: 'Modelo andando',
+    sub: 'Deslocamento suave',
+    prompt: 'High-fashion model walking confidently toward camera on a clean studio floor, fluid natural stride, arms swinging slightly, garment in full view showing fit and movement, soft diffused studio lighting, cinematic 24fps slow motion, camera at eye level tracking forward'
+  },
+  {
+    id: 'm4',
+    icon: '🙆',
+    label: 'Gesto suave',
+    sub: 'Movimento de braço',
+    prompt: 'Fashion model making a graceful hand gesture, touching hair or adjusting collar with delicate movement, close-medium shot showing garment detail, warm soft lighting, cinematic depth of field, elegant and natural expression, subtle smile, camera slowly zooming in'
+  },
+  {
+    id: 'm5',
+    icon: '🔄',
+    label: 'Giro elegante',
+    sub: 'Mostra todos os ângulos',
+    prompt: 'Fashion model doing a slow elegant 360-degree turn showing all angles of the garment, full body shot, clean white studio background, professional fashion show lighting, smooth rotation, fabric movement visible, camera stationary at medium distance'
+  },
+  {
+    id: 'm6',
+    icon: '🪞',
+    label: 'Look completo',
+    sub: 'Frente e costas',
+    prompt: 'Fashion model posing in front of a mirror, showing front and back of the garment simultaneously, boutique interior setting, warm ambient lighting, model adjusting outfit naturally, cinematic composition, camera slowly panning to reveal both angles'
+  },
 ];
 
 // ===== ESTADO =====
@@ -1051,16 +1090,28 @@ function buildPhotoPrompt() {
 
 function buildVideoPrompt() {
   if (state.videoStyle === 'talking') {
-    const script = document.getElementById('modelScript').value.trim();
-    const tone = document.getElementById('talkingTone').value;
+    const script = document.getElementById('modelScript')?.value?.trim() || '';
+    const tone = document.getElementById('talkingTone')?.value || 'friendly';
+
     const toneMap = {
-      presentation: 'apresentando o produto com entusiasmo',
-      promotion: 'promovendo uma oferta especial',
-      description: 'descrevendo os detalhes da roupa',
+      presentation: 'tom apresentando o produto com entusiasmo e energia',
+      promotion: 'tom promovendo uma oferta especial de forma persuasiva',
+      description: 'tom descritivo e detalhado, focando nos detalhes da peça',
+      professional: 'tom profissional, confiante e elegante',
+      friendly: 'tom amigável, caloroso e acessível',
     };
-    return `${toneMap[tone]}, dizendo em português: "${script}"`;
+
+    const toneDesc = toneMap[tone] || toneMap.friendly;
+
+    // Prompt inteiramente em português para forçar o Veo a gerar em PT-BR
+    return `Modelo de moda brasileira em close médio, olhando diretamente para a câmera, iluminação de estúdio profissional quente e suave, fundo desfocado de loja elegante. A modelo fala com ${toneDesc}: "${script}". Lábios sincronizados perfeitamente com a fala em português brasileiro. Expressão natural e confiante. Câmera estática, profundidade de campo rasa, qualidade cinematográfica 4K.`;
+  } else {
+    const movement = state.selectedMovement;
+    if (!movement || !movement.prompt) {
+      return 'Fashion model standing naturally in elegant studio setting, subtle natural movement, professional fashion photography, cinematic quality, soft studio lighting, 4K resolution';
+    }
+    return movement.prompt;
   }
-  return state.selectedMovement?.prompt || '';
 }
 
 // ===== CLEAN BASE64 =====
