@@ -951,12 +951,13 @@ async function runVeoVideo(inputs, res, job) {
   let finalPrompt;
   if (script || prompt) {
     const content = script || prompt;
-    // Verifica se já veio formatado do frontend (começa com "Modelo de moda")
-    finalPrompt = content.startsWith('Modelo de moda')
-      ? content  // Já veio formatado do frontend
-      : `Modelo de moda brasileira em close médio, olhando diretamente para a câmera, iluminação de estúdio profissional quente e suave, fundo desfocado de loja elegante. A modelo fala com tom natural e confiante: "${content}". Lábios sincronizados perfeitamente com a fala em português brasileiro. Expressão natural e confiante. Câmera estática, profundidade de campo rasa, qualidade cinematográfica 4K.`;
+    // Se já veio montado pelo frontend (começa com "Modelo de moda")
+    // usa diretamente — o frontend já aplicou todas as variáveis dinâmicas
+    finalPrompt = (content.startsWith('Modelo de moda'))
+      ? content
+      : `Modelo de moda brasileira em plano médio da cintura para cima, mostrando a roupa claramente. A modelo olha diretamente para a câmera e fala em português brasileiro com dicção clara e natural, lábios se movendo de forma realista e perfeitamente sincronizada, sem distorção labial, velocidade de fala pausada e normal. Tom natural e confiante: "${content}". Iluminação de estúdio profissional suave e quente, câmera estática, qualidade cinematográfica 4K.`;
   } else {
-    finalPrompt = 'Modelo de moda brasileira em estúdio fotográfico profissional, apresentando roupa elegante, movimentos naturais e fluidos, iluminação suave e quente, câmera em close médio, qualidade cinematográfica 4K, expressão confiante e acessível.';
+    finalPrompt = 'Modelo de moda brasileira em plano médio da cintura para cima. Cenário de loja elegante. Movimentos naturais e fluidos, expressão confiante e acessível. Iluminação suave e quente, câmera estática, qualidade cinematográfica 4K.';
   }
 
   const veoBody = {

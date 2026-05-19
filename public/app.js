@@ -1126,19 +1126,32 @@ function buildVideoPrompt() {
     const script = document.getElementById('modelScript')?.value?.trim() || '';
     const tone = document.getElementById('talkingTone')?.value || 'friendly';
 
+    // Tom da fala
     const toneMap = {
       presentation: 'tom apresentando o produto com entusiasmo e energia',
-      promotion: 'tom promovendo uma oferta especial de forma persuasiva',
-      description: 'tom descritivo e detalhado, focando nos detalhes da peça',
+      promotion:    'tom promovendo uma oferta especial de forma persuasiva',
+      description:  'tom descritivo e detalhado, focando nos detalhes da peça',
       professional: 'tom profissional, confiante e elegante',
-      friendly: 'tom amigável, caloroso e acessível',
+      friendly:     'tom amigável, caloroso e acessível',
     };
-
     const toneDesc = toneMap[tone] || toneMap.friendly;
 
-    // Prompt inteiramente em português para forçar o Veo a gerar em PT-BR
-    return `Modelo de moda brasileira em close médio, olhando diretamente para a câmera, iluminação de estúdio profissional quente e suave, fundo desfocado de loja elegante. A modelo fala com ${toneDesc}: "${script}". Lábios sincronizados perfeitamente com a fala em português brasileiro. Expressão natural e confiante. Câmera estática, profundidade de campo rasa, qualidade cinematográfica 4K.`;
+    // Gênero da modelo selecionada
+    const gender = state.selectedPresetModel?.gender || 'female';
+    const modelDesc = gender === 'male'
+      ? 'Modelo de moda masculino brasileiro'
+      : 'Modelo de moda feminina brasileira';
+
+    // Cenário selecionado pelo lojista
+    const scenario = state.selectedScenario?.prompt
+      ? `Cenário: ${state.selectedScenario.prompt}.`
+      : 'Cenário: loja de moda elegante com araras e prateleiras ao fundo.';
+
+    // Monta o prompt em camadas
+    return `${modelDesc} em plano médio da cintura para cima, mostrando a roupa claramente. ${scenario} A modelo olha diretamente para a câmera e fala em português brasileiro com dicção clara e natural, lábios se movendo de forma realista e perfeitamente sincronizada com a fala, sem distorção labial, sem aceleração artificial, velocidade de fala pausada e normal. Fala com ${toneDesc}: "${script}". Iluminação de estúdio profissional suave e quente, câmera completamente estática, rosto e roupa em foco nítido, qualidade cinematográfica 4K.`;
+
   } else {
+    // Vídeo de movimento — usa o prompt do movimento selecionado
     const movement = state.selectedMovement;
     if (!movement || !movement.prompt) {
       return 'Fashion model standing naturally in elegant studio setting, subtle natural movement, professional fashion photography, cinematic quality, soft studio lighting, 4K resolution';
