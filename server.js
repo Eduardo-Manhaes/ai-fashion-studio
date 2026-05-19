@@ -110,6 +110,10 @@ app.use(cors({
   credentials: true
 }));
 
+// Trust proxy - Railway usa reverse proxy (Nginx)
+// Necessário para express-rate-limit ler corretamente o X-Forwarded-For
+app.set('trust proxy', 1);
+
 // Rate Limiting - Proteção contra abuso
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
