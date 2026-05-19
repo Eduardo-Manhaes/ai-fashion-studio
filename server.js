@@ -1320,7 +1320,7 @@ app.get('/api/landing-data', async (req, res) => {
       supabaseAdmin.from('generation_jobs')
         .select('id,result_url,generation_type,provider')
         .eq('status','completed').in('generation_type',['video_movement','video_talking'])
-        .not('result_url','is',null).order('created_at',{ascending:false}).limit(4),
+        .not('result_url','is',null).order('created_at',{ascending:false}).limit(2),
     ]);
 
     res.json({
