@@ -169,7 +169,18 @@
       "Bash(git init *)",
       "PowerShell(Get-Content .env | Where-Object { $_ -match \"^[A-Z_]\" -and $_ -notmatch \"^#\" } | ForEach-Object { $_.Split\\('='\\)[0] } | Sort-Object -Unique)",
       "Bash(git pull *)",
-      "Bash(git stash *)"
+      "Bash(git stash *)",
+      "Bash(git checkout *)",
+      "Bash(timeout 3)",
+      "Bash(Select-String -Pattern \"gallery\" -Context 2,2)",
+      "PowerShell(Select-String -Pattern \"run-video|videoPrompt|script|prompt\" -Path public\\\\app.js | ForEach-Object { \"$\\($_.LineNumber\\): $\\($_.Line.Trim\\(\\)\\)\" })",
+      "PowerShell(Select-String -Pattern \"buildVideoPrompt|selectedMovement|toneMap|finalPrompt|falBody|veoBody\" -Path server.js,public\\\\app.js | ForEach-Object { \"$\\($_.Filename\\):$\\($_.LineNumber\\): $\\($_.Line.Trim\\(\\)\\)\" })",
+      "Bash(grep -A 40 \"const { prompt, script\")",
+      "PowerShell(Select-String -Pattern \"m1|m2|m3|m4|Natural|Vento|andando|Gesto\" -Path public\\\\index.html | Select-Object -First 20 | ForEach-Object { \"$\\($_.LineNumber\\): $\\($_.Line.Trim\\(\\)\\)\" })",
+      "Bash(bash *)",
+      "PowerShell(Select-String -Pattern \"selectedPresetModel|selectedScenario|videoStyle|talkingTone|modelScript|gender\" -Path public\\\\app.js | ForEach-Object { \"$\\($_.LineNumber\\): $\\($_.Line.Trim\\(\\)\\)\" })",
+      "PowerShell(Start-Process \"C:\\\\Users\\\\eduar\\\\OneDrive\\\\Área de Trabalho\\\\Nova pasta\\\\modelo-morena-lips.png\")",
+      "PowerShell(Start-Process \"C:\\\\Users\\\\eduar\\\\OneDrive\\\\Área de Trabalho\\\\Nova pasta\\\\modelo-morena-final.png\")"
     ]
   }
 }
