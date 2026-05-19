@@ -36,12 +36,20 @@ function requireCredits(generationType, provider) {
       }
 
       // 2. Tenta debitar
+      console.log('[QUOTA] Chamando debit_credits:', {
+        user_id: req.user.id,
+        generation_type: generationType,
+        job_id: job.id,
+      });
+
       const { data: result, error: rpcErr } = await supabaseAdmin
         .rpc('debit_credits', {
           p_user_id: req.user.id,
           p_generation_type: generationType,
           p_job_id: job.id,
         });
+
+      console.log('[QUOTA] Resultado RPC:', JSON.stringify(result, null, 2));
 
       if (rpcErr) {
         console.error('[QUOTA] Erro RPC:', rpcErr);
@@ -50,6 +58,12 @@ function requireCredits(generationType, provider) {
       }
 
       if (!result.success) {
+        console.log('[QUOTA] ❌ Débito FALHOU. Erro:', result.error);
+        console.log('[QUOTA] Detalhes:', {
+          cost_required: result.cost_required,
+          quota_available: result.quota_available,
+          pack_available: result.pack_available,
+        });
         await supabaseAdmin.from('generation_jobs').delete().eq('id', job.id);
 
         if (result.error === 'no_active_subscription') {
