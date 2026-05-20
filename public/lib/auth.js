@@ -62,7 +62,7 @@ async function requireSession() {
   const session = await getSession();
   if (!session) {
     console.warn('[AUTH] Sem sessão ativa, redirecionando para login');
-    window.location.href = '/login.html';
+    window.location.href = '/login';
     return null;
   }
   return session;
@@ -71,7 +71,7 @@ async function requireSession() {
 async function logout() {
   const sb = await loadSupabase();
   await sb.auth.signOut();
-  window.location.href = '/login.html';
+  window.location.href = '/login';
 }
 
 async function authFetch(url, options = {}, _isRetry = false) {
@@ -79,7 +79,7 @@ async function authFetch(url, options = {}, _isRetry = false) {
 
   if (!jwt) {
     console.warn('[AUTH] authFetch: sem JWT, redirecionando para login');
-    window.location.href = '/login.html';
+    window.location.href = '/login';
     throw new Error('No session');
   }
 
