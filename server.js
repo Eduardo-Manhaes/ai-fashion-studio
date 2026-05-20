@@ -1334,9 +1334,19 @@ app.get('/api/landing-data', async (req, res) => {
   }
 });
 
+// Rota raiz — serve a landing page (ponto de entrada para novos usuários)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'landing.html'));
+});
+
 // Rota para servir a landing page
 app.get('/landing', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'landing.html'));
+});
+
+// Rota para login (sem extensão .html)
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
 // START SERVER
