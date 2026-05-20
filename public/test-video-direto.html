@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Teste Vídeo Direto</title>
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    video {
+      width: 400px;
+      height: 600px;
+      border: 2px solid #2db896;
+      margin: 20px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Teste Vídeo DIRETO no HTML</h1>
+
+  <h2>Teste 1 - URL Pública (sem token)</h2>
+  <video
+    src="https://tlzailaxkofbqyfqhwbx.supabase.co/storage/v1/object/public/generations/61bf7fb2-5e73-4d77-b66d-f91ff68fe454/video_talking/4217b683-784b-48e5-a38a-db71620ddf6f.mp4"
+    controls
+    muted
+    loop
+    playsinline
+    preload="auto"
+  ></video>
+
+  <h2>Teste 2 - Vídeo de exemplo online</h2>
+  <video
+    src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    controls
+    muted
+    loop
+    playsinline
+    preload="auto"
+  ></video>
+
+  <p style="margin-top: 40px; color: #2db896;">
+    ✅ Se os vídeos aparecem aqui = problema é no JavaScript/CSS da landing<br>
+    ❌ Se não aparecem = problema é CORS, URLs expirados ou bloqueio do navegador
+  </p>
+</body>
+</html>

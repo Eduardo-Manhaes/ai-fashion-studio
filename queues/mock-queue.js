@@ -1,5 +1,5 @@
-// Mock Queue - Para testes sem Redis
-// Processa jobs diretamente em background
+// Mock Queue - processamento inline sem Redis
+// Usado automaticamente quando REDIS_URL não está configurado
 
 class MockQueue {
   constructor(name) {
@@ -25,44 +25,17 @@ class MockQueue {
     return { id: data.jobId };
   }
 
-  // Para compatibilidade com workers
+  // Para compatibilidade com BullMQ Worker API
   setProcessor(fn) {
     this.processor = fn;
   }
 
   on(event, handler) {
-    // Mock - não faz nada
+    // Mock - eventos não são emitidos
   }
 }
 
-// FORÇANDO MOCK QUEUE - Redis desabilitado
-let photoQueue, videoQueue;
+const photoQueue = new MockQueue('photo');
+const videoQueue = new MockQueue('video');
 
-console.warn('⚠️  Usando Mock Queue (processamento direto - Redis desabilitado)');
-
-photoQueue = new MockQueue('photo');
-videoQueue = new MockQueue('video');
-
-/* CÓDIGO ORIGINAL - Reativar quando Redis estiver disponível
-try {
-  const { Queue } = require('bullmq');
-  const redisConfig = {
-    host: process.env.REDIS_HOST || 'localhost',
-    port: parseInt(process.env.REDIS_PORT || '6379'),
-    password: process.env.REDIS_PASSWORD || undefined,
-    connectTimeout: 2000,
-    maxRetriesPerRequest: 1,
-  };
-
-  photoQueue = new Queue('photo-generation', { connection: redisConfig });
-  videoQueue = new Queue('video-generation', { connection: redisConfig });
-
-  console.log('✅ Usando Redis para job queue');
-} catch (err) {
-  console.warn('⚠️  Redis não disponível, usando mock queue');
-  photoQueue = new MockQueue('photo');
-  videoQueue = new MockQueue('video');
-}
-*/
-
-module.exports = { photoQueue, videoQueue, redisConfig: {} };
+module.exports = { photoQueue, videoQueue };

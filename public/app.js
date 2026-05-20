@@ -1290,7 +1290,7 @@ async function generatePhoto() {
     if (state.selectedPresetModel?.url) inputs.model_image = state.selectedPresetModel.url;
 
     setPhotoStatus('Enviando para o servidor...');
-    const res = await window.AuthLib.authFetch('/api/run-photo-v2', {
+    const res = await window.AuthLib.authFetch('/api/run-photo-v3', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1309,7 +1309,7 @@ async function generatePhoto() {
       document.getElementById('noCreditsMessage').textContent = data.message || 'Você não tem créditos suficientes para esta geração.';
       document.getElementById('noCreditsModal').style.display = 'flex';
       document.getElementById('noCreditsClose').onclick = () => { document.getElementById('noCreditsModal').style.display = 'none'; };
-      document.getElementById('noCreditsUpgrade').onclick = () => { alert('Página de planos será implementada na Fase 1F.'); };
+      document.getElementById('noCreditsUpgrade').onclick = () => { window.location.href = '/planos.html'; };
       return;
     }
 
@@ -1317,19 +1317,13 @@ async function generatePhoto() {
 
     if (result.error) throw new Error(result.error);
 
-    // Pipeline V2 retorna output diretamente (polling feito no backend)
-    if (result.output?.length > 0) {
-      state.resultImageUrl = result.output[0];
-      addToSessionGallery(state.resultImageUrl);
-      document.getElementById('resultImage').src = state.resultImageUrl;
-      document.getElementById('photoLoading').style.display = 'none';
-      document.getElementById('photoResult').style.display = 'block';
-      document.getElementById('variationsGrid').style.display = 'none';
-      document.getElementById('btnVariations').disabled = false;
-      document.getElementById('btnVariations').textContent = 'Criar Variações e Poses';
-      showToast('Foto gerada com sucesso!', 'success');
-      refreshProfile();
-    } else throw new Error('Nenhuma imagem retornada.');
+    // Pipeline V3 retorna job_id — inicia polling assíncrono
+    if (result.job_id) {
+      setPhotoStatus('Foto na fila de processamento...');
+      pollPhotoJob(result.job_id);
+    } else {
+      throw new Error('Job ID não retornado pelo servidor');
+    }
   } catch (err) {
     showToast(`Erro: ${err.message}`, 'error');
     goToPhotoStep(5);
@@ -1362,7 +1356,7 @@ async function generateVariations() {
 
     const urls = [];
     for (const pose of variationPoses) {
-      const res = await window.AuthLib.authFetch('/api/run-photo-v2', {
+      const res = await window.AuthLib.authFetch('/api/run-photo-v3', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1394,9 +1388,13 @@ async function generateVariations() {
       const result = await res.json();
       if (result.error) throw new Error(result.error);
 
-      // Pipeline V3 retorna output diretamente
-      const url = result.output?.[0];
-      if (url) urls.push(url);
+      // Pipeline V3 retorna job_id — aguarda processamento
+      if (result.job_id) {
+        const url = await waitForPhotoJob(result.job_id);
+        if (url) urls.push(url);
+      } else {
+        throw new Error('Job ID não retornado');
+      }
 
       // Aguarda 2s entre cada chamada para evitar rate limit
       await new Promise(r => setTimeout(r, 2000));
@@ -1629,7 +1627,7 @@ async function generateVideo() {
       document.getElementById('noCreditsMessage').textContent = data.message || 'Você não tem créditos suficientes para esta geração.';
       document.getElementById('noCreditsModal').style.display = 'flex';
       document.getElementById('noCreditsClose').onclick = () => { document.getElementById('noCreditsModal').style.display = 'none'; };
-      document.getElementById('noCreditsUpgrade').onclick = () => { alert('Página de planos será implementada na Fase 1F.'); };
+      document.getElementById('noCreditsUpgrade').onclick = () => { window.location.href = '/planos.html'; };
       return;
     }
 
@@ -1768,6 +1766,133 @@ async function pollCurrentVideo() {
     }
 
   }, 3000); // Polling a cada 3 segundos
+}
+
+// ===== POLLING DE FOTO (PIPELINE V3) =====
+let photoPollingInterval = null;
+
+async function pollPhotoJob(jobId) {
+  // Limpa polling anterior se existir
+  if (photoPollingInterval) {
+    clearInterval(photoPollingInterval);
+  }
+
+  if (!jobId) {
+    console.error('[PHOTO POLL] Sem job ID');
+    return;
+  }
+
+  console.log(`[PHOTO POLL] Iniciando polling para job ${jobId}`);
+
+  let attempts = 0;
+  const maxAttempts = 100; // 5 minutos com polling a cada 3s
+
+  photoPollingInterval = setInterval(async () => {
+    attempts++;
+
+    try {
+      const res = await window.AuthLib.authFetch('/api/me/generations');
+      const jobs = await res.json();
+
+      // Encontra o job específico
+      const job = jobs.find(j => j.id === jobId);
+
+      if (!job) {
+        console.error('[PHOTO POLL] Job não encontrado:', jobId);
+        return;
+      }
+
+      console.log(`[PHOTO POLL] Attempt ${attempts}: ${job.status}`);
+
+      if (job.status === 'pending' || job.status === 'processing') {
+        setPhotoStatus(`Processando foto... (${attempts * 3}s)`);
+      } else if (job.status === 'completed' && job.result_url) {
+        // SUCESSO!
+        clearInterval(photoPollingInterval);
+
+        console.log('[PHOTO POLL] ✅ Foto completada!', job.result_url);
+
+        // Salva resultado
+        state.resultImageUrl = job.result_url;
+        addToSessionGallery(job.result_url);
+
+        // Mostra resultado
+        document.getElementById('resultImage').src = job.result_url;
+        document.getElementById('photoLoading').style.display = 'none';
+        document.getElementById('photoResult').style.display = 'block';
+        document.getElementById('variationsGrid').style.display = 'none';
+        document.getElementById('btnVariations').disabled = false;
+        document.getElementById('btnVariations').textContent = 'Criar Variações e Poses';
+
+        showToast('Foto gerada com sucesso!', 'success');
+        refreshProfile();
+
+      } else if (job.status === 'failed') {
+        clearInterval(photoPollingInterval);
+        const errorMsg = job.error_message || 'Erro desconhecido';
+        setPhotoStatus(`Erro: ${errorMsg}`);
+        showToast(`Erro ao gerar foto: ${errorMsg}`, 'error');
+
+        // Volta para configuração após 3s
+        setTimeout(() => goToPhotoStep(5), 3000);
+      }
+
+      // Timeout
+      if (attempts >= maxAttempts) {
+        clearInterval(photoPollingInterval);
+        setPhotoStatus('Timeout: foto demorou demais');
+        showToast('Foto demorou mais que o esperado. Verifique em "Minhas Fotos"', 'error');
+        setTimeout(() => goToPhotoStep(5), 3000);
+      }
+
+    } catch (err) {
+      console.error('[PHOTO POLL] Erro:', err);
+    }
+
+  }, 3000); // Polling a cada 3 segundos
+}
+
+/**
+ * Aguarda job de foto completar e retorna URL do resultado.
+ * Usado em generateVariations() que precisa aguardar cada foto sequencialmente.
+ */
+async function waitForPhotoJob(jobId) {
+  return new Promise((resolve, reject) => {
+    let attempts = 0;
+    const maxAttempts = 100;
+
+    const pollInterval = setInterval(async () => {
+      attempts++;
+
+      try {
+        const res = await window.AuthLib.authFetch('/api/me/generations');
+        const jobs = await res.json();
+        const job = jobs.find(j => j.id === jobId);
+
+        if (!job) {
+          clearInterval(pollInterval);
+          reject(new Error('Job não encontrado'));
+          return;
+        }
+
+        if (job.status === 'completed' && job.result_url) {
+          clearInterval(pollInterval);
+          resolve(job.result_url);
+        } else if (job.status === 'failed') {
+          clearInterval(pollInterval);
+          reject(new Error(job.error_message || 'Job falhou'));
+        }
+
+        if (attempts >= maxAttempts) {
+          clearInterval(pollInterval);
+          reject(new Error('Timeout ao aguardar job'));
+        }
+      } catch (err) {
+        clearInterval(pollInterval);
+        reject(err);
+      }
+    }, 3000);
+  });
 }
 
 function showVideoResult(videoUrl) {

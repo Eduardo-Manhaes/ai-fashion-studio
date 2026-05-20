@@ -14,9 +14,9 @@ async function checkSystem() {
     value: process.env.FAL_API_KEY ? '✅ Configurada' : '❌ Faltando'
   });
   checks.push({
-    name: 'BYPASS_CREDIT_CHECK',
-    ok: process.env.BYPASS_CREDIT_CHECK === 'true',
-    value: process.env.BYPASS_CREDIT_CHECK === 'true' ? '✅ Ativo' : '❌ Inativo'
+    name: 'OPENAI_API_KEY',
+    ok: !!process.env.OPENAI_API_KEY,
+    value: process.env.OPENAI_API_KEY ? '✅ Configurada' : '❌ Faltando'
   });
   checks.push({
     name: 'SUPABASE_URL',

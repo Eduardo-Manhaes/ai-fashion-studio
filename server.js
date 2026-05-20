@@ -635,7 +635,7 @@ app.post('/api/run-photo-v3-async', requireAuth, requireCredits('photo', 'gpt-im
 });
 
 // Polling de status — FASHN
-app.get('/api/status/fashn/:id', optionalAuth, async (req, res) => {
+app.get('/api/status/fashn/:id', requireAuth, async (req, res) => {
   try {
     const response = await fetch(`${FASHN_BASE_URL}/status/${req.params.id}`, {
       headers: { 'Authorization': `Bearer ${FASHN_API_KEY}` },
@@ -823,7 +823,7 @@ async function runKlingVideo(inputs, res, job) {
 }
 
 // Polling de status — Kling (via Fal.ai)
-app.get('/api/status/kling/:id', optionalAuth, async (req, res) => {
+app.get('/api/status/kling/:id', requireAuth, async (req, res) => {
   try {
     // URL simplificada sem versão/variante (conforme API do Fal.ai)
     const statusRes = await fetch(
@@ -1010,7 +1010,7 @@ async function runVeoVideo(inputs, res, job) {
 }
 
 // Polling de status — Veo 3 (via Fal.ai)
-app.get('/api/status/veo/:id', optionalAuth, async (req, res) => {
+app.get('/api/status/veo/:id', requireAuth, async (req, res) => {
   const requestId = req.params.id;
 
   try {
@@ -1324,10 +1324,34 @@ app.get('/api/landing-data', async (req, res) => {
         .not('result_url','is',null).order('created_at',{ascending:false}).limit(2),
     ]);
 
+    // Converter para URLs públicas (bucket agora é público)
+    const videos = videosRes.data || [];
+    const videosWithPublicUrls = videos.map(video => {
+      try {
+        // Extrair o path do storage do URL antigo
+        const urlObj = new URL(video.result_url);
+        const pathMatch = urlObj.pathname.match(/\/storage\/v1\/object\/(?:sign\/)?(.+?)(?:\?|$)/);
+        if (pathMatch) {
+          const storagePath = pathMatch[1];
+          // Gerar URL pública (sem expiração)
+          const { data } = supabaseAdmin.storage
+            .from('generations')
+            .getPublicUrl(storagePath.replace('generations/', ''));
+
+          if (data?.publicUrl) {
+            return { ...video, result_url: data.publicUrl };
+          }
+        }
+      } catch (err) {
+        console.error('Erro ao gerar URL pública:', err);
+      }
+      return video;
+    });
+
     res.json({
       models: modelsRes.data || [],
       photos: photosRes.data || [],
-      videos: videosRes.data || [],
+      videos: videosWithPublicUrls,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

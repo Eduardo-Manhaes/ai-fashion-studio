@@ -57,12 +57,10 @@ router.post('/create-checkout', requireAuth, async (req, res) => {
 
     if (typeFinal === 'subscription') {
       // Mapeia plan_id → STRIPE_PRICE_*
-      // FASE 2: Adicionado "premium" como alias de "enterprise"
       const priceMap = {
+        basico: process.env.STRIPE_PRICE_BASICO,
         starter: process.env.STRIPE_PRICE_STARTER,
         pro: process.env.STRIPE_PRICE_PRO,
-        premium: process.env.STRIPE_PRICE_PREMIUM || process.env.STRIPE_PRICE_ENTERPRISE,
-        enterprise: process.env.STRIPE_PRICE_ENTERPRISE,
       };
       const stripePriceId = priceMap[planIdFinal];
       
@@ -170,12 +168,12 @@ router.get('/session/:session_id', requireAuth, async (req, res) => {
 
     if (session.mode === 'subscription' && session.metadata?.plan_id) {
       const planNames = {
+        basico: 'Básico — 20 créditos/mês',
         starter: 'Starter — 50 créditos/mês',
-        pro: 'Pro — 200 créditos/mês',
-        premium: 'Premium — 500 créditos/mês',
-        enterprise: 'Premium — 500 créditos/mês',
+        pro: 'Pro — 120 créditos/mês',
+        enterprise: 'Enterprise — Ilimitado',
       };
-      const planCredits = { starter: 50, pro: 200, premium: 500, enterprise: 500 };
+      const planCredits = { basico: 20, starter: 50, pro: 120, enterprise: 999999 };
 
       response.plan_name = planNames[session.metadata.plan_id];
       response.credits = planCredits[session.metadata.plan_id];
