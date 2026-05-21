@@ -779,10 +779,72 @@ async function refreshProfile() {
 
 // ===== DADOS: Modelos, Cenários, Poses, Estilos =====
 const SCENARIOS = [
-  { id: 's1', icon: '⬜', label: 'Fundo branco', sub: 'Catálogo limpo', prompt: 'clean white studio background, professional photography' },
-  { id: 's2', icon: '🏬', label: 'Loja moderna', sub: 'Interior chique', prompt: 'modern boutique store interior, elegant fashion shop' },
-  { id: 's3', icon: '🌆', label: 'Rua comercial', sub: 'Urbano', prompt: 'commercial street, urban fashion photography' },
-  { id: 's4', icon: '🪞', label: 'Espelho de loja', sub: 'Provador', prompt: 'fitting room with mirror, retail store' },
+  // Parede ao fundo (com variantes)
+  {
+    id: 's1',
+    icon: '🎨',
+    label: 'Parede ao fundo',
+    sub: 'Fundo neutro',
+    hasVariants: true,
+    variants: [
+      {
+        id: 'v1',
+        label: 'Branca lisa',
+        prompt: 'smooth white wall background, clean minimal backdrop, professional studio lighting, no texture, seamless white surface'
+      },
+      {
+        id: 'v2',
+        label: 'Ripado madeira',
+        prompt: 'wooden slatted panel background, vertical wood slats, natural brown wood texture, modern interior design, warm ambient lighting'
+      },
+      {
+        id: 'v3',
+        label: 'Boiserie cinza',
+        prompt: 'gray boiserie wall paneling background, elegant wainscoting, sophisticated gray panel molding, classic interior design, soft studio lighting'
+      }
+    ]
+  },
+
+  // Boutique brasileira
+  {
+    id: 's2',
+    icon: '🏬',
+    label: 'Boutique brasileira',
+    sub: 'Shopping/classe média',
+    prompt: 'modern Brazilian boutique interior, organized clothing displays, professional retail lighting, clean wooden or white furniture, Instagram-friendly store design, air-conditioned shopping mall store, elegant but accessible, middle-class fashion retail'
+  },
+
+  // Lojas do Brás (com variantes)
+  {
+    id: 's3',
+    icon: '🏙️',
+    label: 'Lojas do Brás - SP',
+    sub: 'Comércio popular',
+    hasVariants: true,
+    variants: [
+      {
+        id: 'v1',
+        label: 'Loja popular',
+        prompt: 'interior of popular Brás fashion store São Paulo, clothing racks packed with products, typical Brás commerce atmosphere, fluorescent lighting, well-displayed merchandise, no people in background, focus on model and clothing, wholesale district retail style'
+      },
+      {
+        id: 'v2',
+        label: 'Loja organizada',
+        prompt: 'organized Brás fashion store interior São Paulo, same popular store style but tidier, organized clothing racks, folded garment displays, improved lighting, clean retail space, no people in background, professional but accessible commerce environment'
+      }
+    ]
+  },
+
+  // Selfie no espelho
+  {
+    id: 's4',
+    icon: '🤳',
+    label: 'Selfie no espelho',
+    sub: 'Instagram/TikTok',
+    prompt: 'mirror selfie in fitting room, phone in hand partially covering face, body slightly tilted, hip to one side, not perfectly centered composition, casual confident pose, retail store mirror, natural selfie angle, social media style photography'
+  },
+
+  // Mantidos
   { id: 's5', icon: '🌿', label: 'Ambiente natural', sub: 'Jardim', prompt: 'natural outdoor setting, soft green background, daylight' },
   { id: 's6', icon: '🏙️', label: 'Cenário urbano', sub: 'Cidade', prompt: 'urban cityscape background, modern city' },
 ];
@@ -856,6 +918,7 @@ const state = {
   selectedModel: null,
   selectedPresetModel: null,
   selectedScenario: null,
+  selectedVariant: null,
   selectedPoses: [],
 
   videoStyle: null,         // 'movement' | 'talking'
@@ -919,14 +982,29 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ===== BUILDERS =====
 function buildSelectionGrid(containerId, items, type, multi = false) {
   const grid = document.getElementById(containerId);
-  grid.innerHTML = items.map(item => `
-    <div class="sel-card" id="${type}_${item.id}" onclick="selectCard('${type}', '${item.id}', ${multi})">
-      <div class="sel-card-icon">${item.icon}</div>
-      <div class="sel-card-label">${item.label}</div>
-      ${item.sub ? `<div class="sel-card-sub">${item.sub}</div>` : ''}
-      ${item.badge ? `<div class="sel-card-sub" style="color:var(--purple-light);font-weight:600">${item.badge}</div>` : ''}
-    </div>
-  `).join('');
+  grid.innerHTML = items.map(item => {
+    let html = `
+      <div class="sel-card ${item.hasVariants ? 'has-variants' : ''}" id="${type}_${item.id}" onclick="selectCard('${type}', '${item.id}', ${multi})">
+        <div class="sel-card-icon">${item.icon}</div>
+        <div class="sel-card-label">${item.label}${item.hasVariants ? ' ▼' : ''}</div>
+        ${item.sub ? `<div class="sel-card-sub">${item.sub}</div>` : ''}
+        ${item.badge ? `<div class="sel-card-sub" style="color:var(--purple-light);font-weight:600">${item.badge}</div>` : ''}
+      </div>`;
+
+    // Se tem variantes, adiciona os sub-cards (inicialmente ocultos)
+    if (item.hasVariants && item.variants) {
+      html += `<div class="variants-container" id="variants_${type}_${item.id}" style="display:none;margin-left:20px;">`;
+      item.variants.forEach(variant => {
+        html += `
+          <div class="sel-card variant-card" id="${type}_${item.id}_${variant.id}" onclick="selectVariant('${type}', '${item.id}', '${variant.id}'); event.stopPropagation();">
+            <div class="sel-card-label" style="font-size:0.9em;">→ ${variant.label}</div>
+          </div>`;
+      });
+      html += `</div>`;
+    }
+
+    return html;
+  }).join('');
 }
 
 // ===== SELEÇÃO DE CARDS =====
@@ -944,11 +1022,29 @@ function selectCard(type, id, multi = false) {
     el.classList.add('selected');
 
     if (type === 'scenario') {
-      state.selectedScenario = SCENARIOS.find(s => s.id === id);
+      const scenario = SCENARIOS.find(s => s.id === id);
+      state.selectedScenario = scenario;
+      state.selectedVariant = null; // Reset variant quando troca cenário
       state.bgImageBase64 = null;
       document.getElementById('bgUploadZone').classList.remove('has-image');
       document.getElementById('bgPreview').src = '';
-      document.getElementById('btnNextStep3').disabled = false;
+
+      // Se cenário tem variantes, mostra/oculta o container de variantes
+      if (scenario && scenario.hasVariants) {
+        // Oculta todos os containers de variantes
+        document.querySelectorAll('.variants-container').forEach(v => v.style.display = 'none');
+        // Mostra as variantes deste cenário
+        const variantsContainer = document.getElementById(`variants_${type}_${id}`);
+        if (variantsContainer) {
+          variantsContainer.style.display = 'block';
+        }
+        // Não habilita o botão ainda - precisa selecionar variante
+        document.getElementById('btnNextStep3').disabled = true;
+      } else {
+        // Cenário sem variantes - oculta todos containers e habilita botão
+        document.querySelectorAll('.variants-container').forEach(v => v.style.display = 'none');
+        document.getElementById('btnNextStep3').disabled = false;
+      }
     } else if (type === 'movement') {
       state.selectedMovement = MOVEMENT_STYLES.find(m => m.id === id);
       state.videoStyle = 'movement';
@@ -956,6 +1052,25 @@ function selectCard(type, id, multi = false) {
       document.getElementById('btnSelectTalking').style.display = '';
       document.getElementById('btnNextVideoStep2').disabled = false;
     }
+  }
+}
+
+function selectVariant(type, scenarioId, variantId) {
+  // Remove seleção de todas as variantes
+  document.querySelectorAll('.variant-card').forEach(v => v.classList.remove('selected'));
+
+  // Seleciona a variante clicada
+  const variantEl = document.getElementById(`${type}_${scenarioId}_${variantId}`);
+  if (variantEl) {
+    variantEl.classList.add('selected');
+  }
+
+  // Atualiza estado
+  const scenario = SCENARIOS.find(s => s.id === scenarioId);
+  if (scenario && scenario.variants) {
+    state.selectedVariant = scenario.variants.find(v => v.id === variantId);
+    // Habilita botão de próximo step
+    document.getElementById('btnNextStep3').disabled = false;
   }
 }
 
@@ -1042,7 +1157,27 @@ function goToPhotoStep(step) {
   if (step > state.photoStep) {
     if (step === 2 && !state.productImageBase64) { showToast('Envie a foto do produto primeiro.', 'error'); return; }
     if (step === 3 && !state.selectedModel) { showToast('Selecione uma modelo.', 'error'); return; }
-    if (step === 4 && !state.selectedScenario && !state.bgImageBase64) { showToast('Selecione um cenário.', 'error'); return; }
+
+    if (step === 4) {
+      // Precisa ter cenário OU background upload
+      const hasScenario = state.selectedScenario && (
+        !state.selectedScenario.hasVariants ||  // Cenário simples sem variantes
+        state.selectedVariant                    // Cenário com variante selecionada
+      );
+      const hasBgUpload = state.bgImageBase64;
+
+      if (!hasScenario && !hasBgUpload) {
+        showToast('Selecione um cenário ou faça upload de fundo.', 'error');
+        return;
+      }
+
+      // Se selecionou cenário com variantes mas não escolheu a variante
+      if (state.selectedScenario?.hasVariants && !state.selectedVariant && !hasBgUpload) {
+        showToast('Escolha uma variante de parede.', 'error');
+        return;
+      }
+    }
+
     if (step === 5 && state.selectedPoses.length === 0) { showToast('Selecione ao menos uma pose.', 'error'); return; }
   }
 
@@ -1116,7 +1251,16 @@ function goToVideoWithImage() {
 function buildPhotoPrompt() {
   const parts = [];
   if (state.selectedModel) parts.push(state.selectedModel.prompt);
-  if (state.selectedScenario) parts.push(state.selectedScenario.prompt);
+
+  // Cenário: usa variante se selecionada, senão usa prompt do cenário principal
+  if (state.selectedScenario) {
+    if (state.selectedScenario.hasVariants && state.selectedVariant) {
+      parts.push(state.selectedVariant.prompt);
+    } else if (state.selectedScenario.prompt) {
+      parts.push(state.selectedScenario.prompt);
+    }
+  }
+
   if (state.selectedPoses.length > 0) parts.push(state.selectedPoses.map(p => p.prompt).join(', '));
   return parts.join(', ');
 }
@@ -1142,9 +1286,17 @@ function buildVideoPrompt() {
       ? 'Modelo de moda masculino brasileiro'
       : 'Modelo de moda feminina brasileira';
 
-    // Cenário selecionado pelo lojista
-    const scenario = state.selectedScenario?.prompt
-      ? `Cenário: ${state.selectedScenario.prompt}.`
+    // Cenário selecionado pelo lojista (usa variante se disponível)
+    let scenarioPrompt = null;
+    if (state.selectedScenario) {
+      if (state.selectedScenario.hasVariants && state.selectedVariant) {
+        scenarioPrompt = state.selectedVariant.prompt;
+      } else if (state.selectedScenario.prompt) {
+        scenarioPrompt = state.selectedScenario.prompt;
+      }
+    }
+    const scenario = scenarioPrompt
+      ? `Cenário: ${scenarioPrompt}.`
       : 'Cenário: loja de moda elegante com araras e prateleiras ao fundo.';
 
     // Monta o prompt em camadas
@@ -1298,7 +1450,16 @@ async function generatePhoto() {
           product_image: getCleanBase64(state.productImageBase64),
           model_image: state.selectedPresetModel?.url || null,
           prompt_pose: state.selectedPoses?.map(p => p.prompt).join(', ') || null,
-          prompt_scenario: state.selectedScenario?.prompt || null,
+          prompt_scenario: (() => {
+            if (state.selectedScenario) {
+              if (state.selectedScenario.hasVariants && state.selectedVariant) {
+                return state.selectedVariant.prompt;
+              } else if (state.selectedScenario.prompt) {
+                return state.selectedScenario.prompt;
+              }
+            }
+            return null;
+          })(),
           aspect_ratio: document.getElementById('aspectSelect')?.value || '9:16'
         }
       }),
