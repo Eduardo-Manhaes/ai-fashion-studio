@@ -117,7 +117,7 @@ app.set('trust proxy', 1);
 // Rate Limiting - Proteção contra abuso
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // 100 requests por IP
+  max: 300, // 300 requests por IP (aumentado para suportar polling de variações)
   message: 'Muitas requisições deste IP, tente novamente em 15 minutos.'
 });
 
