@@ -1953,7 +1953,8 @@ async function pollPhotoJob(jobId) {
 
     try {
       const res = await window.AuthLib.authFetch('/api/me/generations');
-      const jobs = await res.json();
+      const data = await res.json();
+      const jobs = data.generations || [];
 
       // Encontra o job específico
       const job = jobs.find(j => j.id === jobId);
@@ -2027,7 +2028,8 @@ async function waitForPhotoJob(jobId) {
 
       try {
         const res = await window.AuthLib.authFetch('/api/me/generations');
-        const jobs = await res.json();
+        const data = await res.json();
+        const jobs = data.generations || [];
         const job = jobs.find(j => j.id === jobId);
 
         if (!job) {
