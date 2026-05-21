@@ -212,7 +212,9 @@
       "PowerShell(node -e \"require\\('dotenv'\\).config\\(\\); console.log\\('STRIPE_WEBHOOK_SECRET:', process.env.STRIPE_WEBHOOK_SECRET ? '✅ presente' : '❌ AUSENTE'\\)\")",
       "PowerShell(node --use-system-ca test-stripe-checkout.js)",
       "PowerShell(node --use-system-ca test-billing-flow.js)",
-      "PowerShell(node --use-system-ca -e \"require\\('dotenv'\\).config\\(\\); const { createClient } = require\\('@supabase/supabase-js'\\); const supabase = createClient\\(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY\\); supabase.from\\('plans'\\).select\\('id, name, monthly_quota_credits, price_brl'\\).order\\('display_order'\\).then\\(\\({ data }\\) => { console.log\\('Planos no banco:'\\); data.forEach\\(p => console.log\\(`  ${p.id}: ${p.name} - R$ ${p.price_brl} \\(${p.monthly_quota_credits} créditos\\)`\\)\\); }\\);\")"
+      "PowerShell(node --use-system-ca -e \"require\\('dotenv'\\).config\\(\\); const { createClient } = require\\('@supabase/supabase-js'\\); const supabase = createClient\\(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY\\); supabase.from\\('plans'\\).select\\('id, name, monthly_quota_credits, price_brl'\\).order\\('display_order'\\).then\\(\\({ data }\\) => { console.log\\('Planos no banco:'\\); data.forEach\\(p => console.log\\(`  ${p.id}: ${p.name} - R$ ${p.price_brl} \\(${p.monthly_quota_credits} créditos\\)`\\)\\); }\\);\")",
+      "PowerShell(node check-railway-logs.js)",
+      "Bash(grep *)"
     ]
   }
 }
