@@ -1423,6 +1423,13 @@ async function pollStatus(provider, id, onUpdate) {
 async function generatePhoto() {
   if (!state.productImageBase64 || state.isGenerating) return;
   state.isGenerating = true;
+
+  // Limpa polling anterior se existir
+  if (photoPollingInterval) {
+    clearInterval(photoPollingInterval);
+    photoPollingInterval = null;
+  }
+
   goToPhotoStep(6);
 
   document.getElementById('photoLoading').style.display = 'flex';
@@ -1946,13 +1953,26 @@ async function pollPhotoJob(jobId) {
   console.log(`[PHOTO POLL] Iniciando polling para job ${jobId}`);
 
   let attempts = 0;
-  const maxAttempts = 100; // 5 minutos com polling a cada 3s
+  const maxAttempts = 60; // 5 minutos com polling a cada 5s
+  const pollInterval = 5000; // 5 segundos
 
   photoPollingInterval = setInterval(async () => {
     attempts++;
 
     try {
       const res = await window.AuthLib.authFetch('/api/me/generations');
+
+      // Trata erro de rate limiting
+      if (res.status === 429) {
+        console.warn('[PHOTO POLL] Rate limit (429) - aguardando...');
+        setPhotoStatus(`Processando foto... (aguarde)`);
+        return; // Pula esta tentativa, aguarda próximo intervalo
+      }
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
       const data = await res.json();
       const jobs = data.generations || [];
 
@@ -1967,7 +1987,7 @@ async function pollPhotoJob(jobId) {
       console.log(`[PHOTO POLL] Attempt ${attempts}: ${job.status}`);
 
       if (job.status === 'pending' || job.status === 'processing') {
-        setPhotoStatus(`Processando foto... (${attempts * 3}s)`);
+        setPhotoStatus(`Processando foto... (${attempts * 5}s)`);
       } else if (job.status === 'completed' && job.result_url) {
         // SUCESSO!
         clearInterval(photoPollingInterval);
@@ -2009,9 +2029,10 @@ async function pollPhotoJob(jobId) {
 
     } catch (err) {
       console.error('[PHOTO POLL] Erro:', err);
+      // Não para o polling em caso de erro - pode ser transitório
     }
 
-  }, 3000); // Polling a cada 3 segundos
+  }, pollInterval); // Polling a cada 5 segundos
 }
 
 /**
@@ -2021,13 +2042,25 @@ async function pollPhotoJob(jobId) {
 async function waitForPhotoJob(jobId) {
   return new Promise((resolve, reject) => {
     let attempts = 0;
-    const maxAttempts = 100;
+    const maxAttempts = 60; // 5 minutos
+    const interval = 5000; // 5 segundos
 
     const pollInterval = setInterval(async () => {
       attempts++;
 
       try {
         const res = await window.AuthLib.authFetch('/api/me/generations');
+
+        // Trata erro de rate limiting
+        if (res.status === 429) {
+          console.warn('[WAIT JOB] Rate limit (429) - aguardando...');
+          return; // Pula esta tentativa
+        }
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
         const data = await res.json();
         const jobs = data.generations || [];
         const job = jobs.find(j => j.id === jobId);
@@ -2051,10 +2084,14 @@ async function waitForPhotoJob(jobId) {
           reject(new Error('Timeout ao aguardar job'));
         }
       } catch (err) {
-        clearInterval(pollInterval);
-        reject(err);
+        // Não para o polling em caso de erro transitório
+        console.error('[WAIT JOB] Erro:', err);
+        if (attempts >= maxAttempts) {
+          clearInterval(pollInterval);
+          reject(err);
+        }
       }
-    }, 3000);
+    }, interval);
   });
 }
 
