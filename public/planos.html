@@ -274,8 +274,8 @@
         const { data: { session } } = await supabase.auth.getSession();
 
         if (!session) {
-          alert('Você precisa fazer login primeiro!');
-          window.location.href = '/login.html';
+          // Redireciona para signup preservando o plano selecionado
+          window.location.href = `/signup.html?plan=${planId}`;
           return;
         }
 

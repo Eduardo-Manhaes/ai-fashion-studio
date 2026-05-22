@@ -568,7 +568,7 @@
         </form>
 
         <div class="auth-footer">
-          Já tem conta? <a href="/login.html">Entrar</a>
+          Já tem conta? <a href="/login.html" id="loginLink">Entrar</a>
         </div>
       </div>
     </main>
@@ -577,10 +577,19 @@
   <script src="/lib/auth.js"></script>
   <script>
     (async function() {
-      // Se já está logado, redireciona pra app
+      // Captura ?plan do query string
+      const urlParams = new URLSearchParams(window.location.search);
+      const selectedPlan = urlParams.get('plan'); // 'basico', 'starter', 'pro', ou null
+
+      // Se já está logado, redireciona direto para checkout ou app
       const session = await window.AuthLib.getSession();
       if (session) {
-        window.location.href = '/';
+        if (selectedPlan) {
+          // Já está logado e tem plano - vai direto para checkout
+          window.location.href = `/planos.html?plan=${selectedPlan}`;
+        } else {
+          window.location.href = '/';
+        }
         return;
       }
 
@@ -588,6 +597,12 @@
       const btn = document.getElementById('submitBtn');
       const errorBox = document.getElementById('errorBox');
       const passwordInput = document.getElementById('password');
+
+      // Preserva plano no link de login
+      if (selectedPlan) {
+        const loginLink = document.getElementById('loginLink');
+        loginLink.href = `/login.html?plan=${selectedPlan}`;
+      }
       const passwordConfirmInput = document.getElementById('passwordConfirm');
       const strengthBar = document.getElementById('strengthBar');
       const passwordStrength = document.getElementById('passwordStrength');
@@ -667,24 +682,80 @@
         }
 
         btn.disabled = true;
-        btn.textContent = 'Criando conta...';
+        btn.textContent = selectedPlan ? 'Criando conta e indo para pagamento...' : 'Criando conta...';
 
         try {
           const sb = await window.AuthLib.loadSupabase();
-          const { data, error } = await sb.auth.signUp({
+
+          // 1. Criar conta
+          const { data: signUpData, error: signUpError } = await sb.auth.signUp({
             email: email,
             password: password,
           });
 
-          if (error) {
-            errorBox.textContent = error.message || 'Erro ao criar conta.';
+          if (signUpError) {
+            // Detecta erro de email duplicado
+            if (signUpError.message.toLowerCase().includes('already registered') ||
+                signUpError.message.toLowerCase().includes('user already registered')) {
+              errorBox.innerHTML = `Este email já está cadastrado. <a href="/login.html${selectedPlan ? '?plan=' + selectedPlan : ''}" style="color: var(--verde-claro); text-decoration: underline;">Entrar</a>`;
+            } else {
+              errorBox.textContent = signUpError.message || 'Erro ao criar conta.';
+            }
             errorBox.classList.add('show');
             btn.disabled = false;
             btn.textContent = 'Criar Conta';
             return;
           }
 
-          window.location.href = '/login.html?signupSuccess=1';
+          // 2. Auto-login (email confirmation está desabilitado)
+          // Se email confirmation estiver habilitado, data.session será null
+          if (!signUpData.session) {
+            // Tenta fazer login imediatamente
+            const { data: signInData, error: signInError } = await sb.auth.signInWithPassword({
+              email: email,
+              password: password,
+            });
+
+            if (signInError) {
+              // Se falhou o auto-login, redireciona para login manual
+              window.location.href = `/login.html${selectedPlan ? '?plan=' + selectedPlan : ''}`;
+              return;
+            }
+          }
+
+          // 3. Se tem plano selecionado, vai para checkout
+          if (selectedPlan) {
+            btn.textContent = 'Indo para pagamento...';
+
+            try {
+              const checkoutRes = await window.AuthLib.authFetch('/api/stripe/create-checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ plan: selectedPlan }),
+              });
+
+              if (!checkoutRes.ok) {
+                throw new Error('Erro ao criar sessão de pagamento');
+              }
+
+              const checkoutData = await checkoutRes.json();
+
+              if (checkoutData.url) {
+                window.location.href = checkoutData.url; // Redirect para Stripe
+              } else {
+                throw new Error('URL de checkout não retornada');
+              }
+            } catch (checkoutErr) {
+              errorBox.textContent = 'Conta criada, mas erro ao abrir pagamento. Redirecionando...';
+              errorBox.classList.add('show');
+              setTimeout(() => {
+                window.location.href = '/planos.html';
+              }, 2000);
+            }
+          } else {
+            // Sem plano - redireciona para escolher
+            window.location.href = '/planos.html';
+          }
         } catch (err) {
           errorBox.textContent = 'Erro inesperado: ' + err.message;
           errorBox.classList.add('show');

@@ -115,12 +115,12 @@
       </svg>
     </div>
 
-    <h1>Pagamento Confirmado! 🎉</h1>
-    <p id="message">Seu pagamento foi processado com sucesso. Você já pode começar a gerar suas fotos e vídeos profissionais!</p>
+    <h1 id="title">Confirmando Pagamento...</h1>
+    <p id="message">Aguarde enquanto processamos sua assinatura.</p>
 
     <div class="details" id="details"></div>
 
-    <a href="/" class="btn">Começar a Criar →</a>
+    <a href="/" class="btn" id="startBtn" style="display: none;">Começar a Criar →</a>
   </div>
 
   <script type="module">
@@ -133,41 +133,96 @@
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get('session_id');
 
-    if (sessionId) {
-      const { data: { session } } = await supabase.auth.getSession();
+    const titleEl = document.getElementById('title');
+    const messageEl = document.getElementById('message');
+    const detailsDiv = document.getElementById('details');
+    const startBtn = document.getElementById('startBtn');
 
-      if (session) {
-        try {
-          const res = await fetch(`/api/stripe/session/${sessionId}`, {
-            headers: {
-              'Authorization': `Bearer ${session.access_token}`
-            }
-          });
+    if (!sessionId) {
+      titleEl.textContent = 'Erro';
+      messageEl.textContent = 'ID de sessão não encontrado. Volte para o app e tente novamente.';
+      return;
+    }
 
-          if (res.ok) {
-            const data = await res.json();
-            const detailsDiv = document.getElementById('details');
+    // Verifica se usuário está logado
+    const { data: { session } } = await supabase.auth.getSession();
 
-            if (data.mode === 'subscription') {
-              detailsDiv.innerHTML = `
-                <p><strong>Plano:</strong> ${data.plan_name || 'Assinatura'}</p>
-                <p><strong>Créditos mensais:</strong> ${data.credits || '—'}</p>
-                <p><strong>Próxima cobrança:</strong> ${data.next_billing_date || '—'}</p>
-              `;
-            } else {
-              detailsDiv.innerHTML = `
-                <p><strong>Pacote:</strong> ${data.pack_name || 'Créditos avulsos'}</p>
-                <p><strong>Créditos adicionados:</strong> ${data.credits || '—'}</p>
-              `;
-            }
+    if (!session) {
+      // Perdeu a sessão - redireciona para login
+      titleEl.textContent = 'Sessão Expirada';
+      messageEl.textContent = 'Você precisa fazer login novamente.';
+      setTimeout(() => {
+        window.location.href = '/login.html';
+      }, 2000);
+      return;
+    }
 
-            detailsDiv.classList.add('visible');
+    // === POLLING PARA AGUARDAR WEBHOOK ===
+    let attempts = 0;
+    const maxAttempts = 20; // 20 × 1.5s = 30 segundos
+    const pollInterval = 1500; // 1.5 segundos
+
+    const poll = setInterval(async () => {
+      attempts++;
+
+      try {
+        const res = await fetch(`/api/stripe/session-poll/${sessionId}`, {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`
           }
-        } catch (err) {
-          console.error('Erro buscando detalhes:', err);
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        // Atualiza mensagem de status
+        if (data.message) {
+          messageEl.textContent = data.message + ` (${attempts}/${maxAttempts})`;
+        }
+
+        // Webhook processou! Assinatura ativa
+        if (data.subscription_active) {
+          clearInterval(poll);
+
+          titleEl.textContent = 'Pagamento Confirmado! 🎉';
+          messageEl.textContent = 'Sua assinatura está ativa. Comece a criar agora!';
+
+          detailsDiv.innerHTML = `
+            <p><strong>Plano:</strong> ${data.plan_name}</p>
+            <p><strong>Créditos disponíveis:</strong> ${data.credits_available}</p>
+            <p><strong>Renova em:</strong> ${data.period_end ? new Date(data.period_end).toLocaleDateString('pt-BR') : '—'}</p>
+          `;
+          detailsDiv.classList.add('visible');
+
+          startBtn.style.display = 'inline-block';
+        }
+
+        // Timeout
+        if (attempts >= maxAttempts && !data.subscription_active) {
+          clearInterval(poll);
+
+          titleEl.textContent = 'Pagamento Recebido';
+          messageEl.textContent = 'Recebemos seu pagamento! A sincronização está demorando um pouco. Acesse o app em alguns minutos.';
+          messageEl.style.color = '#d69e2e'; // Amarelo warning
+
+          startBtn.style.display = 'inline-block';
+        }
+
+      } catch (err) {
+        console.error('[POLL] Erro:', err);
+        messageEl.textContent = `Verificando... (${attempts}/${maxAttempts})`;
+
+        if (attempts >= maxAttempts) {
+          clearInterval(poll);
+          titleEl.textContent = 'Erro ao Verificar';
+          messageEl.textContent = 'Não conseguimos confirmar seu pagamento. Entre em contato com o suporte.';
+          messageEl.style.color = '#e53e3e'; // Vermelho erro
         }
       }
-    }
+    }, pollInterval);
   </script>
 </body>
 </html>

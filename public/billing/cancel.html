@@ -115,9 +115,40 @@
     <p>Você cancelou o processo de pagamento. Não se preocupe, nenhuma cobrança foi realizada.</p>
 
     <div class="buttons">
-      <a href="/planos.html" class="btn btn-primary">Ver Planos Novamente</a>
+      <a href="/planos.html" id="tryAgainBtn" class="btn btn-primary">Tentar Novamente</a>
       <a href="/" class="btn btn-secondary">Voltar ao App</a>
     </div>
   </div>
+
+  <script>
+    // Preserva plano se session_id disponível na URL
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+
+    if (sessionId) {
+      // Tenta recuperar plano do session metadata via API
+      (async () => {
+        try {
+          const res = await fetch(`/api/stripe/session/${sessionId}`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('sb-access-token') || ''}`
+            }
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            // Session tem metadata.plan_id
+            // Atualiza link para preservar plano
+            const btn = document.getElementById('tryAgainBtn');
+            if (data.metadata && data.metadata.plan_id) {
+              btn.href = `/planos.html?plan=${data.metadata.plan_id}`;
+            }
+          }
+        } catch (err) {
+          console.log('Não foi possível recuperar plano, redirecionando para /planos.html');
+        }
+      })();
+    }
+  </script>
 </body>
 </html>

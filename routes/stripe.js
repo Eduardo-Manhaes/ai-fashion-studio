@@ -57,11 +57,11 @@ router.post('/create-checkout', requireAuth, async (req, res) => {
 
     if (typeFinal === 'subscription') {
       // Mapeia plan_id → STRIPE_PRICE_*
-      // IDs no banco: starter=Básico, pro=Starter, enterprise=Pro
+      // IDs no banco (migration 009): basico, starter, pro
       const priceMap = {
-        starter: process.env.STRIPE_PRICE_BASICO,      // plano Básico (20 créditos)
-        pro: process.env.STRIPE_PRICE_STARTER,          // plano Starter (50 créditos)
-        enterprise: process.env.STRIPE_PRICE_PRO,       // plano Pro (120 créditos)
+        basico: process.env.STRIPE_PRICE_BASICO,       // plano Básico (20 créditos)
+        starter: process.env.STRIPE_PRICE_STARTER,     // plano Starter (50 créditos)
+        pro: process.env.STRIPE_PRICE_PRO,             // plano Pro (120 créditos)
       };
       const stripePriceId = priceMap[planIdFinal];
       
@@ -194,6 +194,80 @@ router.get('/session/:session_id', requireAuth, async (req, res) => {
   } catch (err) {
     console.error('[STRIPE] Erro buscando sessão:', err);
     res.status(500).json({ error: 'session_fetch_failed' });
+  }
+});
+
+// ===== POLLING ENDPOINT PARA SUCCESS.HTML =====
+// Usado após checkout para verificar se webhook já processou a assinatura
+router.get('/session-poll/:sessionId', requireAuth, async (req, res) => {
+  const { sessionId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    // 1. Busca sessão no Stripe
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (!session) {
+      return res.status(404).json({ error: 'session_not_found' });
+    }
+
+    // 2. Verifica se pagamento foi confirmado
+    if (session.payment_status !== 'paid') {
+      return res.json({
+        subscription_active: false,
+        payment_status: session.payment_status,
+        message: 'Aguardando confirmação do pagamento...'
+      });
+    }
+
+    // 3. Consulta subscriptions no banco
+    const { data: subscription, error: subError } = await supabaseAdmin
+      .from('subscriptions')
+      .select('plan_id, status, current_period_start, current_period_end')
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .single();
+
+    if (subError || !subscription) {
+      // Webhook ainda não processou
+      return res.json({
+        subscription_active: false,
+        payment_status: 'paid',
+        message: 'Pagamento confirmado, processando assinatura...'
+      });
+    }
+
+    // 4. Busca informações do plano
+    const { data: plan } = await supabaseAdmin
+      .from('plans')
+      .select('name, monthly_quota_credits')
+      .eq('id', subscription.plan_id)
+      .single();
+
+    // 5. Busca quota atual do usuário
+    const { data: quota } = await supabaseAdmin
+      .from('quota_usage')
+      .select('credits_limit, credits_used')
+      .eq('user_id', userId)
+      .eq('period_start', subscription.current_period_start)
+      .single();
+
+    const creditsAvailable = quota
+      ? (quota.credits_limit - quota.credits_used)
+      : (plan?.monthly_quota_credits || 0);
+
+    // 6. Retorna sucesso
+    res.json({
+      subscription_active: true,
+      plan_id: subscription.plan_id,
+      plan_name: plan?.name || 'Plano Ativo',
+      credits_available: creditsAvailable,
+      period_end: subscription.current_period_end
+    });
+
+  } catch (err) {
+    console.error('[STRIPE] Erro no session-poll:', err);
+    res.status(500).json({ error: 'poll_failed', message: err.message });
   }
 });
 
