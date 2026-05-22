@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Modelo Fácil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #f7fafc;
+      color: #2d3748;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .stat-card .label {
+      font-size: 14px;
+      color: #718096;
+      margin-bottom: 8px;
+    }
+
+    .stat-card .value {
+      font-size: 32px;
+      font-weight: 800;
+      color: #2d3748;
+    }
+
+    .stat-card.highlight .value {
+      color: #48bb78;
+    }
+
+    .filters {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filters input,
+    .filters select {
+      padding: 10px 14px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .filters input {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .filters select {
+      min-width: 150px;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #f7fafc;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    th {
+      padding: 16px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 700;
+      color: #4a5568;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 16px;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 14px;
+    }
+
+    tr:hover {
+      background: #f7fafc;
+      cursor: pointer;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge.active {
+      background: #c6f6d5;
+      color: #22543d;
+    }
+
+    .badge.inactive {
+      background: #fed7d7;
+      color: #742a2a;
+    }
+
+    .badge.trial {
+      background: #bee3f8;
+      color: #2c5282;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.visible {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .modal-header {
+      padding: 24px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+      color: #718096;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .modal-close:hover {
+      background: #e2e8f0;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .detail-section {
+      margin-bottom: 24px;
+    }
+
+    .detail-section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #2d3748;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .detail-item {
+      padding: 12px;
+      background: #f7fafc;
+      border-radius: 8px;
+    }
+
+    .detail-item .label {
+      font-size: 12px;
+      color: #718096;
+      margin-bottom: 4px;
+    }
+
+    .detail-item .value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .generations-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .generation-item {
+      padding: 12px;
+      background: #f7fafc;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .generation-item .info {
+      flex: 1;
+    }
+
+    .generation-item .type {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #667eea;
+    }
+
+    .generation-item .date {
+      font-size: 12px;
+      color: #718096;
+    }
+
+    .generation-item .cost {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2d3748;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #718096;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #718096;
+    }
+
+    .empty svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .pagination {
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .pagination button {
+      padding: 8px 16px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .pagination button:hover:not(:disabled) {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .pagination button.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Painel Admin</h1>
+    <p>Modelo Fácil — Visão geral de clientes e gerações</p>
+  </div>
+
+  <div class="container">
+    <div class="stats-grid" id="stats">
+      <div class="stat-card">
+        <div class="label">Total de Usuários</div>
+        <div class="value" id="totalUsers">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Assinaturas Ativas</div>
+        <div class="value" id="activeSubs">-</div>
+      </div>
+      <div class="stat-card highlight">
+        <div class="label">MRR (Receita Mensal)</div>
+        <div class="value" id="mrr">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Total de Gerações</div>
+        <div class="value" id="totalGens">-</div>
+      </div>
+    </div>
+
+    <div class="filters">
+      <input type="text" id="searchInput" placeholder="Buscar por email...">
+      <select id="filterStatus">
+        <option value="">Todos os status</option>
+        <option value="active">Ativos</option>
+        <option value="inactive">Inativos</option>
+      </select>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Plano</th>
+            <th>Status</th>
+            <th>Créditos Restantes</th>
+            <th>Total Gasto</th>
+            <th>Gerações</th>
+            <th>Cadastro</th>
+          </tr>
+        </thead>
+        <tbody id="usersTable">
+          <tr>
+            <td colspan="7" class="loading">Carregando usuários...</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="userModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Detalhes do Usuário</h2>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <div class="loading">Carregando...</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const configRes = await fetch('/api/public-config');
+    const config = await configRes.json();
+    const supabase = createClient(config.supabaseUrl, config.supabaseAnonKey);
+
+    let allUsers = [];
+    let filteredUsers = [];
+    let currentPage = 1;
+    const perPage = 20;
+
+    async function init() {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      const token = session.access_token;
+
+      try {
+        await loadStats(token);
+        await loadUsers(token);
+      } catch (err) {
+        if (err.status === 403) {
+          alert('Acesso negado. Você não é administrador.');
+          window.location.href = '/';
+        } else {
+          console.error('[ADMIN] Erro ao carregar:', err);
+          alert('Erro ao carregar dados do admin. Verifique o console.');
+        }
+      }
+    }
+
+    async function loadStats(token) {
+      const res = await fetch('/api/admin/stats', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!res.ok) {
+        throw { status: res.status, message: await res.text() };
+      }
+
+      const stats = await res.json();
+
+      document.getElementById('totalUsers').textContent = stats.total_users || 0;
+      document.getElementById('activeSubs').textContent = stats.active_subscriptions || 0;
+      document.getElementById('mrr').textContent = `R$ ${(stats.mrr || 0).toFixed(2)}`;
+      document.getElementById('totalGens').textContent = stats.total_generations || 0;
+    }
+
+    async function loadUsers(token) {
+      const res = await fetch('/api/admin/users', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!res.ok) {
+        throw { status: res.status, message: await res.text() };
+      }
+
+      const data = await res.json();
+      allUsers = data.users || [];
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const status = document.getElementById('filterStatus').value;
+
+      filteredUsers = allUsers.filter(user => {
+        const matchesSearch = !search || user.email.toLowerCase().includes(search);
+        const matchesStatus = !status || user.subscription_status === status;
+        return matchesSearch && matchesStatus;
+      });
+
+      currentPage = 1;
+      renderTable();
+      renderPagination();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('usersTable');
+      const start = (currentPage - 1) * perPage;
+      const end = start + perPage;
+      const pageUsers = filteredUsers.slice(start, end);
+
+      if (pageUsers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty">Nenhum usuário encontrado</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = pageUsers.map(user => {
+        const statusBadge = user.subscription_status === 'active' ? 'active' : 'inactive';
+        const statusText = user.subscription_status === 'active' ? 'Ativo' : 'Inativo';
+        const creditsRemaining = user.credits_remaining + user.pack_credits;
+
+        return `
+          <tr onclick="openUserModal('${user.user_id}')">
+            <td>${user.email}</td>
+            <td>${user.plan_name || '—'}</td>
+            <td><span class="badge ${statusBadge}">${statusText}</span></td>
+            <td>${creditsRemaining}</td>
+            <td>${user.total_credits_spent || 0}</td>
+            <td>${user.total_generations || 0}</td>
+            <td>${new Date(user.signup_at).toLocaleDateString('pt-BR')}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderPagination() {
+      const totalPages = Math.ceil(filteredUsers.length / perPage);
+      const pagination = document.getElementById('pagination');
+
+      if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+      }
+
+      let html = `
+        <button ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">Anterior</button>
+      `;
+
+      for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+          html += `<button class="${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+        } else if (i === currentPage - 3 || i === currentPage + 3) {
+          html += '<button disabled>...</button>';
+        }
+      }
+
+      html += `
+        <button ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Próxima</button>
+      `;
+
+      pagination.innerHTML = html;
+    }
+
+    window.changePage = function(page) {
+      currentPage = page;
+      renderTable();
+      renderPagination();
+    };
+
+    window.openUserModal = async function(userId) {
+      const modal = document.getElementById('userModal');
+      const modalBody = document.getElementById('modalBody');
+      const modalTitle = document.getElementById('modalTitle');
+
+      modal.classList.add('visible');
+      modalBody.innerHTML = '<div class="loading">Carregando...</div>';
+
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session.access_token;
+
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const user = await res.json();
+
+      modalTitle.textContent = user.email;
+
+      const creditsTotal = user.credits_remaining + user.pack_credits;
+
+      modalBody.innerHTML = `
+        <div class="detail-section">
+          <h3>Assinatura</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="label">Plano</div>
+              <div class="value">${user.plan_name || 'Nenhum'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Status</div>
+              <div class="value">${user.subscription_status || '—'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Preço</div>
+              <div class="value">R$ ${(user.price_brl || 0).toFixed(2)}/mês</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Stripe Customer</div>
+              <div class="value" style="font-size: 12px; word-break: break-all;">${user.stripe_customer_id || '—'}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Créditos</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="label">Limite do Plano</div>
+              <div class="value">${user.credits_limit || 0}</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Usados (período atual)</div>
+              <div class="value">${user.credits_used || 0}</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Restantes (plano)</div>
+              <div class="value">${user.credits_remaining || 0}</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Créditos de Packs</div>
+              <div class="value">${user.pack_credits || 0}</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Total Disponível</div>
+              <div class="value" style="color: #48bb78; font-size: 20px;">${creditsTotal}</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Total Gasto (histórico)</div>
+              <div class="value">${user.total_credits_spent || 0}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Gerações Recentes (últimas 20)</h3>
+          <div class="generations-list">
+            ${user.recent_generations && user.recent_generations.length > 0
+              ? user.recent_generations.map(gen => `
+                  <div class="generation-item">
+                    <div class="info">
+                      <div class="type">${gen.type}</div>
+                      <div class="date">${new Date(gen.created_at).toLocaleString('pt-BR')}</div>
+                    </div>
+                    <div class="cost">${gen.credits_cost} créditos</div>
+                  </div>
+                `).join('')
+              : '<div class="empty">Nenhuma geração ainda</div>'
+            }
+          </div>
+        </div>
+
+        ${user.active_packs && user.active_packs.length > 0 ? `
+          <div class="detail-section">
+            <h3>Packs Ativos</h3>
+            ${user.active_packs.map(pack => `
+              <div class="detail-item">
+                <div class="label">${pack.credits_total} créditos (${pack.credits_remaining} restantes)</div>
+                <div class="value">${pack.expires_at ? `Expira em ${new Date(pack.expires_at).toLocaleDateString('pt-BR')}` : 'Sem expiração'}</div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      `;
+    };
+
+    window.closeModal = function() {
+      document.getElementById('userModal').classList.remove('visible');
+    };
+
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('filterStatus').addEventListener('change', applyFilters);
+
+    document.getElementById('userModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>

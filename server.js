@@ -185,9 +185,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 const getCleanBase64 = (b64) =>
   b64 && b64.includes(',') ? b64.split(',')[1] : b64;
 
-const { requireAuth, optionalAuth, supabaseAdmin } = require('./middleware/auth');
+const { requireAuth, optionalAuth, requireAdmin, supabaseAdmin } = require('./middleware/auth');
 const { requireCredits, refundJob, markJobProcessing } = require('./middleware/quota');
 const { downloadAndStore, storeFromBase64, getSignedUrl } = require('./lib/storage');
+
+// Admin routes (protegidas com requireAuth + requireAdmin)
+const adminRouter = require('./routes/admin');
+app.use('/api/admin', requireAuth, requireAdmin, adminRouter);
 
 // Config pública para o frontend (não inclui service_role)
 app.get('/api/public-config', (req, res) => {
@@ -196,6 +200,11 @@ app.get('/api/public-config', (req, res) => {
     supabaseUrl: process.env.SUPABASE_URL,
     supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
   });
+});
+
+// Admin panel UI (served at /admin)
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
 // Modelos preset — retorna todas as modelos ativas ordenadas
@@ -1230,78 +1239,6 @@ app.delete('/api/generations/:id', requireAuth, async (req, res) => {
   } catch (err) {
     console.error('[DELETE /api/generations/:id]', err);
     res.status(500).json({ error: 'failed_to_delete' });
-  }
-});
-
-// ============================================================
-// ============================================================
-// ADMIN: Forçar completar vídeos (PROTEGIDO)
-// ============================================================
-app.post('/api/admin/force-complete-video', requireAuth, async (req, res) => {
-  const { provider_job_id } = req.body;
-
-  if (!provider_job_id) {
-    return res.status(400).json({ error: 'provider_job_id required' });
-  }
-
-  try {
-    console.log(`[ADMIN] Forçando completar ${provider_job_id}...`);
-
-    // Busca status do Fal.ai
-    const statusRes = await fetch(
-      `https://queue.fal.run/fal-ai/kling-video/requests/${provider_job_id}/status`,
-      { headers: { 'Authorization': `Key ${FAL_API_KEY}` } }
-    );
-    const statusData = await statusRes.json();
-
-    if (statusData.status !== 'COMPLETED') {
-      return res.json({ status: 'not_ready', fal_status: statusData.status });
-    }
-
-    if (!statusData.response_url) {
-      return res.json({ error: 'no_response_url' });
-    }
-
-    // Busca resultado
-    const resultRes = await fetch(statusData.response_url, {
-      headers: { 'Authorization': `Key ${FAL_API_KEY}` }
-    });
-    const resultData = await resultRes.json();
-    const videoUrl = resultData.video?.url;
-
-    if (!videoUrl) {
-      return res.json({ error: 'no_video_url' });
-    }
-
-    console.log(`[ADMIN] Vídeo completado: ${videoUrl}`);
-
-    // Atualiza banco
-    const { data: job } = await supabaseAdmin
-      .from('generation_jobs')
-      .select('*')
-      .eq('provider_job_id', provider_job_id)
-      .single();
-
-    if (!job) {
-      return res.json({ error: 'job_not_found' });
-    }
-
-    await supabaseAdmin
-      .from('generation_jobs')
-      .update({
-        status: 'completed',
-        result_url: videoUrl,
-        completed_at: new Date().toISOString()
-      })
-      .eq('id', job.id);
-
-    console.log(`[ADMIN] Banco atualizado para job ${job.id}`);
-
-    res.json({ success: true, video_url: videoUrl, job_id: job.id });
-
-  } catch (err) {
-    console.error('[ADMIN] Erro:', err.message);
-    res.status(500).json({ error: err.message });
   }
 });
 

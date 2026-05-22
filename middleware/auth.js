@@ -55,7 +55,7 @@ async function requireAuth(req, res, next) {
 
 async function optionalAuth(req, res, next) {
   const authHeader = req.headers.authorization;
-  
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return next();
   }
@@ -64,7 +64,7 @@ async function optionalAuth(req, res, next) {
 
   try {
     const { data, error } = await supabaseAuth.auth.getUser(token);
-    
+
     if (!error && data?.user) {
       req.user = { id: data.user.id, email: data.user.email };
     }
@@ -74,4 +74,39 @@ async function optionalAuth(req, res, next) {
   next();
 }
 
-module.exports = { requireAuth, optionalAuth, supabaseAdmin };
+/**
+ * Middleware que verifica se o usuário autenticado é administrador.
+ * Requer que requireAuth tenha sido executado antes (req.user deve existir).
+ * Admins são definidos via env var ADMIN_EMAILS (comma-separated).
+ */
+function requireAdmin(req, res, next) {
+  console.log('[AUTH] Verificando permissão de admin para:', req.user?.email);
+
+  if (!req.user) {
+    console.log('[AUTH] requireAdmin chamado sem requireAuth - usuário não autenticado');
+    return res.status(401).json({ error: 'unauthorized' });
+  }
+
+  const adminEmailsRaw = process.env.ADMIN_EMAILS || '';
+  const adminEmails = adminEmailsRaw
+    .split(',')
+    .map(email => email.trim().toLowerCase())
+    .filter(email => email.length > 0);
+
+  if (adminEmails.length === 0) {
+    console.warn('[AUTH] ⚠️  ADMIN_EMAILS não configurado - acesso admin bloqueado');
+    return res.status(403).json({ error: 'forbidden_admin_not_configured' });
+  }
+
+  const userEmail = req.user.email.toLowerCase();
+
+  if (!adminEmails.includes(userEmail)) {
+    console.log('[AUTH] Acesso negado - usuário não é admin:', userEmail);
+    return res.status(403).json({ error: 'forbidden_admin_only' });
+  }
+
+  console.log('[AUTH] ✓ Admin autorizado:', userEmail);
+  next();
+}
+
+module.exports = { requireAuth, optionalAuth, requireAdmin, supabaseAdmin };

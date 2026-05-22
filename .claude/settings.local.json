@@ -219,7 +219,11 @@
       "PowerShell(node --use-system-ca test-webhook.js)",
       "PowerShell(node --use-system-ca test-production-e2e.js)",
       "PowerShell(node --use-system-ca -e \"require\\('dotenv'\\).config\\(\\); const { createClient } = require\\('@supabase/supabase-js'\\); const supabase = createClient\\(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY\\); supabase.from\\('preset_models'\\).select\\('count'\\).then\\(r => console.log\\('Modelos no banco:', r\\)\\);\")",
-      "PowerShell($response = Invoke-RestMethod -Uri 'https://web-production-6ab20.up.railway.app/api/preset-models' -Method Get; Write-Host \"Total de modelos:\" $response.Count; $response[0] | ConvertTo-Json -Depth 2)"
+      "PowerShell($response = Invoke-RestMethod -Uri 'https://web-production-6ab20.up.railway.app/api/preset-models' -Method Get; Write-Host \"Total de modelos:\" $response.Count; $response[0] | ConvertTo-Json -Depth 2)",
+      "Bash(git reset *)",
+      "PowerShell(node -c \"public/app.js\")",
+      "PowerShell(node -c \"routes/stripe.js\")",
+      "PowerShell(node -c \"middleware/auth.js\")"
     ]
   }
 }
