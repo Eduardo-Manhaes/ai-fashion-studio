@@ -1,13 +1,12 @@
 // Queue para processamento de fotos
 const { Queue } = require('bullmq');
 
-// Configuração Redis - use variáveis de ambiente
-const redisConfig = {
+// Configuração Redis - aceita REDIS_URL (Upstash/Railway) ou variáveis separadas
+const redisConfig = process.env.REDIS_URL || {
   host: process.env.REDIS_HOST || 'localhost',
   port: parseInt(process.env.REDIS_PORT || '6379'),
   password: process.env.REDIS_PASSWORD || undefined,
-  // Para Redis Cloud/Upstash, adicione:
-  // tls: process.env.REDIS_TLS === 'true' ? {} : undefined,
+  tls: process.env.REDIS_TLS === 'true' ? {} : undefined,
 };
 
 // Fila de fotos
