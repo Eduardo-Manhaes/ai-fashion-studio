@@ -266,7 +266,12 @@ photoWorker.on('failed', (job, err) => {
 });
 
 photoWorker.on('error', (err) => {
-  console.error('[PHOTO WORKER] Erro no worker:', err);
+  console.error('[PHOTO WORKER] ❌ Erro no worker:');
+  console.error('[PHOTO WORKER] Mensagem:', err.message);
+  console.error('[PHOTO WORKER] Code:', err.code);
+  console.error('[PHOTO WORKER] Stack:', err.stack);
+  console.error('[PHOTO WORKER] REDIS_URL:', process.env.REDIS_URL ? process.env.REDIS_URL.substring(0, 40) + '...' : 'AUSENTE');
+  console.error('[PHOTO WORKER] redisConfig type:', typeof redisConfig);
 });
 
 console.log('🚀 Photo Worker iniciado e aguardando jobs...');

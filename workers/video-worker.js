@@ -270,7 +270,12 @@ videoWorker.on('failed', (job, err) => {
 });
 
 videoWorker.on('error', (err) => {
-  console.error('[VIDEO WORKER] Erro no worker:', err);
+  console.error('[VIDEO WORKER] ❌ Erro no worker:');
+  console.error('[VIDEO WORKER] Mensagem:', err.message);
+  console.error('[VIDEO WORKER] Code:', err.code);
+  console.error('[VIDEO WORKER] Stack:', err.stack);
+  console.error('[VIDEO WORKER] REDIS_URL:', process.env.REDIS_URL ? process.env.REDIS_URL.substring(0, 40) + '...' : 'AUSENTE');
+  console.error('[VIDEO WORKER] redisConfig type:', typeof redisConfig);
 });
 
 console.log('🚀 Video Worker iniciado e aguardando jobs...');

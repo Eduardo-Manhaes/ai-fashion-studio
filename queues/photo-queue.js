@@ -6,11 +6,15 @@ function getRedisConfig() {
   const redisUrl = process.env.REDIS_URL;
 
   if (redisUrl) {
-    console.log('[REDIS CONFIG] Usando REDIS_URL:', redisUrl.substring(0, 30) + '...');
+    console.log('[REDIS CONFIG] ✅ REDIS_URL detectado:', redisUrl.substring(0, 40) + '...');
+    console.log('[REDIS CONFIG] ✅ Retornando string de conexão completa');
     return redisUrl;
   }
 
   // Fallback para configuração manual (desenvolvimento)
+  console.warn('[REDIS CONFIG] ⚠️  REDIS_URL NÃO encontrado - usando fallback localhost');
+  console.warn('[REDIS CONFIG] ⚠️  Isto NÃO deve acontecer em produção!');
+
   const config = {
     host: process.env.REDIS_HOST || 'localhost',
     port: parseInt(process.env.REDIS_PORT || '6379'),
@@ -18,11 +22,13 @@ function getRedisConfig() {
     tls: process.env.REDIS_TLS === 'true' ? {} : undefined,
   };
 
-  console.log('[REDIS CONFIG] Usando config manual:', config.host + ':' + config.port);
+  console.log('[REDIS CONFIG] Fallback config:', JSON.stringify(config));
   return config;
 }
 
 const redisConfig = getRedisConfig();
+console.log('[REDIS CONFIG] redisConfig final type:', typeof redisConfig);
+console.log('[REDIS CONFIG] redisConfig final value:', typeof redisConfig === 'string' ? redisConfig.substring(0, 40) + '...' : JSON.stringify(redisConfig));
 
 // Fila de fotos
 const photoQueue = new Queue('photo-generation', {
@@ -45,7 +51,10 @@ const photoQueue = new Queue('photo-generation', {
 
 // Eventos para monitoramento
 photoQueue.on('error', (err) => {
-  console.error('[PHOTO QUEUE] Erro:', err);
+  console.error('[PHOTO QUEUE] ❌ Erro detectado:');
+  console.error('[PHOTO QUEUE] Mensagem:', err.message);
+  console.error('[PHOTO QUEUE] Stack:', err.stack);
+  console.error('[PHOTO QUEUE] REDIS_URL ainda disponível?', process.env.REDIS_URL ? 'SIM' : 'NÃO');
 });
 
 module.exports = { photoQueue, redisConfig };
