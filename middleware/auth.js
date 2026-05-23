@@ -5,19 +5,26 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const { createClient } = require('@supabase/supabase-js');
+const ws = require('ws');
 
 // Cliente com service role (bypass RLS) — uso interno do backend
 const supabaseAdmin = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY,
-  { auth: { persistSession: false } }
+  {
+    auth: { persistSession: false },
+    realtime: { transport: ws },
+  }
 );
 
 // Cliente com anon key — usado pra validar JWTs de usuários
 const supabaseAuth = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY,
-  { auth: { persistSession: false } }
+  {
+    auth: { persistSession: false },
+    realtime: { transport: ws },
+  }
 );
 
 /**
