@@ -74,8 +74,6 @@ async function downloadAndStore(videoUrl, userId, generationType, jobId) {
 }
 
 // Worker processor
-console.log('[VIDEO WORKER] Criando Worker com redisConfig tipo:', typeof redisConfig);
-console.log('[VIDEO WORKER] redisConfig value:', typeof redisConfig === 'string' ? redisConfig.substring(0, 40) + '...' : JSON.stringify(redisConfig));
 const videoWorker = new Worker(
   'video-generation',
   async (job) => {
@@ -272,12 +270,7 @@ videoWorker.on('failed', (job, err) => {
 });
 
 videoWorker.on('error', (err) => {
-  console.error('[VIDEO WORKER] ❌ Erro no worker:');
-  console.error('[VIDEO WORKER] Mensagem:', err.message);
-  console.error('[VIDEO WORKER] Code:', err.code);
-  console.error('[VIDEO WORKER] Stack:', err.stack);
-  console.error('[VIDEO WORKER] REDIS_URL:', process.env.REDIS_URL ? process.env.REDIS_URL.substring(0, 40) + '...' : 'AUSENTE');
-  console.error('[VIDEO WORKER] redisConfig type:', typeof redisConfig);
+  console.error('[VIDEO WORKER] Erro:', err.message);
 });
 
 console.log('🚀 Video Worker iniciado e aguardando jobs...');

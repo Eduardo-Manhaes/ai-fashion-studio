@@ -75,8 +75,6 @@ async function downloadAndStore(imageUrl, userId, generationType, jobId) {
 }
 
 // Worker processor
-console.log('[PHOTO WORKER] Criando Worker com redisConfig tipo:', typeof redisConfig);
-console.log('[PHOTO WORKER] redisConfig value:', typeof redisConfig === 'string' ? redisConfig.substring(0, 40) + '...' : JSON.stringify(redisConfig));
 const photoWorker = new Worker(
   'photo-generation',
   async (job) => {
@@ -268,12 +266,7 @@ photoWorker.on('failed', (job, err) => {
 });
 
 photoWorker.on('error', (err) => {
-  console.error('[PHOTO WORKER] ❌ Erro no worker:');
-  console.error('[PHOTO WORKER] Mensagem:', err.message);
-  console.error('[PHOTO WORKER] Code:', err.code);
-  console.error('[PHOTO WORKER] Stack:', err.stack);
-  console.error('[PHOTO WORKER] REDIS_URL:', process.env.REDIS_URL ? process.env.REDIS_URL.substring(0, 40) + '...' : 'AUSENTE');
-  console.error('[PHOTO WORKER] redisConfig type:', typeof redisConfig);
+  console.error('[PHOTO WORKER] Erro:', err.message);
 });
 
 console.log('🚀 Photo Worker iniciado e aguardando jobs...');
