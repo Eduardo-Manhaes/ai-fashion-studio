@@ -28,9 +28,19 @@ function getRedisConfig() {
 
 const redisConfig = getRedisConfig();
 console.log('[REDIS CONFIG] redisConfig final type:', typeof redisConfig);
-console.log('[REDIS CONFIG] redisConfig final value:', typeof redisConfig === 'string' ? redisConfig.substring(0, 40) + '...' : JSON.stringify(redisConfig));
+
+// Log URL completa mascarando senha
+if (typeof redisConfig === 'string') {
+  const maskedUrl = redisConfig.replace(/:([^@]+)@/, ':***@');
+  console.log('[REDIS CONFIG] URL completa (senha mascarada):', maskedUrl);
+  console.log('[REDIS CONFIG] URL length:', redisConfig.length);
+  console.log('[REDIS CONFIG] URL format check:',redisConfig.startsWith('redis://') || redisConfig.startsWith('rediss://') ? '✅ Valid' : '❌ Invalid');
+} else {
+  console.log('[REDIS CONFIG] Config object:', JSON.stringify(redisConfig));
+}
 
 // Fila de fotos
+console.log('[PHOTO QUEUE] Criando Queue com connection:', typeof redisConfig === 'string' ? 'STRING (URL)' : 'OBJECT');
 const photoQueue = new Queue('photo-generation', {
   connection: redisConfig,
   defaultJobOptions: {

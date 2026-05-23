@@ -75,6 +75,8 @@ async function downloadAndStore(imageUrl, userId, generationType, jobId) {
 }
 
 // Worker processor
+console.log('[PHOTO WORKER] Criando Worker com redisConfig tipo:', typeof redisConfig);
+console.log('[PHOTO WORKER] redisConfig value:', typeof redisConfig === 'string' ? redisConfig.substring(0, 40) + '...' : JSON.stringify(redisConfig));
 const photoWorker = new Worker(
   'photo-generation',
   async (job) => {

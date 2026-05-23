@@ -74,6 +74,8 @@ async function downloadAndStore(videoUrl, userId, generationType, jobId) {
 }
 
 // Worker processor
+console.log('[VIDEO WORKER] Criando Worker com redisConfig tipo:', typeof redisConfig);
+console.log('[VIDEO WORKER] redisConfig value:', typeof redisConfig === 'string' ? redisConfig.substring(0, 40) + '...' : JSON.stringify(redisConfig));
 const videoWorker = new Worker(
   'video-generation',
   async (job) => {
