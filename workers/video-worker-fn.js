@@ -3,10 +3,17 @@
 require('dotenv').config();
 
 const { createClient } = require('@supabase/supabase-js');
+const ws = require('ws');
 
 const supabaseAdmin = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+  {
+    auth: { persistSession: false },
+    realtime: {
+      transport: ws,
+    },
+  }
 );
 
 const FAL_API_KEY = process.env.FAL_API_KEY;

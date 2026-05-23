@@ -4,6 +4,7 @@ require('dotenv').config();
 const { Worker } = require('bullmq');
 const { createClient } = require('@supabase/supabase-js');
 const { redisConfig } = require('../queues/photo-queue');
+const ws = require('ws');
 
 // SSL fix para desenvolvimento
 if (process.env.NODE_ENV !== 'production') {
@@ -12,7 +13,13 @@ if (process.env.NODE_ENV !== 'production') {
 
 const supabaseAdmin = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+  {
+    auth: { persistSession: false },
+    realtime: {
+      transport: ws,
+    },
+  }
 );
 
 const FAL_API_KEY = process.env.FAL_API_KEY;
