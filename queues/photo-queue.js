@@ -7,8 +7,29 @@ function getRedisConfig() {
 
   if (redisUrl) {
     console.log('[REDIS CONFIG] ✅ REDIS_URL detectado:', redisUrl.substring(0, 40) + '...');
-    console.log('[REDIS CONFIG] ✅ Retornando string de conexão completa');
-    return redisUrl;
+
+    // Parse manual da URL para evitar problemas de DNS com redis.railway.internal
+    try {
+      const url = new URL(redisUrl);
+      const config = {
+        host: url.hostname,
+        port: parseInt(url.port) || 6379,
+        password: url.password || undefined,
+        username: url.username || undefined,
+        tls: redisUrl.startsWith('rediss://') ? {} : undefined,
+      };
+
+      console.log('[REDIS CONFIG] ✅ Parse manual da URL:');
+      console.log('[REDIS CONFIG]    host:', config.host);
+      console.log('[REDIS CONFIG]    port:', config.port);
+      console.log('[REDIS CONFIG]    tls:', config.tls ? 'enabled' : 'disabled');
+
+      return config;
+    } catch (err) {
+      console.error('[REDIS CONFIG] ❌ Erro ao fazer parse da URL:', err.message);
+      console.log('[REDIS CONFIG] ✅ Retornando string de conexão completa (fallback)');
+      return redisUrl;
+    }
   }
 
   // Fallback para configuração manual (desenvolvimento)
