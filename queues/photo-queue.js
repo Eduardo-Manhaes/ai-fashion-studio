@@ -1,13 +1,28 @@
 // Queue para processamento de fotos
 const { Queue } = require('bullmq');
 
-// Configuração Redis - aceita REDIS_URL (Upstash/Railway) ou variáveis separadas
-const redisConfig = process.env.REDIS_URL || {
-  host: process.env.REDIS_HOST || 'localhost',
-  port: parseInt(process.env.REDIS_PORT || '6379'),
-  password: process.env.REDIS_PASSWORD || undefined,
-  tls: process.env.REDIS_TLS === 'true' ? {} : undefined,
-};
+// Configuração Redis - prioriza REDIS_URL do Railway/Upstash
+function getRedisConfig() {
+  const redisUrl = process.env.REDIS_URL;
+
+  if (redisUrl) {
+    console.log('[REDIS CONFIG] Usando REDIS_URL:', redisUrl.substring(0, 30) + '...');
+    return redisUrl;
+  }
+
+  // Fallback para configuração manual (desenvolvimento)
+  const config = {
+    host: process.env.REDIS_HOST || 'localhost',
+    port: parseInt(process.env.REDIS_PORT || '6379'),
+    password: process.env.REDIS_PASSWORD || undefined,
+    tls: process.env.REDIS_TLS === 'true' ? {} : undefined,
+  };
+
+  console.log('[REDIS CONFIG] Usando config manual:', config.host + ':' + config.port);
+  return config;
+}
+
+const redisConfig = getRedisConfig();
 
 // Fila de fotos
 const photoQueue = new Queue('photo-generation', {
