@@ -292,7 +292,7 @@ function loadRecentPanel(generations) {
     if (isVideo) {
       el.innerHTML = `<video src="${item.result_url}" muted style="width:100%;height:100%;object-fit:cover;"></video>`;
     } else {
-      el.innerHTML = `<img src="${item.result_url}" alt="Geração recente" style="width:100%;height:100%;object-fit:cover;">`;
+      el.innerHTML = `<img src="${item.result_url}" alt="Geração recente" loading="lazy" style="width:100%;height:100%;object-fit:cover;">`;
     }
 
     grid.appendChild(el);
@@ -1573,7 +1573,7 @@ async function generateVariations() {
       grid.style.display = 'grid';
       grid.innerHTML = urls.map((url, i) => `
         <div class="variation-item">
-          <img src="${url}" alt="Variação ${i + 1}">
+          <img src="${url}" alt="Variação ${i + 1}" loading="lazy">
           <button class="variation-dl" onclick="downloadUrl('${url}', 'variacao-${i + 1}.jpg')">💾</button>
         </div>
       `).join('');
@@ -1882,7 +1882,7 @@ async function pollCurrentVideo() {
   console.log(`[VIDEO POLL] Iniciando polling para ${videoId} (${provider})`);
 
   let attempts = 0;
-  const maxAttempts = 100; // 5 minutos com polling a cada 3s
+  const maxAttempts = 300; // 15 minutos com polling a cada 3s
 
   videoPollingInterval = setInterval(async () => {
     attempts++;
@@ -1953,7 +1953,7 @@ async function pollPhotoJob(jobId) {
   console.log(`[PHOTO POLL] Iniciando polling para job ${jobId}`);
 
   let attempts = 0;
-  const maxAttempts = 60; // 5 minutos com polling a cada 5s
+  const maxAttempts = 180; // 15 minutos com polling a cada 5s
   const pollInterval = 5000; // 5 segundos
 
   photoPollingInterval = setInterval(async () => {
