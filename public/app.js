@@ -1418,17 +1418,6 @@ async function generatePhoto() {
   document.getElementById('photoResult').style.display = 'none';
 
   try {
-    const inputs = {
-      product_image: getCleanBase64(state.productImageBase64),
-      aspect_ratio: document.getElementById('aspectSelect').value,
-      resolution: document.getElementById('resolutionSelect').value,
-      generation_mode: document.getElementById('modeSelect').value,
-      output_format: document.getElementById('formatSelect').value,
-      prompt: buildPhotoPrompt(),
-    };
-
-    if (state.bgImageBase64) inputs.background_reference = getCleanBase64(state.bgImageBase64);
-    if (state.selectedPresetModel?.url) inputs.model_image = state.selectedPresetModel.url;
 
     setPhotoStatus('Enviando para o servidor...');
     const res = await window.AuthLib.authFetch('/api/run-photo-v3', {
