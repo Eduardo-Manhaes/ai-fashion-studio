@@ -907,6 +907,25 @@ const MOVEMENT_STYLES = [
     sub: 'Frente e costas',
     prompt: 'Fashion model posing in front of a mirror, showing front and back of the garment simultaneously, boutique interior setting, warm ambient lighting, model adjusting outfit naturally, cinematic composition, camera slowly panning to reveal both angles'
   },
+  {
+    id: 'm7',
+    icon: '📸',
+    label: 'Pose de Modelo',
+    sub: 'Profissional fashion',
+    hasVariants: true,
+    variants: [
+      {
+        id: 'v1',
+        label: 'Atitude Natural',
+        prompt: 'Brazilian fashion model in professional studio, starting with gentle fabric adjustment with fingertips showing garment drape, then gracefully touching hair to frame face, followed by smooth natural turn toward camera with confident eye contact, all in one fluid choreographed sequence, soft diffused studio lighting highlighting fabric texture and fit, warm professional atmosphere, model moves with natural elegance and poise, cinematic slow motion captures each gesture, ending with close engagement with viewer'
+      },
+      {
+        id: 'v2',
+        label: 'Look Completo',
+        prompt: 'Brazilian fashion model performing elegant slow 360-degree rotation on clean studio floor, full body shot from head to toe, camera starts focused on face and confident expression then gradually zooms out and pans down revealing complete outfit from top to bottom, showing garment from all angles during turn, professional runway-style movement, soft studio lighting, model maintains elegant posture throughout rotation, cinematic choreography showcasing every detail of the clothing, fabric movement visible, seamless fluid motion'
+      }
+    ]
+  }
 ];
 
 // ===== ESTADO =====
