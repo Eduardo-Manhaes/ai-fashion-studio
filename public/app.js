@@ -1057,11 +1057,29 @@ function selectCard(type, id, multi = false) {
         document.getElementById('btnNextStep3').disabled = false;
       }
     } else if (type === 'movement') {
-      state.selectedMovement = MOVEMENT_STYLES.find(m => m.id === id);
+      const movement = MOVEMENT_STYLES.find(m => m.id === id);
+      state.selectedMovement = movement;
+      state.selectedMovementVariant = null; // Reset variant quando troca movimento
       state.videoStyle = 'movement';
       document.getElementById('talkingForm').style.display = 'none';
       document.getElementById('btnSelectTalking').style.display = '';
-      document.getElementById('btnNextVideoStep2').disabled = false;
+
+      // Se movimento tem variantes, mostra/oculta o container de variantes
+      if (movement && movement.hasVariants) {
+        // Oculta todos os containers de variantes
+        document.querySelectorAll('.variants-container').forEach(v => v.style.display = 'none');
+        // Mostra as variantes deste movimento
+        const variantsContainer = document.getElementById(`variants_${type}_${id}`);
+        if (variantsContainer) {
+          variantsContainer.style.display = 'block';
+        }
+        // Não habilita o botão ainda - precisa selecionar variante
+        document.getElementById('btnNextVideoStep2').disabled = true;
+      } else {
+        // Movimento sem variantes - oculta todos containers e habilita botão
+        document.querySelectorAll('.variants-container').forEach(v => v.style.display = 'none');
+        document.getElementById('btnNextVideoStep2').disabled = false;
+      }
     }
   }
 }
