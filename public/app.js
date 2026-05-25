@@ -903,7 +903,7 @@ const MOVEMENT_STYLES = [
   {
     id: 'm6',
     icon: '🪞',
-    label: 'Look completo',
+    label: 'Vista no espelho',
     sub: 'Frente e costas',
     prompt: 'Fashion model posing in front of a mirror, showing front and back of the garment simultaneously, boutique interior setting, warm ambient lighting, model adjusting outfit naturally, cinematic composition, camera slowly panning to reveal both angles'
   },
