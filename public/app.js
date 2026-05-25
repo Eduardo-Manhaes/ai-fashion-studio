@@ -1865,7 +1865,7 @@ async function generateVideo() {
       throw new Error(run.error);
     }
 
-    const provider = state.videoStyle === 'talking' ? 'talking' : 'movement';
+    const provider = state.videoStyle === 'talking' ? 'veo' : 'kling';
     const providerName = 'IA de vídeo';
 
     console.log('[VIDEO] Mostrando toast de sucesso');
