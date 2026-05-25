@@ -1147,20 +1147,14 @@ function goToPhotoStep(step) {
     if (step === 3 && !state.selectedModel) { showToast('Selecione uma modelo.', 'error'); return; }
 
     if (step === 4) {
-      // Precisa ter cenário OU background upload
-      const hasScenario = state.selectedScenario && (
-        !state.selectedScenario.hasVariants ||  // Cenário simples sem variantes
-        state.selectedVariant                    // Cenário com variante selecionada
-      );
-      const hasBgUpload = state.bgImageBase64;
-
-      if (!hasScenario && !hasBgUpload) {
-        showToast('Selecione um cenário ou faça upload de fundo.', 'error');
+      // Cenário é obrigatório
+      if (!state.selectedScenario?.id) {
+        showToast('Selecione um cenário.', 'error');
         return;
       }
 
-      // Se selecionou cenário com variantes mas não escolheu a variante
-      if (state.selectedScenario?.hasVariants && !state.selectedVariant && !hasBgUpload) {
+      // Se cenário tem variantes, variante também é obrigatória
+      if (state.selectedScenario?.hasVariants && !state.selectedVariant) {
         showToast('Escolha uma variante de parede.', 'error');
         return;
       }
