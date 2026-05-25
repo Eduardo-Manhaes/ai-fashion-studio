@@ -959,14 +959,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('btnNextStep1').disabled = false;
   });
 
-  setupFileInput('bgFileInput', 'bgUploadZone', 'bgPreview', (b64) => {
-    state.bgImageBase64 = b64;
-    // Se usuário fez upload de bg, desselecionar card de cenário
-    document.querySelectorAll('#scenarioGrid .sel-card').forEach(c => c.classList.remove('selected'));
-    state.selectedScenario = null;
-    document.getElementById('btnNextStep3').disabled = false;
-  });
-
   setupDragDrop('productUploadZone', 'productFileInput');
 
   document.getElementById('resolutionSelect').addEventListener('change', updateImageCost);
