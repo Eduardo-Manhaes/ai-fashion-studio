@@ -861,7 +861,7 @@ const POSES = [
 ];
 
 // Sufixo de zoom universal para todos os vídeos de movimento
-const MOVEMENT_ZOOM_SUFFIX = ', cinematic camera slowly zooming in toward the garment in the final seconds, revealing fabric texture, stitching and clothing details in sharp focus, 4K cinematic finish';
+const MOVEMENT_ZOOM_SUFFIX = ', then camera performs quick snap zoom directly onto the garment fabric revealing texture and clothing details in sharp focus, holds on detail for 2 seconds, then snaps back quickly to full body wide shot, model moving at natural real-life speed throughout, no slow motion';
 
 const MOVEMENT_STYLES = [
   {
@@ -869,7 +869,7 @@ const MOVEMENT_STYLES = [
     icon: '✨',
     label: 'Natural',
     sub: 'Recomendado',
-    prompt: 'Fashion model standing naturally, subtle breathing movement, hair slightly swaying, soft studio lighting, cinematic 4K, shallow depth of field, professional fashion photography motion, elegant and confident posture, camera slowly pulling back',
+    prompt: 'Fashion model standing naturally, subtle breathing movement, hair slightly swaying, soft studio lighting, cinematic 4K, shallow depth of field, professional fashion photography motion, elegant and confident posture, camera static then quick pull back, natural real-life speed, no slow motion',
     badge: 'Melhor resultado'
   },
   {
@@ -877,35 +877,35 @@ const MOVEMENT_STYLES = [
     icon: '💨',
     label: 'Vento no look',
     sub: 'Tecido em movimento',
-    prompt: 'Fashion model posing outdoors, fabric and hair flowing gracefully in a gentle breeze, golden hour lighting, cinematic slow motion, fabric texture clearly visible, model maintaining elegant composure, soft bokeh background, camera slowly orbiting'
+    prompt: 'Fashion model posing outdoors, fabric and hair flowing gracefully in a gentle breeze, golden hour lighting, fabric texture clearly visible, model maintaining elegant composure, soft bokeh background, camera static then quick orbit, natural real-life speed, no slow motion'
   },
   {
     id: 'm3',
     icon: '🚶',
     label: 'Modelo andando',
     sub: 'Deslocamento suave',
-    prompt: 'High-fashion model walking confidently toward camera on a clean studio floor, fluid natural stride, arms swinging slightly, garment in full view showing fit and movement, soft diffused studio lighting, cinematic 24fps slow motion, camera at eye level tracking forward'
+    prompt: 'High-fashion model walking confidently toward camera on a clean studio floor, fluid natural stride at real walking pace, arms swinging slightly, garment in full view showing fit and movement, soft diffused studio lighting, camera at eye level tracking forward at natural speed, no slow motion'
   },
   {
     id: 'm4',
     icon: '🙆',
     label: 'Gesto suave',
     sub: 'Movimento de braço',
-    prompt: 'Fashion model making a graceful hand gesture, touching hair or adjusting collar with delicate movement, close-medium shot showing garment detail, warm soft lighting, cinematic depth of field, elegant and natural expression, subtle smile, camera slowly zooming in'
+    prompt: 'Fashion model making a graceful hand gesture, touching hair or adjusting collar with delicate movement at natural pace, close-medium shot showing garment detail, warm soft lighting, cinematic depth of field, elegant and natural expression, subtle smile, camera static then quick zoom, natural real-life speed, no slow motion'
   },
   {
     id: 'm5',
     icon: '🔄',
     label: 'Giro elegante',
     sub: 'Mostra todos os ângulos',
-    prompt: 'Fashion model doing a slow elegant 360-degree turn showing all angles of the garment, full body shot, clean white studio background, professional fashion show lighting, smooth rotation, fabric movement visible, camera stationary at medium distance'
+    prompt: 'Fashion model doing elegant 360-degree turn at natural rotation speed showing all angles of the garment, full body shot, clean white studio background, professional fashion show lighting, smooth rotation, fabric movement visible, camera stationary at medium distance, natural real-life speed, no slow motion'
   },
   {
     id: 'm6',
     icon: '🪞',
     label: 'Vista no espelho',
     sub: 'Frente e costas',
-    prompt: 'Fashion model posing in front of a mirror, showing front and back of the garment simultaneously, boutique interior setting, warm ambient lighting, model adjusting outfit naturally, cinematic composition, camera slowly panning to reveal both angles'
+    prompt: 'Fashion model posing in front of a mirror, showing front and back of the garment simultaneously, boutique interior setting, warm ambient lighting, model adjusting outfit at natural pace, cinematic composition, camera static then quick pan to reveal both angles, natural real-life speed, no slow motion'
   },
   {
     id: 'm7',
@@ -917,12 +917,12 @@ const MOVEMENT_STYLES = [
       {
         id: 'v1',
         label: 'Atitude Natural',
-        prompt: 'Brazilian fashion model in professional studio, FIRST gracefully runs fingers through hair framing face with natural elegance, THEN performs smooth complete 360-degree turn showing garment from all angles, FINALLY camera zooms in close as model places hand confidently on hip revealing fabric details and fit with subtle body movement, each action flows sequentially in choreographed sequence, soft diffused studio lighting, cinematic slow motion, warm professional atmosphere, 4K quality'
+        prompt: 'Brazilian fashion model in professional studio, FIRST gracefully runs fingers through hair framing face at natural pace, THEN performs complete 360-degree turn at natural rotation speed showing garment from all angles, FINALLY camera performs quick snap zoom onto garment as model places hand confidently on hip revealing fabric texture and fit, holds on detail for 2 seconds, then snaps back to wide shot, each action flows sequentially at natural real-life speed, soft diffused studio lighting, warm professional atmosphere, 4K quality, no slow motion'
       },
       {
         id: 'v2',
         label: 'Look Completo',
-        prompt: 'Brazilian fashion model performing elegant slow 360-degree rotation on clean studio floor, full body shot from head to toe, camera starts focused on face and confident expression then gradually zooms out and pans down revealing complete outfit from top to bottom, showing garment from all angles during turn, professional runway-style movement, soft studio lighting, model maintains elegant posture throughout rotation, cinematic choreography showcasing every detail of the clothing, fabric movement visible, seamless fluid motion'
+        prompt: 'Brazilian fashion model performing elegant 360-degree rotation at natural speed on clean studio floor, full body shot from head to toe, camera static during rotation then performs quick snap zoom onto garment revealing fabric texture, holds on detail for 2 seconds showing stitching and material, then snaps back to full body wide shot, showing garment from all angles during turn, professional runway-style movement at natural real-life pace, soft studio lighting, model maintains elegant posture throughout rotation, fabric movement visible at realistic speed, no slow motion'
       }
     ]
   }
