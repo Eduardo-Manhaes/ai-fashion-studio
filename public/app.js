@@ -922,7 +922,7 @@ const MOVEMENT_STYLES = [
       {
         id: 'v2',
         label: 'Look Completo',
-        prompt: 'Brazilian fashion model performing elegant 360-degree rotation at natural speed on clean studio floor, full body shot from head to toe, camera static during rotation then performs quick snap zoom onto garment revealing fabric texture, holds on detail for 2 seconds showing stitching and material, then snaps back to full body wide shot, showing garment from all angles during turn, professional runway-style movement at natural real-life pace, soft studio lighting, model maintains elegant posture throughout rotation, fabric movement visible at realistic speed, no slow motion'
+        prompt: 'Brazilian fashion model performs ONE single 360-degree rotation at natural speed on clean studio floor, full body shot, after completing the rotation model stops and holds a simple confident standing pose facing camera, same identical model throughout entire video with consistent appearance and identity, camera static during rotation then performs quick snap zoom onto garment fabric revealing texture and details, holds on detail for 2 seconds, then snaps back to full body wide shot of model in final standing pose, professional runway-style movement, soft studio lighting, no second rotation, no repeat turns, natural real-life speed, no slow motion'
       }
     ]
   }
