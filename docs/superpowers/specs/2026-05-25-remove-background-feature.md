@@ -2,7 +2,7 @@
 
 **Data:** 2026-05-25  
 **Autor:** Eduardo Manhães  
-**Status:** Aprovado para implementação
+**Status:** Implementado
 
 ## Contexto
 
