@@ -913,7 +913,6 @@ const state = {
   activeMenu: 'photo',
 
   productImageBase64: null,
-  bgImageBase64: null,
 
   selectedModel: null,
   selectedPresetModel: null,
