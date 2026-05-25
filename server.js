@@ -780,7 +780,7 @@ async function runKlingVideo(inputs, res, job) {
     image_url: inputs.image_url,
     prompt: inputs.prompt || 'Fashion model standing naturally, subtle breathing movement, soft studio lighting, cinematic 4K, elegant and confident posture',
     negative_prompt: 'blurry, low quality, distorted face, unnatural movement, robotic motion, jerky, artifacts, watermark, text overlay',
-    duration: '5',
+    duration: inputs.duration || '5',
     aspect_ratio: inputs.aspect_ratio || '9:16',
     cfg_scale: 0.5,
   };
