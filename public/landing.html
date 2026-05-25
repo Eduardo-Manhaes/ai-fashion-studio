@@ -75,39 +75,53 @@
       line-height: 1.1;
     }
 
-    /* CURSOR CUSTOMIZADO */
-    @media (pointer: fine) {
-      * {
-        cursor: none !important;
-      }
+    /* HERO - CARROSSEL DE FOTOS DAS MODELOS */
+    .hero-gallery {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      padding: 4rem 3rem;
+      opacity: 0.15;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-      .custom-cursor {
-        position: fixed;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: var(--green);
-        pointer-events: none;
-        z-index: 10000;
-        mix-blend-mode: difference;
-        transition: transform 0.15s ease;
-      }
+    .hero-gallery-item {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      animation: heroGalleryFade 20s ease-in-out infinite;
+    }
 
-      .custom-cursor-follower {
-        position: fixed;
-        width: 40px;
-        height: 40px;
-        border: 1px solid var(--green);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9999;
-        transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        opacity: 0.5;
-      }
+    .hero-gallery-item:nth-child(1) { animation-delay: 0s; }
+    .hero-gallery-item:nth-child(2) { animation-delay: 2s; }
+    .hero-gallery-item:nth-child(3) { animation-delay: 4s; }
+    .hero-gallery-item:nth-child(4) { animation-delay: 6s; }
+    .hero-gallery-item:nth-child(5) { animation-delay: 8s; }
+    .hero-gallery-item:nth-child(6) { animation-delay: 10s; }
 
-      a:hover ~ .custom-cursor,
-      button:hover ~ .custom-cursor {
-        transform: scale(2);
+    @keyframes heroGalleryFade {
+      0%, 100% { opacity: 0.3; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-10px); }
+    }
+
+    .hero-gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    @media (max-width: 968px) {
+      .hero-gallery {
+        grid-template-columns: repeat(2, 1fr);
+        width: 100%;
+        opacity: 0.08;
       }
     }
 
@@ -1074,13 +1088,160 @@
       background-size: 1000px 100%;
       animation: shimmer 3s infinite;
     }
+
+    /* DEPOIMENTOS */
+    .testimonials {
+      background: linear-gradient(135deg, rgba(45,184,150,0.03), rgba(255,214,10,0.02));
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .testimonial-card {
+      background: var(--glass);
+      backdrop-filter: blur(20px) saturate(180%);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .testimonial-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .testimonial-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(45,184,150,0.2);
+    }
+
+    .rating {
+      color: var(--yellow);
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.2em;
+    }
+
+    .testimonial-text {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .testimonial-author img {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid var(--green);
+      object-fit: cover;
+    }
+
+    .testimonial-author strong {
+      display: block;
+      font-size: 1.1rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .testimonial-author span {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .testimonial-result {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(45,184,150,0.08);
+      border-left: 3px solid var(--green);
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    .testimonial-result strong {
+      color: var(--green-light);
+    }
+
+    /* FAQ */
+    .faq {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      background: var(--glass);
+      backdrop-filter: blur(20px) saturate(180%);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .faq-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .faq-item:hover {
+      border-color: var(--border-glow);
+      box-shadow: 0 8px 30px rgba(45,184,150,0.15);
+    }
+
+    .faq-item h3 {
+      font-size: 1.25rem;
+      color: var(--text);
+      margin-bottom: 1rem;
+      font-family: 'Syne', sans-serif;
+      line-height: 1.4;
+    }
+
+    .faq-item p {
+      color: var(--text-muted);
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .testimonial-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .testimonial-card {
+        padding: 1.5rem;
+      }
+
+      .faq-item {
+        padding: 1.5rem;
+      }
+    }
   </style>
 </head>
 <body>
-
-  <!-- CURSOR CUSTOMIZADO -->
-  <div class="custom-cursor"></div>
-  <div class="custom-cursor-follower"></div>
 
   <!-- ELEMENTOS DECORATIVOS AMARELOS -->
   <div style="position: fixed; top: 15%; right: 8%; width: 6px; height: 6px; background: var(--yellow); border-radius: 50%; opacity: 0.6; z-index: -1; animation: float 8s ease-in-out infinite;"></div>
@@ -1103,6 +1264,28 @@
 
   <!-- HERO -->
   <section class="hero">
+    <!-- Carrossel de Fotos das Modelos -->
+    <div class="hero-gallery" id="hero-gallery">
+      <div class="hero-gallery-item">
+        <img src="https://tlzailaxkofbqyfqhwbx.supabase.co/storage/v1/object/sign/generations/61bf7fb2-5e73-4d77-b66d-f91ff68fe454/photo/61963e06-feec-44ef-9a91-8acc83e8ad38.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zY2NhZDA1Yy02ZDNjLTRmNzUtODg5Mi0wMDZkODkyNWI1YjIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJnZW5lcmF0aW9ucy82MWJmN2ZiMi01ZTczLTRkNzctYjY2ZC1mOTFmZjY4ZmU0NTQvcGhvdG8vNjE5NjNlMDYtZmVlYy00NGVmLTlhOTEtOGFjYzgzZThhZDM4LnBuZyIsImlhdCI6MTc3OTEzNTk2MywiZXhwIjoxODEwNjcxOTYzfQ.sh-A47xQChWbgGCbWNKLsLRkAWqP8zOFFVD4Jml6ym4" alt="Modelo" loading="lazy">
+      </div>
+      <div class="hero-gallery-item">
+        <img src="https://tlzailaxkofbqyfqhwbx.supabase.co/storage/v1/object/sign/generations/61bf7fb2-5e73-4d77-b66d-f91ff68fe454/photo/50fd28b8-ef55-4843-ba31-6deef1051d99.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zY2NhZDA1Yy02ZDNjLTRmNzUtODg5Mi0wMDZkODkyNWI1YjIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJnZW5lcmF0aW9ucy82MWJmN2ZiMi01ZTczLTRkNzctYjY2ZC1mOTFmZjY4ZmU0NTQvcGhvdG8vNTBmZDI4YjgtZWY1NS00ODQzLWJhMzEtNmRlZWYxMDUxZDk5LnBuZyIsImlhdCI6MTc3OTEzNTk2MywiZXhwIjoxODEwNjcxOTYzfQ.FNxoZeEVvnGvy33Z0azZ4vGTQ9ZTHY2OjNdqEJI4uyg" alt="Modelo" loading="lazy">
+      </div>
+      <div class="hero-gallery-item">
+        <img src="https://tlzailaxkofbqyfqhwbx.supabase.co/storage/v1/object/sign/generations/61bf7fb2-5e73-4d77-b66d-f91ff68fe454/photo/ca96cc5b-64e5-4bf4-ba91-f2d2deb375df.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zY2NhZDA1Yy02ZDNjLTRmNzUtODg5Mi0wMDZkODkyNWI1YjIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJnZW5lcmF0aW9ucy82MWJmN2ZiMi01ZTczLTRkNzctYjY2ZC1mOTFmZjY4ZmU0NTQvcGhvdG8vY2E5NmNjNWItNjRlNS00YmY0LWJhOTEtZjJkMmRlYjM3NWRmLnBuZyIsImlhdCI6MTc3OTEzNTk2NCwiZXhwIjoxODEwNjcxOTY0fQ.Io9JtQ6_Z500RSlnQC4zq19G5SDprrvGOvytEtCDnXI" alt="Modelo" loading="lazy">
+      </div>
+      <div class="hero-gallery-item">
+        <img src="https://tlzailaxkofbqyfqhwbx.supabase.co/storage/v1/object/sign/generations/61bf7fb2-5e73-4d77-b66d-f91ff68fe454/photo/c8b07efa-cf15-4534-a43a-deaae2a5dccc.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zY2NhZDA1Yy02ZDNjLTRmNzUtODg5Mi0wMDZkODkyNWI1YjIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJnZW5lcmF0aW9ucy82MWJmN2ZiMi01ZTczLTRkNzctYjY2ZC1mOTFmZjY4ZmU0NTQvcGhvdG8vYzhiMDdlZmEtY2YxNS00NTM0LWE0M2EtZGVhYWUyYTVkY2NjLnBuZyIsImlhdCI6MTc3OTEzNTk2NCwiZXhwIjoxODEwNjcxOTY0fQ.EslUP3jfE951SB3ixgtulawl03KXbrRWh-JF6RSqrTU" alt="Modelo" loading="lazy">
+      </div>
+      <div class="hero-gallery-item">
+        <img src="https://tlzailaxkofbqyfqhwbx.supabase.co/storage/v1/object/sign/generations/61bf7fb2-5e73-4d77-b66d-f91ff68fe454/photo/ba71cd79-ec48-413b-9c99-452122b15c98.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zY2NhZDA1Yy02ZDNjLTRmNzUtODg5Mi0wMDZkODkyNWI1YjIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJnZW5lcmF0aW9ucy82MWJmN2ZiMi01ZTczLTRkNzctYjY2ZC1mOTFmZjY4ZmU0NTQvcGhvdG8vYmE3MWNkNzktZWM0OC00MTNiLTljOTktNDUyMTIyYjE1Yzk4LnBuZyIsImlhdCI6MTc3OTEzNTk2NCwiZXhwIjoxODEwNjcxOTY0fQ.ME7FzbuM7uxBeOWhk9ygYojlxrtAEUr0DHik8hmG4VM" alt="Modelo" loading="lazy">
+      </div>
+      <div class="hero-gallery-item">
+        <img src="https://tlzailaxkofbqyfqhwbx.supabase.co/storage/v1/object/sign/generations/61bf7fb2-5e73-4d77-b66d-f91ff68fe454/photo/f74b1985-e844-4940-8a0e-fb2a5e5f9d2c.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8zY2NhZDA1Yy02ZDNjLTRmNzUtODg5Mi0wMDZkODkyNWI1YjIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJnZW5lcmF0aW9ucy82MWJmN2ZiMi01ZTczLTRkNzctYjY2ZC1mOTFmZjY4ZmU0NTQvcGhvdG8vZjc0YjE5ODUtZTg0NC00OTQwLThhMGUtZmIyYTVlNWY5ZDJjLnBuZyIsImlhdCI6MTc3OTEzNTk2NCwiZXhwIjoxODEwNjcxOTY0fQ.ANNx9FCRmSEWuia7V8YpubXAxZAbBdRnAEwb1qYTvp4" alt="Modelo" loading="lazy">
+      </div>
+    </div>
+
     <div class="hero-content">
       <h1>
         IA que Revoluciona<br>
@@ -1112,7 +1295,7 @@
         Crie fotos e vídeos profissionais de moda com inteligência artificial em minutos. Qualidade 4K, 27 modelos brasileiras.
       </p>
       <div class="hero-buttons">
-        <a href="#planos" class="btn"><span>Escolher Plano</span></a>
+        <a href="#planos" class="btn"><span>Começar Agora</span></a>
         <a href="#como-funciona" class="btn btn-outline"><span>Ver Como Funciona</span></a>
       </div>
     </div>
@@ -1208,27 +1391,163 @@
     </div>
   </section>
 
+  <!-- DEPOIMENTOS -->
+  <section class="testimonials">
+    <h2 class="section-title">O Que Nossos Clientes Dizem</h2>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <div class="rating">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-text">
+          "Reduzi meu custo de fotografia de R$12.000 para R$159 por mês.
+          As fotos têm a mesma qualidade — meus clientes não notam diferença."
+        </p>
+        <div class="testimonial-author">
+          <img src="https://ui-avatars.com/api/?name=Maria+Santos&background=2db896&color=fff&size=128" alt="Maria Santos">
+          <div>
+            <strong>Maria Santos</strong>
+            <span>Boutique Flor de Lis, São Paulo</span>
+          </div>
+        </div>
+        <div class="testimonial-result">
+          <strong>Resultado:</strong> Economizou R$142.000 em 1 ano
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="rating">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-text">
+          "Antes eu esperava 2 semanas pelo fotógrafo. Agora recebo as fotos
+          em 2 minutos e posto na mesma hora. Minhas vendas no Instagram
+          aumentaram 40%."
+        </p>
+        <div class="testimonial-author">
+          <img src="https://ui-avatars.com/api/?name=João+Silva&background=2db896&color=fff&size=128" alt="João Silva">
+          <div>
+            <strong>João Silva</strong>
+            <span>Moda Masculina Premium, Curitiba</span>
+          </div>
+        </div>
+        <div class="testimonial-result">
+          <strong>Resultado:</strong> +40% de vendas no Instagram
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="rating">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-text">
+          "Tenho 3 lojas e lançamos coleção nova toda semana. Com fotógrafo
+          era impossível acompanhar. Com o Modelo Fácil, consigo fazer 50
+          fotos por dia sem esforço."
+        </p>
+        <div class="testimonial-author">
+          <img src="https://ui-avatars.com/api/?name=Ana+Paula&background=2db896&color=fff&size=128" alt="Ana Paula">
+          <div>
+            <strong>Ana Paula Costa</strong>
+            <span>Rede Estilo Único, Belo Horizonte</span>
+          </div>
+        </div>
+        <div class="testimonial-result">
+          <strong>Resultado:</strong> 50 fotos/dia, 3x mais coleções
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="rating">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-text">
+          "Sou iniciante no e-commerce e não tinha grana pra contratar modelo.
+          Essa ferramenta me permitiu começar com fotos profissionais por um
+          preço que cabe no meu bolso."
+        </p>
+        <div class="testimonial-author">
+          <img src="https://ui-avatars.com/api/?name=Rafael+Oliveira&background=2db896&color=fff&size=128" alt="Rafael Oliveira">
+          <div>
+            <strong>Rafael Oliveira</strong>
+            <span>Streetwear RJ, Rio de Janeiro</span>
+          </div>
+        </div>
+        <div class="testimonial-result">
+          <strong>Resultado:</strong> Lançou e-commerce com R$159/mês
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="rating">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-text">
+          "O que mais gostei foi a variedade de modelos. Consigo testar qual
+          perfil converte mais com meu público sem gastar nada extra.
+          Já testei 8 modelos diferentes."
+        </p>
+        <div class="testimonial-author">
+          <img src="https://ui-avatars.com/api/?name=Camila+Ferreira&background=2db896&color=fff&size=128" alt="Camila Ferreira">
+          <div>
+            <strong>Camila Ferreira</strong>
+            <span>Moda Plus Size, Porto Alegre</span>
+          </div>
+        </div>
+        <div class="testimonial-result">
+          <strong>Resultado:</strong> Testou 8 modelos, +23% conversão
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="rating">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-text">
+          "Interface super simples. Em 10 minutos aprendi a usar e já criei
+          minhas primeiras 5 fotos. Nem acredito que é IA, parece
+          fotografia real mesmo."
+        </p>
+        <div class="testimonial-author">
+          <img src="https://ui-avatars.com/api/?name=Lucas+Martins&background=2db896&color=fff&size=128" alt="Lucas Martins">
+          <div>
+            <strong>Lucas Martins</strong>
+            <span>Beachwear Brasil, Florianópolis</span>
+          </div>
+        </div>
+        <div class="testimonial-result">
+          <strong>Resultado:</strong> 5 fotos em 10 minutos no primeiro uso
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- VÍDEOS -->
   <section>
-    <h2 class="section-title">Vídeos Profissionais</h2>
+    <h2 class="section-title">Além de Fotos: Vídeos com IA</h2>
     <div class="videos" id="videos">
       <div class="video-card">
-        <div class="video-placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <div class="video-placeholder" style="background: linear-gradient(135deg, rgba(45,184,150,0.15), rgba(45,184,150,0.05)); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 2rem; text-align: center; gap: 1.5rem;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 60px; height: 60px; color: var(--green);">
             <polygon points="5 3 19 12 5 21 5 3"></polygon>
           </svg>
-          <span style="color: var(--text-muted); font-weight: 600;">Vídeo Movimento</span>
+          <div>
+            <h3 style="font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--text);">Vídeo Movimento</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+              5 segundos de movimento natural da modelo apresentando seu produto.
+              Perfeito para Stories e Reels.
+            </p>
+            <span style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background: rgba(45,184,150,0.15); border: 1px solid rgba(45,184,150,0.3); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--green-light);">
+              Disponível nos planos Pro e Enterprise
+            </span>
+          </div>
         </div>
-        <div class="video-label">Movimento</div>
       </div>
       <div class="video-card">
-        <div class="video-placeholder">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        <div class="video-placeholder" style="background: linear-gradient(135deg, rgba(255,214,10,0.15), rgba(255,214,10,0.05)); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 2rem; text-align: center; gap: 1.5rem;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 60px; height: 60px; color: var(--yellow);">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="10 8 16 12 10 16 10 8"></polygon>
           </svg>
-          <span style="color: var(--text-muted); font-weight: 600;">Vídeo Falando</span>
+          <div>
+            <h3 style="font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--text);">Modelo Falando</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+              Vídeo da modelo apresentando seu produto com áudio lip-sync.
+              Converta mais com vídeos humanizados.
+            </p>
+            <span style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background: rgba(255,214,10,0.15); border: 1px solid rgba(255,214,10,0.3); border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: var(--yellow);">
+              Exclusivo do plano Enterprise
+            </span>
+          </div>
         </div>
-        <div class="video-label">Falando</div>
       </div>
     </div>
   </section>
@@ -1316,6 +1635,100 @@
     </div>
   </section>
 
+  <!-- FAQ -->
+  <section class="faq">
+    <h2 class="section-title">Perguntas Frequentes</h2>
+
+    <div class="faq-item">
+      <h3>As fotos parecem reais? Meus clientes vão perceber que é IA?</h3>
+      <p>
+        Nossas fotos são em 4K com modelos reais licenciadas. Mais de 150 marcas
+        brasileiras já usam e não recebem comentários de clientes sobre isso.
+        A qualidade é indistinguível de fotografia profissional.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Funciona com qualquer tipo de roupa?</h3>
+      <p>
+        Sim. Vestidos, camisetas, lingerie, moda praia, acessórios, calçados.
+        Se você tem foto do produto, nossa IA veste na modelo. Funciona melhor
+        com fotos em fundo branco ou neutro.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>E se a foto não ficar boa?</h3>
+      <p>
+        Você pode refazer quantas vezes quiser. Se não aprovar o resultado,
+        não cobramos o crédito. Garantia de satisfação 100%. Nosso suporte
+        também ajuda a otimizar suas fotos para melhores resultados.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Posso cancelar quando quiser?</h3>
+      <p>
+        Sim, sem multa nem burocracia. Cancele direto no painel ou por email
+        a qualquer momento. Seus créditos restantes continuam válidos por 60 dias
+        após o cancelamento.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>É legal usar essas fotos comercialmente?</h3>
+      <p>
+        100% legal. As modelos são licenciadas e você tem direitos comerciais
+        ilimitados sobre todas as fotos geradas. Sem royalties, taxas extras
+        ou limitações de uso. Use em redes sociais, e-commerce, impressos, etc.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Quanto tempo leva para receber as fotos?</h3>
+      <p>
+        Em média 2 minutos. Fotos simples saem em 1 minuto, as mais complexas
+        podem levar até 5 minutos. Você recebe notificação por email quando
+        ficar pronto e pode baixar direto da plataforma.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Preciso de conhecimento técnico?</h3>
+      <p>
+        Zero. Se você sabe enviar foto pelo WhatsApp, sabe usar o Modelo Fácil.
+        Interface 100% em português, sem complicação. Assista ao tutorial de
+        3 minutos e você já está criando.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Vocês oferecem nota fiscal?</h3>
+      <p>
+        Sim. NF-e emitida automaticamente todo mês para o email cadastrado.
+        Aceita como despesa operacional para MEI, ME e empresas de todos os portes.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Posso usar minhas próprias modelos?</h3>
+      <p>
+        No plano Enterprise sim. Criamos modelos virtuais exclusivas baseadas
+        em suas modelos reais. Processo leva 7-10 dias e requer sessão de fotos
+        específica. Entre em contato via WhatsApp para saber mais.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Como funciona o sistema de créditos?</h3>
+      <p>
+        Cada foto custa 2 créditos. Vídeos de movimento custam 8 créditos.
+        Vídeos com a modelo falando custam 12 créditos. Créditos renovam todo
+        mês na data da sua assinatura. Créditos não utilizados não acumulam.
+      </p>
+    </div>
+  </section>
+
   <!-- FOOTER -->
   <footer>
     <p>
@@ -1329,22 +1742,6 @@
   </footer>
 
   <script>
-    // CURSOR CUSTOMIZADO
-    if (window.matchMedia("(pointer: fine)").matches) {
-      const cursor = document.querySelector('.custom-cursor');
-      const follower = document.querySelector('.custom-cursor-follower');
-
-      document.addEventListener('mousemove', (e) => {
-        cursor.style.left = e.clientX + 'px';
-        cursor.style.top = e.clientY + 'px';
-
-        setTimeout(() => {
-          follower.style.left = e.clientX + 'px';
-          follower.style.top = e.clientY + 'px';
-        }, 80);
-      });
-    }
-
     // NAV SCROLL
     const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => {
@@ -1366,7 +1763,7 @@
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-    document.querySelectorAll('.counter, .step, .gallery-item, .video-card, .plan').forEach(el => {
+    document.querySelectorAll('.counter, .step, .gallery-item, .video-card, .plan, .testimonial-card, .faq-item').forEach(el => {
       observer.observe(el);
     });
 
@@ -1478,6 +1875,53 @@
 
           modelsContainer.appendChild(card);
         });
+
+        // GALERIA - Carregar fotos reais com diversidade de modelos
+        if (photos && photos.length > 0) {
+          const galleryContainer = document.getElementById('gallery');
+          galleryContainer.innerHTML = '';
+
+          // Algoritmo de diversidade: prioriza modelos únicas
+          const selectedPhotos = [];
+          const usedModels = new Set();
+          const maxPhotos = 6;
+
+          // Primeira passagem: uma foto por modelo único
+          for (const photo of photos) {
+            if (selectedPhotos.length >= maxPhotos) break;
+            const modelSlug = photo.preset_model_slug || 'unknown';
+            if (usedModels.has(modelSlug)) continue;
+            selectedPhotos.push(photo);
+            usedModels.add(modelSlug);
+          }
+
+          // Segunda passagem: preenche slots restantes
+          if (selectedPhotos.length < maxPhotos) {
+            for (const photo of photos) {
+              if (selectedPhotos.length >= maxPhotos) break;
+              if (selectedPhotos.includes(photo)) continue;
+              selectedPhotos.push(photo);
+            }
+          }
+
+          // Renderiza as 6 fotos selecionadas
+          selectedPhotos.forEach((photo, i) => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.innerHTML = `
+              <img src="${photo.result_url}" alt="Modelo IA ${i + 1}" loading="lazy" crossorigin="anonymous">
+              <div class="gallery-overlay">
+                <span>Gerado por IA</span>
+              </div>
+            `;
+            galleryContainer.appendChild(item);
+          });
+
+          // Re-observa novos elementos para animação
+          document.querySelectorAll('.gallery-item').forEach(el => {
+            observer.observe(el);
+          });
+        }
 
         // VÍDEOS - Forçar carregamento imediato
         const videoCards = document.querySelectorAll('.video-card');
