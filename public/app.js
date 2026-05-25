@@ -1084,22 +1084,31 @@ function selectCard(type, id, multi = false) {
   }
 }
 
-function selectVariant(type, scenarioId, variantId) {
+function selectVariant(type, parentId, variantId) {
   // Remove seleção de todas as variantes
   document.querySelectorAll('.variant-card').forEach(v => v.classList.remove('selected'));
 
   // Seleciona a variante clicada
-  const variantEl = document.getElementById(`${type}_${scenarioId}_${variantId}`);
+  const variantEl = document.getElementById(`${type}_${parentId}_${variantId}`);
   if (variantEl) {
     variantEl.classList.add('selected');
   }
 
-  // Atualiza estado
-  const scenario = SCENARIOS.find(s => s.id === scenarioId);
-  if (scenario && scenario.variants) {
-    state.selectedVariant = scenario.variants.find(v => v.id === variantId);
-    // Habilita botão de próximo step
-    document.getElementById('btnNextStep3').disabled = false;
+  // Dispatch: atualiza estado baseado no tipo
+  if (type === 'scenario') {
+    const scenario = SCENARIOS.find(s => s.id === parentId);
+    if (scenario && scenario.variants) {
+      state.selectedVariant = scenario.variants.find(v => v.id === variantId);
+      // Habilita botão de próximo step
+      document.getElementById('btnNextStep3').disabled = false;
+    }
+  } else if (type === 'movement') {
+    const movement = MOVEMENT_STYLES.find(m => m.id === parentId);
+    if (movement && movement.variants) {
+      state.selectedMovementVariant = movement.variants.find(v => v.id === variantId);
+      // Habilita botão de próximo step do vídeo
+      document.getElementById('btnNextVideoStep2').disabled = false;
+    }
   }
 }
 
