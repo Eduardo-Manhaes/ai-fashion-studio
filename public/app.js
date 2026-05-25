@@ -954,8 +954,6 @@ const state = {
   isGenerating: false,
 };
 
-const CREDIT_COST_USD = 0.075;
-
 const IMAGE_CREDITS = {
   fast: { '1k': 1, '2k': 2, '4k': 3 },
   balanced: { '1k': 2, '2k': 3, '4k': 4 },
@@ -1359,7 +1357,7 @@ function buildVideoPrompt() {
 }
 
 // ===== CLEAN BASE64 =====
-// FASHN API precisa do prefixo data:image/...;base64, completo, então não removemos
+// API de imagem precisa do prefixo data:image/...;base64, completo, então não removemos
 const getCleanBase64 = (b64) => b64 || null;
 
 // ===== COST =====
@@ -1368,7 +1366,6 @@ function updateImageCost() {
   const res = document.getElementById('resolutionSelect').value;
   const credits = IMAGE_CREDITS[mode]?.[res] ?? 2;
   document.getElementById('costCredits').textContent = `${credits} crédito${credits > 1 ? 's' : ''}`;
-  document.getElementById('costDollars').textContent = (credits * CREDIT_COST_USD).toFixed(2);
 }
 
 function updateVideoCost() {
@@ -1377,7 +1374,6 @@ function updateVideoCost() {
   const costs = { 5: { '720p': 2, '1080p': 3 }, 10: { '720p': 4, '1080p': 6 } };
   const credits = costs[dur]?.[res] ?? 3;
   document.getElementById('videoCostCredits').textContent = `${credits} crédito${credits > 1 ? 's' : ''}`;
-  document.getElementById('videoCostDollars').textContent = (credits * CREDIT_COST_USD).toFixed(2);
 }
 
 
@@ -1869,10 +1865,10 @@ async function generateVideo() {
       throw new Error(run.error);
     }
 
-    const provider = state.videoStyle === 'talking' ? 'veo' : 'kling';
-    const providerName = provider === 'veo' ? 'Veo 3' : 'Kling';
+    const provider = state.videoStyle === 'talking' ? 'talking' : 'movement';
+    const providerName = 'IA de vídeo';
 
-    console.log('[VIDEO] Mostrando toast de sucesso para provider:', providerName);
+    console.log('[VIDEO] Mostrando toast de sucesso');
 
     // NOVO: Fica na página de geração mostrando progresso
     setVideoStatus(`Vídeo ${providerName} em processamento... ⏳`);
