@@ -917,7 +917,7 @@ const MOVEMENT_STYLES = [
       {
         id: 'v1',
         label: 'Atitude Natural',
-        prompt: 'Brazilian fashion model in professional studio, starting with gentle fabric adjustment with fingertips showing garment drape, then gracefully touching hair to frame face, followed by smooth natural turn toward camera with confident eye contact, all in one fluid choreographed sequence, soft diffused studio lighting highlighting fabric texture and fit, warm professional atmosphere, model moves with natural elegance and poise, cinematic slow motion captures each gesture, ending with close engagement with viewer'
+        prompt: 'Brazilian fashion model in professional studio, FIRST gracefully runs fingers through hair framing face with natural elegance, THEN performs smooth complete 360-degree turn showing garment from all angles, FINALLY camera zooms in close as model places hand confidently on hip revealing fabric details and fit with subtle body movement, each action flows sequentially in choreographed sequence, soft diffused studio lighting, cinematic slow motion, warm professional atmosphere, 4K quality'
       },
       {
         id: 'v2',
