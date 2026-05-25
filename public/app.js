@@ -1016,9 +1016,6 @@ function selectCard(type, id, multi = false) {
       const scenario = SCENARIOS.find(s => s.id === id);
       state.selectedScenario = scenario;
       state.selectedVariant = null; // Reset variant quando troca cenário
-      state.bgImageBase64 = null;
-      document.getElementById('bgUploadZone').classList.remove('has-image');
-      document.getElementById('bgPreview').src = '';
 
       // Se cenário tem variantes, mostra/oculta o container de variantes
       if (scenario && scenario.hasVariants) {
