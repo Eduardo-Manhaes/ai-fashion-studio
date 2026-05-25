@@ -860,6 +860,9 @@ const POSES = [
   { id: 'p8', icon: '📐', label: 'Meio corpo', prompt: 'half body shot, waist up' },
 ];
 
+// Sufixo de zoom universal para todos os vídeos de movimento
+const MOVEMENT_ZOOM_SUFFIX = ', cinematic camera slowly zooming in toward the garment in the final seconds, revealing fabric texture, stitching and clothing details in sharp focus, 4K cinematic finish';
+
 const MOVEMENT_STYLES = [
   {
     id: 'm1',
