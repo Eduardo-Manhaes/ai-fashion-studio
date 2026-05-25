@@ -944,6 +944,7 @@ const state = {
 
   videoStyle: null,         // 'movement' | 'talking'
   selectedMovement: null,
+  selectedMovementVariant: null,  // Separate from selectedVariant (scenarios)
   selectedSessionImage: null,
 
   resultImageUrl: null,
