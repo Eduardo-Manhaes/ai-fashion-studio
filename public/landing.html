@@ -1848,49 +1848,8 @@
           });
         }
 
-        // VÍDEOS - Carregar vídeos específicos selecionados
-        const videoCards = document.querySelectorAll('.video-card');
-
-        // SEMPRE torna os cards visíveis
-        videoCards.forEach(card => card.classList.add('visible'));
-
-        // IDs dos vídeos específicos para exibir na landing
-        const featuredVideoIds = [
-          'f7fcb067-aa95-43c0-a77a-12bc779448d2', // 25/05 16:38
-          '9563dbd8-505a-444b-b676-e56f0ea82687'  // 26/05 12:19
-        ];
-
-        if (videos && videos.length > 0) {
-          // Filtra e ordena vídeos pelos IDs específicos
-          const featuredVideos = featuredVideoIds
-            .map(id => videos.find(v => v.id === id))
-            .filter(v => v && v.result_url);
-
-          featuredVideos.forEach((video, i) => {
-            if (videoCards[i] && video.result_url) {
-              const vid = document.createElement('video');
-              vid.src = video.result_url;
-              vid.autoplay = true;
-              vid.muted = true;
-              vid.loop = true;
-              vid.playsInline = true;
-              vid.preload = 'auto';
-              vid.setAttribute('loading', 'eager');
-
-              videoCards[i].appendChild(vid);
-
-              vid.onloadeddata = function() {
-                console.log('Vídeo ' + i + ' carregado!');
-                const placeholder = videoCards[i].querySelector('.video-placeholder');
-                if (placeholder) placeholder.remove();
-              };
-
-              vid.onerror = function(e) {
-                console.error('Erro vídeo ' + i + ':', vid.error);
-              };
-            }
-          });
-        }
+        // VÍDEOS - Já estão hardcoded no HTML, não precisa carregar dinamicamente
+        console.log('Vídeos já inseridos no HTML');
 
       })
       .catch(err => {
