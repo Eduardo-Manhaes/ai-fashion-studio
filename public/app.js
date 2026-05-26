@@ -861,7 +861,7 @@ const POSES = [
 ];
 
 // Sufixo de zoom universal para todos os vídeos de movimento
-const MOVEMENT_ZOOM_SUFFIX = ', then camera performs quick snap zoom directly onto the garment fabric revealing texture and clothing details in sharp focus, holds on detail for 2 seconds, then snaps back quickly to full body wide shot, model moving at natural real-life speed throughout, no slow motion';
+const MOVEMENT_ZOOM_SUFFIX = ', then camera performs a moderate zoom toward the garment revealing fabric texture and clothing details clearly without cutting the model, holds on detail for 2 seconds showing texture and fit in context, then snaps back quickly to full body wide shot, model moving at natural real-life speed throughout, no slow motion, no extreme close-up, maintain model in frame during zoom';
 
 const MOVEMENT_STYLES = [
   {
