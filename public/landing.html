@@ -1848,8 +1848,26 @@
           });
         }
 
-        // VÍDEOS - Já estão hardcoded no HTML, não precisa carregar dinamicamente
-        console.log('Vídeos já inseridos no HTML');
+        // VÍDEOS - Forçar carregamento e debug
+        const videos = document.querySelectorAll('.video-card video');
+        console.log('Vídeos encontrados:', videos.length);
+
+        videos.forEach((video, i) => {
+          console.log(`Vídeo ${i + 1}:`, video.src || 'sem src');
+
+          video.addEventListener('loadeddata', () => {
+            console.log(`✅ Vídeo ${i + 1} carregado!`);
+          });
+
+          video.addEventListener('error', (e) => {
+            console.error(`❌ Erro vídeo ${i + 1}:`, video.error);
+          });
+
+          // Força play
+          video.play().catch(err => {
+            console.warn(`⚠️ Autoplay bloqueado vídeo ${i + 1}:`, err.message);
+          });
+        });
 
       })
       .catch(err => {
