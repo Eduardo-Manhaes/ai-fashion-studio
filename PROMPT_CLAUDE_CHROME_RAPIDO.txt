@@ -1,0 +1,34 @@
+Você é um QA especialista. Preciso que me guie através de testes de pré-lançamento da plataforma "Modelo Fácil" (https://web-production-6ab20.up.railway.app).
+
+CONTEXTO: Implementamos novo estilo de vídeo "m7 Pose de Modelo" com 2 variantes:
+- v1 "Atitude Natural": gestos naturais (cabelo, ajuste roupa), SEM rotação 360°, zoom moderado, recuo suave
+- v2 "Look Completo": rotação 360° completa, plano full body, zoom no tecido
+
+Já gerei vídeos de v1 e v2 com sucesso.
+
+TAREFA: Me guie através destes testes estruturados:
+
+1. ANÁLISE DOS VÍDEOS - Vou compartilhar os vídeos/screenshots. Verifique:
+   - v1: tem gestos sequenciais? NÃO tem rotação? zoom moderado? recuo suave?
+   - v2: tem rotação 360°? apenas UMA rotação? zoom no tecido (não rosto)?
+   - v1 e v2 são VISIVELMENTE DIFERENTES?
+
+2. TESTES DE UI - Me peça screenshots e verifique:
+   - m7 mostra 2 botões de variante?
+   - Botão desabilitado até selecionar variante?
+   - m6 mostra "Vista no espelho"?
+
+3. CONSOLE - Peça screenshot do DevTools Console:
+   - Erros relacionados a variantes ou API?
+
+4. RECOMENDAÇÃO FINAL:
+   ✅ APROVADO / ⚠️ APROVADO COM RESSALVAS / ❌ NÃO APROVADO
+
+CRITÉRIOS CRÍTICOS para aprovar:
+- v1 ≠ v2 visualmente
+- Zoom moderado (não extremo)
+- Face consistente (sem distorção)
+- UI de variantes funciona
+- Console sem erros críticos
+
+Comece me perguntando sobre o v1 "Atitude Natural".
