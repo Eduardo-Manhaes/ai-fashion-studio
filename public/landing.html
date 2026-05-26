@@ -1870,14 +1870,25 @@
           });
         }
 
-        // VÍDEOS - Forçar carregamento imediato
+        // VÍDEOS - Carregar vídeos específicos selecionados
         const videoCards = document.querySelectorAll('.video-card');
 
         // SEMPRE torna os cards visíveis
         videoCards.forEach(card => card.classList.add('visible'));
 
+        // IDs dos vídeos específicos para exibir na landing
+        const featuredVideoIds = [
+          'f7fcb067-aa95-43c0-a77a-12bc779448d2', // 25/05 16:38
+          '9563dbd8-505a-444b-b676-e56f0ea82687'  // 26/05 12:19
+        ];
+
         if (videos && videos.length > 0) {
-          videos.slice(0, 2).forEach((video, i) => {
+          // Filtra e ordena vídeos pelos IDs específicos
+          const featuredVideos = featuredVideoIds
+            .map(id => videos.find(v => v.id === id))
+            .filter(v => v && v.result_url);
+
+          featuredVideos.forEach((video, i) => {
             if (videoCards[i] && video.result_url) {
               const vid = document.createElement('video');
               vid.src = video.result_url;
@@ -1885,8 +1896,8 @@
               vid.muted = true;
               vid.loop = true;
               vid.playsInline = true;
-              vid.preload = 'auto'; // Força preload
-              vid.setAttribute('loading', 'eager'); // Desabilita lazy loading
+              vid.preload = 'auto';
+              vid.setAttribute('loading', 'eager');
 
               videoCards[i].appendChild(vid);
 
