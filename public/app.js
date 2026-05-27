@@ -933,7 +933,7 @@ const MOVEMENT_STYLES = [
     label: 'Selfie no espelho',
     sub: 'Celular no espelho',
     scenarioOnly: 's4',
-    prompt: 'A real person actively taking a mirror selfie, photorealistic human face with natural skin texture, visible pores, natural skin imperfections, no beauty filter, no skin smoothing, no AI appearance, real human face, subtle continuous natural body movement including breathing and slight sway, one arm raised holding smartphone pointed at mirror, arm stays raised throughout video, casual everyday selfie moment, natural room lighting, reflection visible in mirror showing outfit, person visibly alive and moving at all times, no freeze frames, cinematic realism, shot on iPhone, raw unfiltered natural appearance'
+    prompt: 'A real person actively taking a mirror selfie, photorealistic human face with natural skin texture, visible pores, natural skin imperfections, no beauty filter, no skin smoothing, no AI appearance, real human face, subtle continuous natural body movement including breathing and slight sway, one arm raised holding smartphone pointed at mirror, arm stays raised throughout video, casual everyday selfie moment, natural room lighting, reflection visible in mirror showing outfit, person visibly alive and moving at all times, no freeze frames, cinematic realism, shot on iPhone, raw unfiltered natural appearance, natural real-life speed, no slow motion, movements at normal everyday human pace, casual and spontaneous timing'
   }
 ];
 
