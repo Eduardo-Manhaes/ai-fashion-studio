@@ -1395,6 +1395,11 @@ function buildVideoPrompt() {
       return 'Fashion model standing naturally in elegant studio setting, subtle natural movement, professional fashion photography, cinematic quality, soft studio lighting, 4K resolution' + MOVEMENT_ZOOM_SUFFIX;
     }
 
+    // Exceção: m8 "Selfie no espelho" já tem contexto completo, ignora cenário
+    if (movement.id === 'm8') {
+      return movementPrompt + MOVEMENT_ZOOM_SUFFIX;
+    }
+
     // Combina cenário + movimento
     const fullPrompt = scenarioPrompt
       ? `${scenarioPrompt}. ${movementPrompt}`
