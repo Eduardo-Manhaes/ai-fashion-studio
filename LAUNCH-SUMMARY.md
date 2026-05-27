@@ -1,8 +1,8 @@
 # 🚀 RESUMO EXECUTIVO — Lançamento Modelo Fácil
 
 **Status:** ✅ **PRONTO PARA PRODUÇÃO**  
-**Data:** 21 de Maio de 2026  
-**Conclusão:** Dia 1, Dia 2 e Dia 3 completos com 100% de aprovação nos testes
+**Última atualização:** 27 de Maio de 2026  
+**Conclusão:** Sistema completo com funcionalidades avançadas de vídeo e cenários
 
 ---
 
@@ -16,6 +16,61 @@
 | **Taxa de Sucesso** | **100%** |
 | **Ambiente** | Railway Production |
 | **URL** | https://web-production-6ab20.up.railway.app |
+
+---
+
+## 🎬 FUNCIONALIDADES AVANÇADAS DE VÍDEO (Maio 22-27)
+
+### **Sistema de Cenários e Movimentos**
+1. ✅ **6 cenários profissionais:**
+   - s1 Parede ao fundo (3 variantes: Branca, Madeira, Boiserie)
+   - s2 Boutique brasileira
+   - s3 Lojas do Brás (2 variantes: Popular, Organizada)
+   - s4 Selfie no espelho (exclusivo)
+   - s5 Ambiente natural
+   - s6 Cenário urbano
+
+2. ✅ **8 estilos de movimento:**
+   - m1 Natural (recomendado)
+   - m2 Vento no look
+   - m3 Modelo andando
+   - m4 Gesto suave
+   - m5 Giro elegante
+   - m6 Vista no espelho
+   - m7 Pose de Modelo (2 variantes cinematográficas)
+   - m8 Selfie no espelho (exclusivo para s4)
+
+3. ✅ **Integração cenário + movimento:**
+   - Prompts combinados automaticamente
+   - Realismo de pele especial para s4+m1
+   - Filtragem dinâmica (m8 exclusivo para s4)
+
+### **Prompts Cinematográficos Profissionais**
+1. ✅ **m7 "Pose de Modelo":**
+   - v1 Atitude Natural: 6 cenas temporais (0-10s)
+   - v2 Look Completo: 360° rotation + zoom cinematográfico
+
+2. ✅ **m8 "Selfie no espelho":**
+   - Realismo fotográfico (skin texture, poros visíveis)
+   - Sem filtros de beleza ou suavização
+   - Movimento contínuo natural
+
+### **Correções de Qualidade**
+1. ✅ **Fix deformação de roupa:**
+   - Zoom universal removido (causava distorção)
+   - Zoom mantido apenas em m7 (cinematográfico)
+
+2. ✅ **Fix movimento natural m1:**
+   - De foto estática → movimento vivo
+   - Velocidade humana natural
+   - Corpo em movimento contínuo
+
+3. ✅ **Fix câmera lenta:**
+   - Adicionado "natural real-life speed" em todos os prompts
+   - Sem slow motion indesejado
+
+**Commits:** 7+ relacionados a cenários e movimentos  
+**Período:** 22-27 de Maio de 2026
 
 ---
 
@@ -84,6 +139,11 @@
 - Rate limiting ativo
 - Security headers configurados
 - Landing page + App + Planos
+- **6 cenários profissionais** (3 com variantes)
+- **8 estilos de movimento** (2 com variantes)
+- **Prompts cinematográficos** (m7 com cenas temporais)
+- **Realismo fotográfico** (m8 selfie no espelho)
+- **Integração cenário + movimento**
 
 ### **⏳ PENDENTE PARA GO-LIVE REAL**
 1. **Teste manual completo** (signup → checkout → geração → créditos)

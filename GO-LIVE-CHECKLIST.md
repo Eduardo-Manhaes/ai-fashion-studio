@@ -1,6 +1,6 @@
 # ✅ CHECKLIST DE GO-LIVE — Modelo Fácil
 
-**Data de Validação:** 21 de Maio de 2026  
+**Data de Validação:** 27 de Maio de 2026  
 **Ambiente:** Railway Production  
 **URL:** https://web-production-6ab20.up.railway.app
 
@@ -41,16 +41,38 @@
 - [x] RPC refund_credits funcional
 - [x] Sistema de quota mandatório (BYPASS removido)
 
-### **7. QUEUE SYSTEM** (1/1) ✅
+### **7. SISTEMA DE CENÁRIOS E MOVIMENTOS** (8/8) ✅
+- [x] 6 cenários implementados (s1-s6)
+- [x] 3 cenários com variantes (s1, s3, m7)
+- [x] 8 estilos de movimento (m1-m8)
+- [x] m7 Pose de Modelo (2 variantes cinematográficas)
+- [x] m8 Selfie no espelho (exclusivo para s4)
+- [x] Integração cenário + movimento em buildVideoPrompt()
+- [x] Filtragem dinâmica (scenarioOnly)
+- [x] Realismo de pele especial (s4+m1)
+
+### **8. CORREÇÕES DE QUALIDADE DE VÍDEO** (4/4) ✅
+- [x] Fix deformação de roupa (zoom universal removido)
+- [x] Fix movimento m1 Natural (de estático para vivo)
+- [x] Fix câmera lenta (velocidade natural forçada)
+- [x] Fix realismo fotográfico m8 (skin texture, sem filtros)
+
+### **9. QUEUE SYSTEM** (1/1) ✅
 - [x] MockQueue ativo (processamento inline)
 - [ ] Redis/Upstash (opcional - adiado para escala)
 
-### **8. CÓDIGO & DEPLOY** (5/5) ✅
-- [x] Git: 5 commits do Dia 3 realizados
+### **10. CÓDIGO & DEPLOY** (5/5) ✅
+- [x] Git: commits regulares (22-27 Mai: cenários e movimentos)
 - [x] Railway: Deploy automático ativo
 - [x] Sem credenciais hardcoded
 - [x] .env.example atualizado
 - [x] .gitignore protegendo arquivos sensíveis
+
+### **11. DOCUMENTAÇÃO** (4/4) ✅
+- [x] docs/CENARIOS_E_MOVIMENTOS.md (completo)
+- [x] LAUNCH-SUMMARY.md (atualizado)
+- [x] GO-LIVE-CHECKLIST.md (atualizado)
+- [x] Specs técnicos em docs/superpowers/specs/
 
 ---
 
