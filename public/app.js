@@ -870,7 +870,7 @@ const MOVEMENT_STYLES = [
     icon: '✨',
     label: 'Natural',
     sub: 'Recomendado',
-    prompt: 'Fashion model standing naturally, subtle breathing movement, hair slightly swaying, soft studio lighting, cinematic 4K, shallow depth of field, professional fashion photography motion, elegant and confident posture, camera static then quick pull back, natural real-life speed, no slow motion',
+    prompt: 'Brazilian fashion model standing in professional studio with soft warm lighting, model has subtle natural body movement at real-life speed including gentle breathing, slight weight shift from one foot to the other, natural hair movement, confident and relaxed posture, camera completely static throughout entire video, full body medium shot showing complete outfit, no zoom, no camera movement, no slow motion, natural real-life movement only',
     badge: 'Melhor resultado'
   },
   {
