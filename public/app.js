@@ -1334,13 +1334,23 @@ function buildVideoPrompt() {
     return `${modelDesc} em plano médio da cintura para cima, mostrando a roupa claramente. ${scenario} A modelo olha diretamente para a câmera e fala em português brasileiro com dicção clara e natural, lábios se movendo de forma realista e perfeitamente sincronizada com a fala, sem distorção labial, sem aceleração artificial, velocidade de fala pausada e normal. Fala com ${toneDesc}: "${script}". Iluminação de estúdio profissional suave e quente, câmera completamente estática, rosto e roupa em foco nítido, qualidade cinematográfica 4K.`;
 
   } else {
-    // Vídeo de movimento — usa o prompt do movimento selecionado (variante se disponível)
+    // Vídeo de movimento — integra cenário + movimento
     const movement = state.selectedMovement;
     if (!movement) {
       return 'Fashion model standing naturally in elegant studio setting, subtle natural movement, professional fashion photography, cinematic quality, soft studio lighting, 4K resolution' + MOVEMENT_ZOOM_SUFFIX;
     }
 
-    // Se movimento tem variantes, usa a variante selecionada
+    // Extrai cenário selecionado (se houver)
+    let scenarioPrompt = null;
+    if (state.selectedScenario) {
+      if (state.selectedScenario.hasVariants && state.selectedVariant) {
+        scenarioPrompt = state.selectedVariant.prompt;
+      } else if (state.selectedScenario.prompt) {
+        scenarioPrompt = state.selectedScenario.prompt;
+      }
+    }
+
+    // Extrai movimento selecionado (variante se disponível)
     let movementPrompt = null;
     if (movement.hasVariants && state.selectedMovementVariant) {
       movementPrompt = state.selectedMovementVariant.prompt;
@@ -1348,12 +1358,23 @@ function buildVideoPrompt() {
       movementPrompt = movement.prompt;
     }
 
-    // Fallback se não houver prompt
+    // Fallback se não houver prompt de movimento
     if (!movementPrompt) {
       return 'Fashion model standing naturally in elegant studio setting, subtle natural movement, professional fashion photography, cinematic quality, soft studio lighting, 4K resolution' + MOVEMENT_ZOOM_SUFFIX;
     }
 
-    return movementPrompt + MOVEMENT_ZOOM_SUFFIX;
+    // Combina cenário + movimento
+    const fullPrompt = scenarioPrompt
+      ? `${scenarioPrompt}. ${movementPrompt}`
+      : movementPrompt;
+
+    // Caso especial: s4 "Selfie no espelho" + m1 "Natural" = adiciona realismo de pele
+    if (state.selectedScenario?.id === 's4' && movement.id === 'm1') {
+      const skinRealism = ', natural skin texture with visible pores, realistic skin imperfections, no skin smoothing, no beauty filter, photorealistic human skin, raw unfiltered appearance';
+      return fullPrompt + skinRealism + MOVEMENT_ZOOM_SUFFIX;
+    }
+
+    return fullPrompt + MOVEMENT_ZOOM_SUFFIX;
   }
 }
 
