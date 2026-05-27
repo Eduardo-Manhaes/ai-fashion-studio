@@ -861,7 +861,8 @@ const POSES = [
 ];
 
 // Sufixo de zoom universal para todos os vídeos de movimento
-const MOVEMENT_ZOOM_SUFFIX = ', then camera performs a moderate zoom toward the garment revealing fabric texture and clothing details clearly without cutting the model, holds on detail for 2 seconds showing texture and fit in context, then snaps back quickly to full body wide shot, model moving at natural real-life speed throughout, no slow motion, no extreme close-up, maintain model in frame during zoom';
+// REMOVIDO: zoom causava deformação em m1-m6. Zoom mantido apenas em m7-v1 e m7-v2 (prompts detalhados)
+const MOVEMENT_ZOOM_SUFFIX = '';
 
 const MOVEMENT_STYLES = [
   {
