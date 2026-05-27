@@ -1872,10 +1872,10 @@
         }
 
         // VÃDEOS - Forçar carregamento e debug
-        const videos = document.querySelectorAll('.video-card video');
-        console.log('vídeos encontrados:', videos.length);
+        const videoElements = document.querySelectorAll('.video-card video');
+        console.log('vídeos encontrados:', videoElements.length);
 
-        videos.forEach((video, i) => {
+        videoElements.forEach((video, i) => {
           console.log(`vídeo ${i + 1}:`, video.src || 'sem src');
 
           video.addEventListener('loadeddata', () => {
@@ -1907,7 +1907,7 @@
 
       try {
         // Verifica se usuário está logado
-        const { data: { session } } = await supabase.auth.getSession();
+        const session = await window.AuthLib.getSession();
 
         if (session) {
           // Usuário logado - cria checkout session e vai direto para Stripe
