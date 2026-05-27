@@ -926,6 +926,14 @@ const MOVEMENT_STYLES = [
         prompt: 'Brazilian fashion model on clean white studio floor with professional lighting, SCENE 1 (0-1s): camera static wide shot showing complete outfit head to toe, model standing still upright posture looking forward, SCENE 2 (1-6s): model performs single smooth 360-degree rotation at natural walking pace showing complete outfit from all angles front right-side back left-side then front again, camera remains completely static and wide throughout rotation, no gestures or expressions during rotation, SCENE 3 (6-7s): model stops after completing one full rotation standing in confident frontal pose looking directly at camera, SCENE 4 (7-9s): camera performs moderate zoom directly onto garment fabric not face revealing fabric texture stitching and clothing details while keeping model partially in frame, holds on detail for 2 seconds, SCENE 5 (9-10s): camera snaps back quickly to full body wide shot with model in final standing pose, no second rotation, same identical model throughout entire video, natural real-life speed, no slow motion, professional runway showcase mood'
       }
     ]
+  },
+  {
+    id: 'm8',
+    icon: '🤳',
+    label: 'Selfie no espelho',
+    sub: 'Celular no espelho',
+    scenarioOnly: 's4',
+    prompt: 'Person taking mirror selfie, smartphone held up aimed directly at mirror at chest-to-face height, phone stays completely still and fixed pointing at mirror throughout entire video, same hand holding phone raised and steady from start to finish, person makes subtle natural micro-movements while holding phone steady such as slight weight shift or natural breathing, reflection clearly visible in mirror showing outfit, casual authentic selfie atmosphere, phone never lowers or moves, fitting room or bedroom mirror setting, natural ambient lighting, no studio lighting, real person taking real selfie vibe, no slow motion, natural real-life speed'
   }
 ];
 
@@ -1054,6 +1062,30 @@ function selectCard(type, id, multi = false) {
         // Cenário sem variantes - oculta todos containers e habilita botão
         document.querySelectorAll('.variants-container').forEach(v => v.style.display = 'none');
         document.getElementById('btnNextStep3').disabled = false;
+      }
+
+      // Rebuild movement grid baseado no cenário selecionado
+      const visibleMovements = MOVEMENT_STYLES.filter(m => {
+        if (m.scenarioOnly) {
+          return state.selectedScenario?.id === m.scenarioOnly;
+        }
+        if (state.selectedScenario?.id === 's4') {
+          return false;
+        }
+        return true;
+      });
+      buildSelectionGrid('movementStyleGrid', visibleMovements, 'movement');
+
+      // Reset movimento se m8 e cenário não for s4
+      if (state.selectedMovement?.id === 'm8' && state.selectedScenario?.id !== 's4') {
+        state.selectedMovement = null;
+        state.selectedMovementVariant = null;
+      }
+
+      // Mostra/oculta aviso para cenário s4
+      const s4Warning = document.getElementById('s4Warning');
+      if (s4Warning) {
+        s4Warning.style.display = (scenario?.id === 's4') ? 'block' : 'none';
       }
     } else if (type === 'movement') {
       const movement = MOVEMENT_STYLES.find(m => m.id === id);
