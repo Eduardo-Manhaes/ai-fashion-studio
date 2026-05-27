@@ -841,7 +841,7 @@ const SCENARIOS = [
     icon: '🤳',
     label: 'Selfie no espelho',
     sub: 'Instagram/TikTok',
-    prompt: 'mirror selfie in fitting room, phone in hand partially covering face, body slightly tilted, hip to one side, not perfectly centered composition, casual confident pose, retail store mirror, natural selfie angle, social media style photography'
+    prompt: 'mirror selfie photo style, model holding smartphone aimed at mirror throughout entire video from start to finish, phone never moves or lowers, phone stays fixed pointing at mirror the entire time, model visible in mirror reflection holding phone up, casual Instagram selfie atmosphere, fitting room or bedroom mirror, natural lighting, phone hand remains raised and steady for the complete duration of the video'
   },
 
   // Mantidos
