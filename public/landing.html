@@ -1550,7 +1550,7 @@
           <li>Download ilimitado</li>
           <li>Uso comercial</li>
         </ul>
-        <a href="/signup.html?plan=basico" class="btn btn-outline"><span>Começar Básico</span></a>
+        <a href="/signup.html?plan=basico" class="btn btn-outline" onclick="handlePlanClick(event, 'basico')"><span>Começar Básico</span></a>
       </div>
 
       <div class="plan featured">
@@ -1564,7 +1564,7 @@
           <li>27 modelos brasileiras</li>
           <li>Suporte prioritário</li>
         </ul>
-        <a href="/signup.html?plan=starter" class="btn"><span>Começar Starter</span></a>
+        <a href="/signup.html?plan=starter" class="btn" onclick="handlePlanClick(event, 'starter')"><span>Começar Starter</span></a>
       </div>
 
       <div class="plan">
@@ -1578,7 +1578,7 @@
           <li>27 modelos brasileiras</li>
           <li>Suporte prioritário</li>
         </ul>
-        <a href="/signup.html?plan=pro" class="btn btn-outline"><span>Começar Pro</span></a>
+        <a href="/signup.html?plan=pro" class="btn btn-outline" onclick="handlePlanClick(event, 'pro')"><span>Começar Pro</span></a>
       </div>
     </div>
   </section>
@@ -1896,6 +1896,48 @@
       .catch(err => {
         console.log('API não Disponível - usando imagens de exemplo');
       });
+  </script>
+
+  <!-- Auth scripts para verificar login nos botões de plano -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/lib/auth.js?v=5"></script>
+  <script>
+    async function handlePlanClick(event, planId) {
+      event.preventDefault();
+
+      try {
+        // Verifica se usuário está logado
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (session) {
+          // Usuário logado - cria checkout session e vai direto para Stripe
+          const res = await window.AuthLib.authFetch('/api/stripe/create-checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ plan: planId })
+          });
+
+          if (!res.ok) {
+            throw new Error('Erro ao criar checkout');
+          }
+
+          const data = await res.json();
+
+          if (data.url) {
+            window.location.href = data.url; // Redireciona para Stripe Checkout
+          } else {
+            throw new Error('URL de checkout não retornada');
+          }
+        } else {
+          // Usuário não logado - vai para cadastro com plano na URL
+          window.location.href = `/signup.html?plan=${planId}`;
+        }
+      } catch (err) {
+        console.error('Erro ao processar plano:', err);
+        // Fallback: vai para signup mesmo se houver erro
+        window.location.href = `/signup.html?plan=${planId}`;
+      }
+    }
   </script>
 
 </body>

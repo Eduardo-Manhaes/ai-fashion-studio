@@ -585,8 +585,32 @@
       const session = await window.AuthLib.getSession();
       if (session) {
         if (selectedPlan) {
-          // Já está logado e tem plano - vai direto para checkout
-          window.location.href = `/planos.html?plan=${selectedPlan}`;
+          // Já está logado e tem plano - cria checkout session
+          try {
+            const checkoutRes = await window.AuthLib.authFetch('/api/stripe/create-checkout', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ plan: selectedPlan }),
+            });
+
+            if (!checkoutRes.ok) {
+              throw new Error('Erro ao criar checkout');
+            }
+
+            const checkoutData = await checkoutRes.json();
+
+            if (checkoutData.url) {
+              window.location.href = checkoutData.url; // Redirect para Stripe
+              return;
+            } else {
+              throw new Error('URL de checkout não retornada');
+            }
+          } catch (checkoutErr) {
+            console.error('Erro criando checkout:', checkoutErr);
+            // Fallback: vai para /planos.html
+            window.location.href = '/planos.html';
+            return;
+          }
         } else {
           window.location.href = '/';
         }

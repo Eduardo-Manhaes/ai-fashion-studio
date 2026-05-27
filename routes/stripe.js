@@ -80,6 +80,7 @@ router.post('/create-checkout', requireAuth, async (req, res) => {
         subscription_data: {
           metadata: { user_id: userId, plan_id: planIdFinal },
         },
+        phone_number_collection: { enabled: true }, // Coleta telefone para remarketing
         locale: 'pt-BR',
       };
 
