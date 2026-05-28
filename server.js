@@ -1338,6 +1338,15 @@ app.get('/forgot-password', noCacheHtml, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'forgot-password.html'));
 });
 
+// Rotas de billing (sem extensão .html)
+app.get('/billing/success', noCacheHtml, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'billing', 'success.html'));
+});
+
+app.get('/billing/cancel', noCacheHtml, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'billing', 'cancel.html'));
+});
+
 // START SERVER
 // ============================================================
 
