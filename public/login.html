@@ -359,6 +359,25 @@
       pointer-events: none;
     }
 
+    /* Link de senha esquecida */
+    .forgot-link {
+      text-align: center;
+      margin-top: 16px;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+    }
+
+    .forgot-link a {
+      color: var(--texto-secundario);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .forgot-link a:hover {
+      color: var(--verde-claro);
+      text-decoration: underline;
+    }
+
     /* Mensagem de erro */
     .error {
       background: rgba(255, 107, 107, 0.15);
@@ -518,6 +537,10 @@
             Entrar
           </button>
 
+          <p class="forgot-link">
+            <a href="/forgot-password.html">Esqueceu sua senha?</a>
+          </p>
+
           <div class="error" id="errorBox"></div>
         </form>
 
@@ -553,6 +576,12 @@
       // Trata redirecionamento do signup
       if (urlParams.get('signupSuccess') === '1') {
         errorBox.textContent = '✓ Conta criada com sucesso! Faça login.';
+        errorBox.classList.add('success', 'show');
+      }
+
+      // Trata redirecionamento da recuperação de senha
+      if (urlParams.get('passwordReset') === '1') {
+        errorBox.textContent = '✓ Senha redefinida com sucesso! Faça login.';
         errorBox.classList.add('success', 'show');
       }
 
