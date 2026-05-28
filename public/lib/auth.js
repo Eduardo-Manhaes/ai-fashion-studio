@@ -22,11 +22,14 @@ async function loadSupabase() {
     const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
 
     // 3. Cria cliente com persistência de sessão
+    //    flowType: 'pkce' é o padrão de @supabase/supabase-js v2, mas fixamos
+    //    explicitamente para garantir comportamento consistente em recovery flow.
     _supabaseClient = createClient(_publicConfig.supabaseUrl, _publicConfig.supabaseAnonKey, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
         detectSessionInUrl: true,
+        flowType: 'pkce',
         storage: window.localStorage,
       }
     });

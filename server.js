@@ -179,7 +179,17 @@ app.use(express.json({ limit: '50mb' }));
 const stripeRouter = require('./routes/stripe');
 app.use('/api/stripe', stripeRouter);
 
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve estáticos — desabilita cache de HTML para que páginas de auth nunca
+// sejam servidas em versão stale após deploy (problema crítico em reset-password).
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  },
+}));
 
 // ===== Utilitário: Limpar prefixo Base64 =====
 const getCleanBase64 = (b64) =>
@@ -1311,11 +1321,20 @@ app.get('/login', (req, res) => {
 });
 
 // Rotas de recuperação de senha (sem extensão .html)
-app.get('/reset-password', (req, res) => {
+// Importante: no-cache para que mudanças em produção sejam vistas imediatamente
+// e para que o ?code= do PKCE nunca seja servido a partir de cache antigo.
+const noCacheHtml = (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+};
+
+app.get('/reset-password', noCacheHtml, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'reset-password.html'));
 });
 
-app.get('/forgot-password', (req, res) => {
+app.get('/forgot-password', noCacheHtml, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'forgot-password.html'));
 });
 
