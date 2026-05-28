@@ -126,23 +126,24 @@
   <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-    const configRes = await fetch('/api/public-config');
-    const config = await configRes.json();
-    const supabase = createClient(config.supabaseUrl, config.supabaseAnonKey);
+    (async () => {
+      const configRes = await fetch('/api/public-config');
+      const config = await configRes.json();
+      const supabase = createClient(config.supabaseUrl, config.supabaseAnonKey);
 
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get('session_id');
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get('session_id');
 
-    const titleEl = document.getElementById('title');
-    const messageEl = document.getElementById('message');
-    const detailsDiv = document.getElementById('details');
-    const startBtn = document.getElementById('startBtn');
+      const titleEl = document.getElementById('title');
+      const messageEl = document.getElementById('message');
+      const detailsDiv = document.getElementById('details');
+      const startBtn = document.getElementById('startBtn');
 
-    if (!sessionId) {
-      titleEl.textContent = 'Erro';
-      messageEl.textContent = 'ID de sessão não encontrado. Volte para o app e tente novamente.';
-      return;
-    }
+      if (!sessionId) {
+        titleEl.textContent = 'Erro';
+        messageEl.textContent = 'ID de sessão não encontrado. Volte para o app e tente novamente.';
+        return;
+      }
 
     // Verifica se usuário está logado
     const { data: { session } } = await supabase.auth.getSession();
@@ -223,6 +224,7 @@
         }
       }
     }, pollInterval);
+    })();
   </script>
 </body>
 </html>
