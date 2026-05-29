@@ -57,11 +57,11 @@ router.post('/create-checkout', requireAuth, async (req, res) => {
 
     if (typeFinal === 'subscription') {
       // Mapeia plan_id → STRIPE_PRICE_*
-      // IDs no banco (migration 009): basico, starter, pro
+      // IDs CORRETOS no banco: starter, pro, enterprise
       const priceMap = {
-        basico: process.env.STRIPE_PRICE_BASICO,       // plano Básico (20 créditos)
-        starter: process.env.STRIPE_PRICE_STARTER,     // plano Starter (50 créditos)
-        pro: process.env.STRIPE_PRICE_PRO,             // plano Pro (120 créditos)
+        starter: process.env.STRIPE_PRICE_BASICO,       // Básico (20 créditos, R$ 35)
+        pro: process.env.STRIPE_PRICE_STARTER,          // Iniciante (50 créditos, R$ 79)
+        enterprise: process.env.STRIPE_PRICE_PRO,       // Pró (120 créditos, R$ 159)
       };
       const stripePriceId = priceMap[planIdFinal];
       
