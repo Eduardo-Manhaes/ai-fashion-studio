@@ -178,15 +178,62 @@ async function handleSubscriptionUpsert(subscription) {
   };
 
   // Upsert por user_id (UNIQUE constraint)
-  const { error } = await supabaseAdmin
+  const { data: upsertedSub, error } = await supabaseAdmin
     .from('subscriptions')
-    .upsert(subscriptionData, { onConflict: 'user_id' });
+    .upsert(subscriptionData, { onConflict: 'user_id' })
+    .select()
+    .single();
 
   if (error) {
     throw new Error(`Erro upsert subscription: ${error.message}`);
   }
 
   console.log(`[WEBHOOK] Subscription ${subscription.id} (${subscription.status}) sincronizada para user ${userId}`);
+
+  // ============================================================
+  // CRIAR quota_usage IMEDIATAMENTE (não esperar primeiro débito)
+  // ============================================================
+  // Busca o plano para pegar monthly_quota_credits
+  const { data: plan } = await supabaseAdmin
+    .from('plans')
+    .select('monthly_quota_credits')
+    .eq('id', planId)
+    .single();
+
+  if (!plan) {
+    throw new Error(`Plano ${planId} não encontrado no banco`);
+  }
+
+  // Verifica se já existe quota_usage para este período
+  const { data: existingQuota } = await supabaseAdmin
+    .from('quota_usage')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('period_start', periodStart)
+    .maybeSingle();
+
+  if (!existingQuota) {
+    // Cria nova entrada de quota_usage
+    const { error: quotaError } = await supabaseAdmin
+      .from('quota_usage')
+      .insert({
+        user_id: userId,
+        subscription_id: upsertedSub.id,
+        period_start: periodStart,
+        period_end: periodEnd,
+        credits_limit: plan.monthly_quota_credits,
+        credits_used: 0,
+      });
+
+    if (quotaError) {
+      console.error(`[WEBHOOK] Erro criando quota_usage: ${quotaError.message}`);
+      throw new Error(`Erro criando quota_usage: ${quotaError.message}`);
+    }
+
+    console.log(`[WEBHOOK] ✅ Quota criada: ${plan.monthly_quota_credits} créditos para user ${userId}`);
+  } else {
+    console.log(`[WEBHOOK] Quota já existe para este período, não criando duplicata`);
+  }
 }
 
 // Quando assinatura é cancelada definitivamente
