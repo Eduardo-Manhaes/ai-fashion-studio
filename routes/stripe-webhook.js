@@ -89,7 +89,7 @@ async function handleEvent(event) {
     case 'customer.subscription.deleted':
       return handleSubscriptionCanceled(event.data.object);
 
-    case 'invoice.paid':
+    case 'invoice.payment_succeeded':
       return handleInvoicePaid(event.data.object);
 
     case 'invoice.payment_failed':
