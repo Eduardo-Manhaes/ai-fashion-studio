@@ -757,7 +757,7 @@ app.get('/api/credits', async (req, res) => {
 // VÍDEOS — Roteamento por estilo
 // ============================================================
 
-// Vídeos - PROCESSAMENTO DIRETO (sem queue)
+// Vídeos - MIGRADO PARA QUEUE SYSTEM
 app.post('/api/run-video', generationLimiter, requireAuth, async (req, res, next) => {
   console.log('[VIDEO] Requisição recebida');
   console.log('[VIDEO] User:', req.user?.id);
@@ -787,17 +787,25 @@ app.post('/api/run-video', generationLimiter, requireAuth, async (req, res, next
   return requireCredits(generationType, provider)(req, res, async () => {
     const job = req.generationJob;
     try {
-      console.log(`[VIDEO DIRECT] Processando job ${job.id} (${provider}) diretamente`);
+      // Adiciona job na queue
+      await videoQueue.add('generate-video', {
+        jobId: job.id,
+        userId: req.user.id,
+        provider: provider,
+        inputs: inputs,
+      }, {
+        jobId: job.id,
+      });
 
-      // Processa diretamente (sem queue)
-      if (provider === 'kling') {
-        await runKlingVideo(inputs, res, job);
-      } else if (provider === 'veo') {
-        await runVeoVideo(inputs, res, job);
-      }
+      console.log(`[VIDEO QUEUE] Job ${job.id} adicionado à fila (${provider})`);
+
+      return res.json({
+        id: job.id,
+        message: 'Vídeo adicionado à fila de processamento',
+      });
 
     } catch (err) {
-      console.error('[VIDEO DIRECT] Erro:', err.message);
+      console.error('[VIDEO QUEUE] Erro:', err.message);
       await refundJob(job.id, err.message);
       if (!res.headersSent) {
         res.status(500).json({ error: err.message });
