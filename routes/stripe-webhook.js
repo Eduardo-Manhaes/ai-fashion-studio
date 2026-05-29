@@ -5,6 +5,16 @@ const { supabaseAdmin } = require('../middleware/auth');
 const router = express.Router();
 
 // ===================================================================
+// HELPER: Converte timestamp Unix do Stripe para ISO string seguro
+// Timestamps do Stripe são em segundos, new Date() espera milissegundos
+// ===================================================================
+function toSafeISOString(timestamp) {
+  if (!timestamp) return null;
+  const date = new Date(typeof timestamp === 'number' ? timestamp * 1000 : timestamp);
+  return isNaN(date.getTime()) ? null : date.toISOString();
+}
+
+// ===================================================================
 // POST /api/stripe/webhook
 // IMPORTANTE: monta com express.raw(), não express.json()
 // ===================================================================
@@ -150,9 +160,9 @@ async function handleSubscriptionUpsert(subscription) {
     status: subscription.status, // 'active', 'past_due', 'canceled', 'trialing', etc
     stripe_subscription_id: subscription.id,
     stripe_customer_id: subscription.customer,
-    current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-    current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-    canceled_at: subscription.canceled_at ? new Date(subscription.canceled_at * 1000).toISOString() : null,
+    current_period_start: toSafeISOString(subscription.current_period_start),
+    current_period_end: toSafeISOString(subscription.current_period_end),
+    canceled_at: toSafeISOString(subscription.canceled_at),
   };
 
   // Upsert por user_id (UNIQUE constraint)
