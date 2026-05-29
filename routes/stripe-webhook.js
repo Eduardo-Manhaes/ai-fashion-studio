@@ -154,14 +154,26 @@ async function handleSubscriptionUpsert(subscription) {
     return;
   }
 
+  // Log para debug: ver timestamps que chegam do Stripe
+  console.log('[WEBHOOK] Subscription timestamps:', {
+    id: subscription.id,
+    current_period_start: subscription.current_period_start,
+    current_period_end: subscription.current_period_end,
+    status: subscription.status
+  });
+
+  // Fallback: se timestamps vierem null, usa datas razoáveis
+  const periodStart = toSafeISOString(subscription.current_period_start) ?? new Date().toISOString();
+  const periodEnd = toSafeISOString(subscription.current_period_end) ?? new Date(Date.now() + 30*24*60*60*1000).toISOString();
+
   const subscriptionData = {
     user_id: userId,
     plan_id: planId,
     status: subscription.status, // 'active', 'past_due', 'canceled', 'trialing', etc
     stripe_subscription_id: subscription.id,
     stripe_customer_id: subscription.customer,
-    current_period_start: toSafeISOString(subscription.current_period_start),
-    current_period_end: toSafeISOString(subscription.current_period_end),
+    current_period_start: periodStart,
+    current_period_end: periodEnd,
     canceled_at: toSafeISOString(subscription.canceled_at),
   };
 
