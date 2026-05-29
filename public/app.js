@@ -1522,6 +1522,14 @@ async function pollStatus(provider, id, onUpdate) {
 
 // ===== GERAR FOTO =====
 async function generatePhoto() {
+  if (shouldShowFidelityModal()) {
+    showFidelityModal('photo');
+    return;
+  }
+  _generatePhotoInternal();
+}
+
+async function _generatePhotoInternal() {
   if (!state.productImageBase64 || state.isGenerating) return;
   state.isGenerating = true;
 
@@ -1838,6 +1846,18 @@ function stopGalleryPolling() {
 
 // ===== GERAR VÍDEO =====
 async function generateVideo() {
+  if (!state.selectedSessionImage || state.isGenerating) return;
+  if (state.videoStyle === 'talking' && !document.getElementById('modelScript').value.trim()) {
+    showToast('Escreva o que a modelo vai dizer.', 'error'); return;
+  }
+  if (shouldShowFidelityModal()) {
+    showFidelityModal('video');
+    return;
+  }
+  _generateVideoInternal();
+}
+
+async function _generateVideoInternal() {
   if (!state.selectedSessionImage || state.isGenerating) return;
   if (state.videoStyle === 'talking' && !document.getElementById('modelScript').value.trim()) {
     showToast('Escreva o que a modelo vai dizer.', 'error'); return;
@@ -2318,4 +2338,38 @@ if (!document.getElementById('toast-animations')) {
     }
   `;
   document.head.appendChild(style);
+}
+
+// ===== MODAL DE FIDELIDADE =====
+let pendingGenerationAction = null;
+
+function showFidelityModal(action) {
+  pendingGenerationAction = action;
+  document.getElementById('fidelityModal').style.display = 'flex';
+  document.getElementById('fidelityDontShowAgain').checked = false;
+}
+
+function closeFidelityModal() {
+  document.getElementById('fidelityModal').style.display = 'none';
+  pendingGenerationAction = null;
+}
+
+function confirmFidelityAndGenerate() {
+  const dontShowAgain = document.getElementById('fidelityDontShowAgain').checked;
+
+  if (dontShowAgain) {
+    localStorage.setItem('fidelityWarningDismissed', 'true');
+  }
+
+  closeFidelityModal();
+
+  if (pendingGenerationAction === 'photo') {
+    _generatePhotoInternal();
+  } else if (pendingGenerationAction === 'video') {
+    _generateVideoInternal();
+  }
+}
+
+function shouldShowFidelityModal() {
+  return localStorage.getItem('fidelityWarningDismissed') !== 'true';
 }

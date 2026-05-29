@@ -760,6 +760,40 @@
   </div>
 </div>
 
+<!-- Modal: Aviso de Fidelidade -->
+<div class="modal-overlay" id="fidelityModal" style="display: none;">
+  <div class="modal-card" style="max-width: 520px;">
+    <div class="modal-header">
+      <h3 style="color: #00bfa5; margin: 0; display: flex; align-items: center; gap: 10px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        Sobre os Resultados da IA
+      </h3>
+    </div>
+    <div style="padding: 24px; color: #a8c5c1; line-height: 1.6;">
+      <p style="margin-bottom: 16px;">Nossa IA gera <strong style="color: #fff;">interpretações criativas</strong>, não cópias exatas. É importante entender:</p>
+      <ul style="margin: 0 0 20px 20px; padding: 0;">
+        <li style="margin-bottom: 8px;"><strong style="color: #1de9b6;">Cores e texturas</strong> podem variar em relação ao produto original</li>
+        <li style="margin-bottom: 8px;"><strong style="color: #1de9b6;">Detalhes finos</strong> podem ser interpretados de forma diferente</li>
+        <li style="margin-bottom: 8px;"><strong style="color: #1de9b6;">Fotos de alta qualidade</strong> geram melhores resultados</li>
+      </ul>
+      <div style="background: rgba(0, 191, 165, 0.1); border-left: 3px solid #00bfa5; padding: 12px 16px; border-radius: 4px; margin-top: 16px;">
+        <p style="margin: 0; font-size: 0.9rem;">💡 <strong>Dica:</strong> Use fotos bem iluminadas, com fundo neutro e sem reflexos para obter a melhor fidelidade possível.</p>
+      </div>
+      <label style="display: flex; align-items: center; gap: 10px; margin-top: 20px; cursor: pointer; user-select: none;">
+        <input type="checkbox" id="fidelityDontShowAgain" style="width: 18px; height: 18px; accent-color: #00bfa5; cursor: pointer;">
+        <span style="font-size: 0.9rem; color: #5a8a84;">Não mostrar novamente</span>
+      </label>
+    </div>
+    <div class="modal-actions" style="gap: 12px;">
+      <button class="btn btn-secondary" onclick="closeFidelityModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmFidelityAndGenerate()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Entendi, gerar agora
+      </button>
+    </div>
+  </div>
+</div>
+
 <div id="toastContainer" class="toast-container"></div>
 
 <!-- Scripts — mantidos na mesma ordem -->

@@ -2417,3 +2417,40 @@ button svg { pointer-events: none; }
   color: #6b9e98;
   margin-top: 2px;
 }
+
+/* ===== MODAL DE FIDELIDADE ===== */
+#fidelityModal .modal-overlay {
+  animation: fadeIn 0.2s ease;
+}
+
+#fidelityModal .modal-card {
+  animation: slideUp 0.3s ease;
+}
+
+#fidelityModal .modal-header {
+  padding: 24px 24px 0 24px;
+  border-bottom: none;
+}
+
+#fidelityModal .modal-actions {
+  padding: 16px 24px 24px 24px;
+  border-top: 1px solid rgba(0, 191, 165, 0.1);
+  display: flex;
+  justify-content: flex-end;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
