@@ -179,6 +179,10 @@ app.use(express.json({ limit: '50mb' }));
 const stripeRouter = require('./routes/stripe');
 app.use('/api/stripe', stripeRouter);
 
+// Debug routes
+const debugRouter = require('./routes/debug');
+app.use('/api/debug', debugRouter);
+
 // Serve estáticos — desabilita cache de HTML para que páginas de auth nunca
 // sejam servidas em versão stale após deploy (problema crítico em reset-password).
 app.use(express.static(path.join(__dirname, 'public'), {
@@ -236,20 +240,43 @@ app.get('/api/preset-models', optionalAuth, async (req, res) => {
 
 // Rota de teste — retorna info do usuário autenticado e estado da cota
 app.get('/api/me', requireAuth, async (req, res) => {
+  console.log('[/api/me] User ID:', req.user.id);
+
   try {
-    const { data: subscription } = await supabaseAdmin
+    console.log('[/api/me] Buscando subscription...');
+    const { data: subscription, error: subError } = await supabaseAdmin
       .from('subscriptions')
       .select('*, plans(*)')
       .eq('user_id', req.user.id)
       .eq('status', 'active')
       .single();
 
-    const { data: quota } = subscription ? await supabaseAdmin
+    if (subError) console.log('[/api/me] Subscription error:', subError);
+    if (subscription) {
+      console.log('[/api/me] ✅ Subscription encontrada:', subscription.id);
+      console.log('[/api/me] Período:', subscription.current_period_start, 'até', subscription.current_period_end);
+    } else {
+      console.log('[/api/me] ❌ Nenhuma subscription ativa');
+    }
+
+    console.log('[/api/me] Buscando quota...');
+    const { data: quota, error: quotaError } = subscription ? await supabaseAdmin
       .from('quota_usage')
       .select('*')
       .eq('user_id', req.user.id)
       .eq('period_start', subscription.current_period_start)
       .maybeSingle() : { data: null };
+
+    if (quotaError) console.log('[/api/me] Quota error:', quotaError);
+    if (quota) {
+      console.log('[/api/me] ✅ Quota encontrada:', quota.id);
+      console.log('[/api/me] Créditos:', quota.credits_used, '/', quota.credits_limit);
+    } else {
+      console.log('[/api/me] ❌ Quota não encontrada');
+      if (subscription) {
+        console.log('[/api/me] DEBUG: period_start esperado:', subscription.current_period_start);
+      }
+    }
 
     const { data: packs } = await supabaseAdmin
       .from('credit_packs')

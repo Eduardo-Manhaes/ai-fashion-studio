@@ -115,7 +115,16 @@ router.post('/create-checkout', requireAuth, async (req, res) => {
       // sessionConfig.payment_method_types = ['card', 'pix'];
     }
 
+    console.log('[CHECKOUT] Criando session para user:', userId, 'plan:', planIdFinal || pack_id);
+    console.log('[CHECKOUT] Metadata:', sessionConfig.metadata);
+    if (sessionConfig.subscription_data) {
+      console.log('[CHECKOUT] Subscription metadata:', sessionConfig.subscription_data.metadata);
+    }
+
     const session = await stripe.checkout.sessions.create(sessionConfig);
+
+    console.log('[CHECKOUT] ✅ Session criada:', session.id);
+    console.log('[CHECKOUT] URL:', session.url);
 
     res.json({ url: session.url, session_id: session.id });
 
