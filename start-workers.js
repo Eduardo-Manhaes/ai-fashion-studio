@@ -17,13 +17,34 @@ console.log('\n✅ Todos os workers ativos');
 console.log('📝 Logs serão exibidos conforme jobs forem processados');
 console.log('⚠️  Pressione Ctrl+C para parar\n');
 
+// Keepalive: mantém o processo vivo mesmo sem jobs
+// Envia heartbeat a cada 30 segundos para evitar timeout do Railway
+const keepaliveInterval = setInterval(() => {
+  console.log(`[KEEPALIVE] Workers ativos - ${new Date().toISOString()}`);
+}, 30000); // 30 segundos
+
 // Graceful shutdown
-process.on('SIGINT', () => {
-  console.log('\n🛑 Parando workers...');
-  process.exit(0);
+function shutdown(signal) {
+  console.log(`\n🛑 Recebido ${signal}, parando workers...`);
+  clearInterval(keepaliveInterval);
+
+  // Aguarda 5 segundos para workers finalizarem jobs em andamento
+  setTimeout(() => {
+    console.log('✅ Workers finalizados');
+    process.exit(0);
+  }, 5000);
+}
+
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+
+// Previne crashes não tratados
+process.on('uncaughtException', (err) => {
+  console.error('❌ Uncaught Exception:', err);
+  // Não encerra o processo - apenas loga
 });
 
-process.on('SIGTERM', () => {
-  console.log('\n🛑 Parando workers...');
-  process.exit(0);
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection:', reason);
+  // Não encerra o processo - apenas loga
 });
