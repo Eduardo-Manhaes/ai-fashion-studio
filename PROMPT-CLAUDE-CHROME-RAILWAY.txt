@@ -1,0 +1,203 @@
+═══════════════════════════════════════════════════════════
+🤖 PROMPT PARA CLAUDE CHROME — RAILWAY REDIS + WORKERS
+═══════════════════════════════════════════════════════════
+
+COLE ESTE PROMPT INTEIRO NO CLAUDE CHROME:
+
+---
+
+**CONTEXTO:**
+Preciso configurar Redis + Workers no Railway para o projeto "Modelo Fácil". O sistema atualmente usa MockQueue (in-memory) mas precisa migrar para produção com Redis + BullMQ para processar jobs de fotos e vídeos em background de forma robusta.
+
+**Repositório GitHub:** Eduardo-Manhaes/ai-fashion-studio
+
+**O que vamos fazer:**
+1. Adicionar Redis database
+2. Criar serviço "workers"
+3. Copiar variáveis de ambiente
+4. Verificar se tudo está funcionando
+
+═══════════════════════════════════════════════════════════
+TAREFA 1: ADICIONAR REDIS DATABASE
+═══════════════════════════════════════════════════════════
+
+**Ação:**
+
+1. Na dashboard do Railway, localize o botão **"New"**
+   (geralmente canto superior direito ou centro da tela)
+
+2. Clique em **"New"** → Selecione **"Database"**
+
+3. Na lista de databases, clique em **"Add Redis"**
+
+4. Aguarde ~30 segundos para Railway provisionar o Redis
+
+5. **VERIFIQUE:**
+   - Clique no serviço PRINCIPAL (servidor Node.js)
+   - Vá na aba "Variables"
+   - Confirme que `REDIS_URL` apareceu automaticamente
+   - Deve começar com `redis://default:...`
+
+**Me responda:**
+✅ "Redis criado e REDIS_URL está em [nome-do-serviço-principal]"
+
+═══════════════════════════════════════════════════════════
+TAREFA 2: CRIAR SERVIÇO WORKERS
+═══════════════════════════════════════════════════════════
+
+**Ação:**
+
+1. Clique em **"New"** novamente
+
+2. Selecione **"GitHub Repo"**
+
+3. Conecte ao repositório:
+   - Procure por "Eduardo-Manhaes/ai-fashion-studio"
+   - Se não aparecer, clique em "Configure GitHub App" para dar permissão
+   - Selecione o repositório
+
+4. **Configure o serviço:**
+   - **Service Name:** Digite exatamente `workers`
+   - **Root Directory:** Deixe VAZIO (ou apenas `/`)
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm run workers`
+   - **Environment:** production (mesmo do serviço principal)
+
+5. Clique em **"Deploy"** ou **"Add Service"**
+
+**Me responda:**
+✅ "Serviço 'workers' criado com start command 'npm run workers'"
+
+═══════════════════════════════════════════════════════════
+TAREFA 3: COPIAR VARIÁVEIS DE AMBIENTE
+═══════════════════════════════════════════════════════════
+
+**Ação:**
+
+**PARTE A: Copiar do serviço principal**
+
+1. Clique no serviço PRINCIPAL (servidor Node.js, NÃO o workers)
+
+2. Aba "Variables"
+
+3. **COPIE os VALORES** destas 3 variáveis (anote temporariamente):
+   - `SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `FAL_API_KEY`
+
+**PARTE B: Colar no serviço workers**
+
+1. Clique no serviço **"workers"**
+
+2. Aba "Variables"
+
+3. Para CADA variável, clique **"New Variable"**:
+
+   ```
+   Nome: SUPABASE_URL
+   Valor: [cole o valor que você copiou]
+   → Save
+
+   Nome: SUPABASE_SERVICE_ROLE_KEY
+   Valor: [cole o valor que você copiou]
+   → Save
+
+   Nome: FAL_API_KEY
+   Valor: [cole o valor que você copiou]
+   → Save
+   ```
+
+4. **VERIFIQUE:** `REDIS_URL` deve já estar lá automaticamente
+   - Se NÃO estiver, copie do serviço principal e adicione manualmente
+
+**Me responda:**
+✅ "4 variáveis adicionadas ao workers: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, FAL_API_KEY, REDIS_URL"
+
+═══════════════════════════════════════════════════════════
+TAREFA 4: VERIFICAR DEPLOY DOS WORKERS
+═══════════════════════════════════════════════════════════
+
+**Ação:**
+
+1. Clique no serviço **"workers"**
+
+2. Aba **"Deployments"**
+
+3. Aguarde o deploy finalizar (1-3 minutos)
+   - Status deve mudar de "Building" → "Deploying" → "Success"
+
+4. Clique no deployment mais recente
+
+5. Aba **"View Logs"** ou **"Logs"**
+
+6. **PROCURE por estas mensagens de SUCESSO:**
+   ```
+   🚀 Iniciando workers...
+   [ENV CHECK] REDIS_URL: ✅ Disponível
+   [ENV CHECK] SUPABASE_URL: ✅ Disponível
+   [ENV CHECK] FAL_API_KEY: ✅ Disponível
+   [Photo Worker] Conectado ao Redis
+   [Video Worker] Conectado ao Redis
+   ✅ Todos os workers ativos
+   ```
+
+**Me responda:**
+✅ "Workers rodando com sucesso - logs mostram 'Todos os workers ativos'"
+❌ OU "Erro no workers: [cole a mensagem de erro]"
+
+═══════════════════════════════════════════════════════════
+TAREFA 5: VERIFICAR SERVIDOR PRINCIPAL
+═══════════════════════════════════════════════════════════
+
+**Ação:**
+
+1. Clique no serviço PRINCIPAL (servidor Node.js)
+
+2. Aba "Deployments" → clique no deployment mais recente
+
+3. Aba "View Logs"
+
+4. **PROCURE por:**
+   ```
+   ✅ BullMQ ativo (Redis conectado)
+   ⚠️  IMPORTANTE: Inicie os workers com: npm run workers
+   ```
+
+5. Se NÃO aparecer essa mensagem:
+   - Vá em "Deployments"
+   - Clique nos 3 pontinhos do deployment mais recente
+   - Clique "Restart"
+   - Aguarde e verifique logs novamente
+
+**Me responda:**
+✅ "Servidor principal detectou Redis: 'BullMQ ativo'"
+
+═══════════════════════════════════════════════════════════
+RESUMO FINAL
+═══════════════════════════════════════════════════════════
+
+Quando TODAS as tarefas estiverem OK, me envie:
+
+```
+✅ Redis database criado
+✅ Serviço workers criado e rodando
+✅ Variáveis copiadas (4 variáveis)
+✅ Workers logs: "Todos os workers ativos"
+✅ Servidor logs: "BullMQ ativo (Redis conectado)"
+
+URL do projeto: https://_______.up.railway.app
+```
+
+═══════════════════════════════════════════════════════════
+SE HOUVER ERRO
+═══════════════════════════════════════════════════════════
+
+Me envie:
+1. **Qual tarefa falhou?** (1, 2, 3, 4 ou 5)
+2. **Mensagem de erro completa** dos logs
+3. **Screenshot** da dashboard (se possível)
+
+═══════════════════════════════════════════════════════════
+
+Vamos começar! Me avise após completar CADA tarefa.
+```
