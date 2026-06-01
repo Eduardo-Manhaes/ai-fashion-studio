@@ -19,6 +19,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.1",
     "@supabase/supabase-js": "^2.105.1",
     "bullmq": "^5.76.8",
     "cors": "^2.8.6",
