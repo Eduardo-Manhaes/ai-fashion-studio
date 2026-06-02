@@ -1,0 +1,13 @@
+﻿🔴 VARIÁVEIS DE AMBIENTE - STRIPE LIVE MODE
+
+✅ CONFIGURADO EM: 2026-06-02 11:56
+
+1) STRIPE_SECRET_KEY = CONFIGURADO (sk_test_...)
+2) STRIPE_PUBLISHABLE_KEY = CONFIGURADO (pk_test_...)
+3) STRIPE_WEBHOOK_SECRET = CONFIGURADO (whsec_...)
+4) STRIPE_PRICE_BASICO = CONFIGURADO (price_...)
+5) STRIPE_PRICE_STARTER = CONFIGURADO (price_...)
+6) STRIPE_PRICE_PRO = CONFIGURADO (price_...)
+
+✅ No Railway: Todas as variáveis do Stripe configuradas
+✅ Deployment: Concluído com sucesso
