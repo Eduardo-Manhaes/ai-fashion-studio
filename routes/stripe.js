@@ -17,7 +17,18 @@ async function getOrCreateStripeCustomer(userId, email) {
     .maybeSingle();
 
   if (existing?.stripe_customer_id) {
-    return existing.stripe_customer_id;
+    // Verifica se o customer ainda existe no Stripe
+    try {
+      await stripe.customers.retrieve(existing.stripe_customer_id);
+      return existing.stripe_customer_id;
+    } catch (err) {
+      // Customer não existe mais no Stripe — limpa do banco e cria novo
+      console.warn(`[STRIPE] Customer ${existing.stripe_customer_id} não existe, criando novo para user ${userId}`);
+      await supabaseAdmin
+        .from('subscriptions')
+        .update({ stripe_customer_id: null })
+        .eq('user_id', userId);
+    }
   }
 
   // Cria novo
